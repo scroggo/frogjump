@@ -1,0 +1,123 @@
+[gd_scene load_steps=12 format=3 uid="uid://b4enkwafkexva"]
+
+[ext_resource type="Texture2D" uid="uid://btwjll3ip1yjw" path="res://frog_spritesheet.webp" id="1_sjfq4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kj3ho"]
+size = Vector2(48, 33)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cspye"]
+atlas = ExtResource("1_sjfq4")
+region = Rect2(0, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cryk1"]
+atlas = ExtResource("1_sjfq4")
+region = Rect2(192, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x8cfj"]
+atlas = ExtResource("1_sjfq4")
+region = Rect2(128, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ve4ld"]
+atlas = ExtResource("1_sjfq4")
+region = Rect2(64, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mmihx"]
+atlas = ExtResource("1_sjfq4")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_43ojq"]
+atlas = ExtResource("1_sjfq4")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m476u"]
+atlas = ExtResource("1_sjfq4")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qga67"]
+atlas = ExtResource("1_sjfq4")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wluyo"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cspye")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cryk1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x8cfj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ve4ld")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x8cfj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cryk1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cspye")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cspye")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cryk1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x8cfj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ve4ld")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x8cfj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cryk1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cspye")
+}],
+"loop": false,
+"name": &"blink",
+"speed": 25.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mmihx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_43ojq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m476u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qga67")
+}],
+"loop": false,
+"name": &"jump",
+"speed": 8.0
+}]
+
+[node name="Player" type="Player"]
+fall_acceleration = 100.0
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(2, 6.5)
+shape = SubResource("RectangleShape2D_kj3ho")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_wluyo")
+animation = &"blink"
+frame = 13
+frame_progress = 1.0
+
+[node name="BlinkTimer" type="Timer" parent="."]
+wait_time = 5.0
+autostart = true

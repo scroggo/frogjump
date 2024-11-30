@@ -1,6 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://d21gnaayew22y"]
 
 [ext_resource type="PackedScene" uid="uid://cp3dvkg3kpecl" path="res://wall.tscn" id="1_h0ni2"]
+[ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_q6if4"]
 
 [node name="Main" type="Node2D"]
 
@@ -55,3 +56,8 @@ position = Vector2(702, 197)
 
 [node name="Wall8" parent="Walls" instance=ExtResource("1_h0ni2")]
 position = Vector2(702, 346)
+
+[node name="Player" parent="." instance=ExtResource("2_q6if4")]
+max_jump_strength = 300.0
+z_index = 1
+position = Vector2(552, 476)

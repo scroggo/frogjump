@@ -1,5 +1,7 @@
 use godot::prelude::*;
 
+mod player;
+
 struct RustExtension;
 
 #[gdextension]
