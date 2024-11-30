@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://cp3dvkg3kpecl"]
+
+[ext_resource type="Texture2D" uid="uid://qnj31gb4crrq" path="res://kenney_assets/vector_complete.svg" id="1_2h5eq"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_5e83l"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3jdep"]
+size = Vector2(16, 189)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1p5eh"]
+atlas = ExtResource("1_2h5eq")
+region = Rect2(1112, 815.874, 5, 6)
+
+[node name="Wall" type="StaticBody2D" groups=["wall"]]
+physics_material_override = SubResource("PhysicsMaterial_5e83l")
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(8, 95.5)
+shape = SubResource("RectangleShape2D_3jdep")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(7.75, 95)
+scale = Vector2(4.1, 32.6667)
+texture = SubResource("AtlasTexture_1p5eh")
