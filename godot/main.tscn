@@ -1,0 +1,57 @@
+[gd_scene load_steps=3 format=3 uid="uid://d21gnaayew22y"]
+
+[ext_resource type="PackedScene" uid="uid://cp3dvkg3kpecl" path="res://wall.tscn" id="1_h0ni2"]
+
+[node name="Main" type="Node2D"]
+
+[node name="Walls" type="Node" parent="."]
+
+[node name="Wall0" parent="Walls" instance=ExtResource("1_h0ni2")]
+position = Vector2(206, 523)
+rotation = 1.5708
+
+[node name="Wall9" parent="Walls" instance=ExtResource("1_h0ni2")]
+position = Vector2(212, 2)
+rotation = 1.5708
+
+[node name="Wall10" parent="Walls" instance=ExtResource("1_h0ni2")]
+position = Vector2(408, 2)
+rotation = 1.5708
+
+[node name="Wall11" parent="Walls" instance=ExtResource("1_h0ni2")]
+position = Vector2(603, 2)
+rotation = 1.5708
+
+[node name="Wall12" parent="Walls" instance=ExtResource("1_h0ni2")]
+position = Vector2(697, 2)
+rotation = 1.5708
+
+[node name="Wall3" parent="Walls" instance=ExtResource("1_h0ni2")]
+position = Vector2(398, 523)
+rotation = 1.5708
+
+[node name="Wall4" parent="Walls" instance=ExtResource("1_h0ni2")]
+position = Vector2(594, 523)
+rotation = 1.5708
+
+[node name="Wall5" parent="Walls" instance=ExtResource("1_h0ni2")]
+position = Vector2(717, 523)
+rotation = 1.5708
+
+[node name="Wall1" parent="Walls" instance=ExtResource("1_h0ni2")]
+position = Vector2(2, 199)
+
+[node name="Wall2" parent="Walls" instance=ExtResource("1_h0ni2")]
+position = Vector2(2, 391)
+
+[node name="Wall" parent="Walls" instance=ExtResource("1_h0ni2")]
+position = Vector2(2, 3)
+
+[node name="Wall6" parent="Walls" instance=ExtResource("1_h0ni2")]
+position = Vector2(702, 2)
+
+[node name="Wall7" parent="Walls" instance=ExtResource("1_h0ni2")]
+position = Vector2(702, 197)
+
+[node name="Wall8" parent="Walls" instance=ExtResource("1_h0ni2")]
+position = Vector2(702, 346)
