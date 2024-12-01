@@ -53,21 +53,18 @@ impl ICharacterBody2D for Player {
             if let Some(collider) = collision.get_collider() {
                 if collider.cast::<Node>().is_in_group("wall") {
                     self.on_surface = true;
-                    // Without this check, we would keep restarting the animation
-                    // since it's still colliding while touching.
-                    if self.target_velocity.length_squared() > 0.0 {
-                        // Reverse the jump animation to land.
-                        // TODO: Player starts off falling. Since they're not in
-                        // the jumping pose, it looks awkward to play this
-                        // animation. But the real solution may just be to not fall
-                        // like that.
-                        self.sprite()
-                            .play_ex()
-                            .name("jump")
-                            .custom_speed(-3.0)
-                            .from_end(true)
-                            .done();
-                    }
+
+                    // Reverse the jump animation to land.
+                    // TODO: Player starts off falling. Since they're not in
+                    // the jumping pose, it looks awkward to play this
+                    // animation. But the real solution may just be to not fall
+                    // like that.
+                    self.sprite()
+                        .play_ex()
+                        .name("jump")
+                        .custom_speed(-3.0)
+                        .from_end(true)
+                        .done();
                     // Note: Assumes just vertical (and horizontal) walls for now.
                     match collision.get_normal() {
                         Vector2 { x, y: _ } if x > 0.0 => {
