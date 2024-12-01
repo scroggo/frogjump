@@ -124,3 +124,14 @@ wait_time = 5.0
 autostart = true
 
 [node name="JumpHandler" type="JumpHandler" parent="."]
+
+[node name="JumpMeter" type="JumpMeter" parent="."]
+size = Vector2(45, 10)
+bg_color = Color(2.10572e-07, 0.137882, 0, 1)
+corner_radius = 2
+border_width = 1
+shadow_offset = 1.0
+shadow_size = 1
+physics_interpolation_mode = 0
+offset_right = 46.0
+offset_bottom = 12.0
