@@ -132,10 +132,10 @@ impl Player {
             false => -1.0,
         };
         let jump_strength = self.max_jump_strength / 2.0 * ceiling_multiplier;
-        const PI_OVER_FOUR: f32 = PI / 4.0;
+        const JUMP_ANGLE: f32 = 5.0 * PI / 16.0;
         let jump_angle = match self.direction {
-            Direction::Left => PI_OVER_FOUR,
-            Direction::Right => -PI_OVER_FOUR,
+            Direction::Left => JUMP_ANGLE,
+            Direction::Right => -JUMP_ANGLE,
         } * ceiling_multiplier;
         Vector2::new(0.0, jump_strength).rotated(jump_angle)
     }
