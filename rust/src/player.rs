@@ -4,7 +4,8 @@ use godot::classes::{AnimatedSprite2D, CharacterBody2D, ICharacterBody2D, Timer}
 use godot::prelude::*;
 
 /// Direction the player is facing.
-#[derive(PartialEq)]
+#[derive(PartialEq, GodotConvert, Var, Export)]
+#[godot(via=GString)]
 enum Direction {
     Left,
     Right,
@@ -13,6 +14,7 @@ enum Direction {
 #[derive(GodotClass)]
 #[class(base=CharacterBody2D)]
 pub struct Player {
+    #[export]
     direction: Direction,
     target_velocity: Vector2,
     #[export]
@@ -43,6 +45,9 @@ impl ICharacterBody2D for Player {
         self.base()
             .get_node_as::<Timer>("BlinkTimer")
             .connect("timeout", &blink);
+        if self.direction == Direction::Right {
+            self.sprite().set_flip_h(true);
+        }
     }
 
     fn physics_process(&mut self, delta: f64) {
