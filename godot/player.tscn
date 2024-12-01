@@ -114,8 +114,8 @@ shape = SubResource("RectangleShape2D_kj3ho")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_wluyo")
-animation = &"blink"
-frame = 13
+animation = &"jump"
+frame = 3
 frame_progress = 1.0
 
 [node name="BlinkTimer" type="Timer" parent="."]
