@@ -16,6 +16,7 @@ enum Direction {
 pub struct Player {
     #[export]
     direction: Direction,
+    #[export]
     target_velocity: Vector2,
     #[export]
     max_jump_strength: f32,

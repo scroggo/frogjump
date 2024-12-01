@@ -105,6 +105,7 @@ animations = [{
 }]
 
 [node name="Player" type="Player"]
+target_velocity = Vector2(0, -300)
 fall_acceleration = 100.0
 metadata/_edit_group_ = true
 
