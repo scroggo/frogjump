@@ -101,7 +101,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"jump",
-"speed": 8.0
+"speed": 40.0
 }]
 
 [node name="Player" type="Player"]
