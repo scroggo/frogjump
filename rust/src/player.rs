@@ -63,10 +63,6 @@ impl ICharacterBody2D for Player {
                     self.on_surface = true;
 
                     // Reverse the jump animation to land.
-                    // TODO: Player starts off falling. Since they're not in
-                    // the jumping pose, it looks awkward to play this
-                    // animation. But the real solution may just be to not fall
-                    // like that.
                     self.sprite()
                         .play_ex()
                         .name("jump")
