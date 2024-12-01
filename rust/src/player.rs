@@ -19,7 +19,8 @@ pub struct Player {
     max_jump_strength: f32,
     #[export]
     fall_acceleration: f32,
-    on_surface: bool,
+    on_surface: bool, // True when on any surface: floor, wall, ceiling.
+    on_ceiling: bool,
     base: Base<CharacterBody2D>,
 }
 
@@ -32,6 +33,7 @@ impl ICharacterBody2D for Player {
             max_jump_strength: 20.0,
             fall_acceleration: 75.0,
             on_surface: false,
+            on_ceiling: false,
             base,
         }
     }
@@ -80,6 +82,7 @@ impl ICharacterBody2D for Player {
                             self.sprite().set_flip_h(false);
                         }
                         Vector2 { x: _, y } if y > 0.0 => {
+                            self.on_ceiling = true;
                             self.base_mut().set_rotation(PI);
                             let flip_h = self.direction == Direction::Left;
                             self.sprite().set_flip_h(flip_h);
@@ -99,11 +102,10 @@ impl ICharacterBody2D for Player {
                 self.sprite().set_flip_h(flip_h);
                 self.sprite().set_flip_v(false);
 
-                // TODO: Fill up a power meter for variable strength jumps.
-                self.target_velocity =
-                    Vector2::new(0.0, -self.max_jump_strength / 2.0).rotated(self.get_jump_angle());
+                self.target_velocity = self.get_jump();
                 self.sprite().play_ex().name("jump").done();
                 self.on_surface = false;
+                self.on_ceiling = false;
             } else {
                 self.target_velocity = Vector2::ZERO;
             }
@@ -113,13 +115,19 @@ impl ICharacterBody2D for Player {
 
 #[godot_api]
 impl Player {
-    // TODO: Handle jumping off the ceiling.
-    fn get_jump_angle(&self) -> f32 {
+    fn get_jump(&self) -> Vector2 {
+        // TODO: Fill up a power meter for variable strength jumps.
+        let ceiling_multiplier = match self.on_ceiling {
+            true => 1.0,
+            false => -1.0,
+        };
+        let jump_strength = self.max_jump_strength / 2.0 * ceiling_multiplier;
         const PI_OVER_FOUR: f32 = PI / 4.0;
-        match self.direction {
-            Direction::Left => -PI_OVER_FOUR,
-            Direction::Right => PI_OVER_FOUR,
-        }
+        let jump_angle = match self.direction {
+            Direction::Left => PI_OVER_FOUR,
+            Direction::Right => -PI_OVER_FOUR,
+        } * ceiling_multiplier;
+        Vector2::new(0.0, jump_strength).rotated(jump_angle)
     }
 
     #[func]
