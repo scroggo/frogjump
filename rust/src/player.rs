@@ -80,11 +80,9 @@ impl ICharacterBody2D for Player {
                             self.sprite().set_flip_h(false);
                         }
                         Vector2 { x: _, y } if y > 0.0 => {
-                            // TODO: Verify this works as expected.
-                            self.sprite().set_flip_v(true);
-
-                            // Jumping sets flip_h properly, so no need to adjust
-                            // here.
+                            self.base_mut().set_rotation(PI);
+                            let flip_h = self.direction == Direction::Left;
+                            self.sprite().set_flip_h(flip_h);
                         }
                         _ => (),
                     }
