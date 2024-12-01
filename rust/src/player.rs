@@ -89,7 +89,14 @@ impl ICharacterBody2D for Player {
                             let flip_h = self.direction == Direction::Left;
                             self.sprite().set_flip_h(flip_h);
                         }
-                        _ => (),
+                        Vector2 { x: _, y } if y < 0.0 => {
+                            self.base_mut().set_rotation(0.0);
+                            let flip_h = self.direction == Direction::Right;
+                            self.sprite().set_flip_h(flip_h);
+                        }
+                        normal => {
+                            godot_error!("Landed with surprise normal {normal}");
+                        }
                     }
                 }
             }
@@ -98,12 +105,13 @@ impl ICharacterBody2D for Player {
         if self.on_surface {
             let input = Input::singleton();
             if input.is_action_pressed("jump") {
-                // Always jump right-side up, facing `Direction`.
-                self.base_mut().set_rotation(0.0);
-                let flip_h = self.direction == Direction::Right;
-                self.sprite().set_flip_h(flip_h);
-                self.sprite().set_flip_v(false);
-
+                if !self.on_ceiling {
+                    // Jump right-side up, facing `Direction`.
+                    self.base_mut().set_rotation(0.0);
+                    let flip_h = self.direction == Direction::Right;
+                    self.sprite().set_flip_h(flip_h);
+                    self.sprite().set_flip_v(false);
+                }
                 self.target_velocity = self.get_jump();
                 self.sprite().play_ex().name("jump").done();
                 self.on_surface = false;
