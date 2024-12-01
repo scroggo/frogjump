@@ -1,5 +1,6 @@
 use godot::prelude::*;
 
+mod jump_handler;
 mod player;
 
 struct RustExtension;

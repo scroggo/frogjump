@@ -1,5 +1,6 @@
 use std::f32::consts::PI;
 
+use crate::jump_handler::JumpHandler;
 use godot::classes::{AnimatedSprite2D, CharacterBody2D, ICharacterBody2D, Timer};
 use godot::prelude::*;
 
@@ -103,8 +104,7 @@ impl ICharacterBody2D for Player {
         }
 
         if self.on_surface {
-            let input = Input::singleton();
-            if input.is_action_pressed("jump") {
+            if let Some(jump_strength) = self.jump_handler().bind_mut().handle_input() {
                 if !self.on_ceiling {
                     // Jump right-side up, facing `Direction`.
                     self.base_mut().set_rotation(0.0);
@@ -112,7 +112,7 @@ impl ICharacterBody2D for Player {
                     self.sprite().set_flip_h(flip_h);
                     self.sprite().set_flip_v(false);
                 }
-                self.target_velocity = self.get_jump();
+                self.target_velocity = self.get_jump(jump_strength);
                 self.sprite().play_ex().name("jump").done();
                 self.on_surface = false;
                 self.on_ceiling = false;
@@ -125,13 +125,12 @@ impl ICharacterBody2D for Player {
 
 #[godot_api]
 impl Player {
-    fn get_jump(&self) -> Vector2 {
-        // TODO: Fill up a power meter for variable strength jumps.
+    fn get_jump(&self, jump_ratio: f32) -> Vector2 {
         let ceiling_multiplier = match self.on_ceiling {
             true => 1.0,
             false => -1.0,
         };
-        let jump_strength = self.max_jump_strength / 2.0 * ceiling_multiplier;
+        let jump_strength = jump_ratio * self.max_jump_strength * ceiling_multiplier;
         const JUMP_ANGLE: f32 = 5.0 * PI / 16.0;
         let jump_angle = match self.direction {
             Direction::Left => JUMP_ANGLE,
@@ -151,5 +150,9 @@ impl Player {
     fn sprite(&self) -> Gd<AnimatedSprite2D> {
         self.base()
             .get_node_as::<AnimatedSprite2D>("AnimatedSprite2D")
+    }
+
+    fn jump_handler(&self) -> Gd<JumpHandler> {
+        self.base().get_node_as::<JumpHandler>("JumpHandler")
     }
 }
