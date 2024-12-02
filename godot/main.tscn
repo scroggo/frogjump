@@ -32,6 +32,10 @@ rotation = 1.5708
 position = Vector2(398, 523)
 rotation = 1.5708
 
+[node name="Wall15" parent="Walls" instance=ExtResource("1_h0ni2")]
+position = Vector2(501, 235)
+rotation = 1.5708
+
 [node name="Wall4" parent="Walls" instance=ExtResource("1_h0ni2")]
 position = Vector2(594, 523)
 rotation = 1.5708
@@ -57,6 +61,12 @@ position = Vector2(702, 197)
 
 [node name="Wall8" parent="Walls" instance=ExtResource("1_h0ni2")]
 position = Vector2(702, 346)
+
+[node name="Wall13" parent="Walls" instance=ExtResource("1_h0ni2")]
+position = Vector2(506, 346)
+
+[node name="Wall14" parent="Walls" instance=ExtResource("1_h0ni2")]
+position = Vector2(506, 151)
 
 [node name="Player" parent="." instance=ExtResource("2_q6if4")]
 direction = "Right"
