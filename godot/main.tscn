@@ -62,7 +62,7 @@ position = Vector2(702, 346)
 direction = "Right"
 max_jump_strength = 400.0
 z_index = 1
-position = Vector2(90, 78)
+position = Vector2(110, 469)
 
 [node name="DragonFlies" type="Node" parent="."]
 
