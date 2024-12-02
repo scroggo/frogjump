@@ -107,6 +107,7 @@ animations = [{
 [node name="Player" type="Player"]
 target_velocity = Vector2(0, -300)
 fall_acceleration = 100.0
+collision_mask = 4
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

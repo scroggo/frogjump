@@ -12,6 +12,8 @@ atlas = ExtResource("1_2h5eq")
 region = Rect2(1112, 815.874, 5, 6)
 
 [node name="Wall" type="StaticBody2D" groups=["wall"]]
+collision_layer = 4
+collision_mask = 0
 physics_material_override = SubResource("PhysicsMaterial_5e83l")
 metadata/_edit_group_ = true
 
