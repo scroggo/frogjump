@@ -1,0 +1,112 @@
+[gd_scene load_steps=16 format=3 uid="uid://b5dlmv4suu55n"]
+
+[ext_resource type="Texture2D" uid="uid://njp73861qnuk" path="res://dragonfly/dragonfly.png" id="1_qqn5x"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_oms00"]
+radius = 12.0
+height = 24.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tanda"]
+atlas = ExtResource("1_qqn5x")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_82b5a"]
+atlas = ExtResource("1_qqn5x")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rlkwf"]
+atlas = ExtResource("1_qqn5x")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cp52j"]
+atlas = ExtResource("1_qqn5x")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nrk2g"]
+atlas = ExtResource("1_qqn5x")
+region = Rect2(0, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7itd3"]
+atlas = ExtResource("1_qqn5x")
+region = Rect2(32, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_si7oa"]
+atlas = ExtResource("1_qqn5x")
+region = Rect2(64, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0v644"]
+atlas = ExtResource("1_qqn5x")
+region = Rect2(96, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h4ptj"]
+atlas = ExtResource("1_qqn5x")
+region = Rect2(0, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iasp8"]
+atlas = ExtResource("1_qqn5x")
+region = Rect2(32, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rf0h7"]
+atlas = ExtResource("1_qqn5x")
+region = Rect2(64, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gx6cx"]
+atlas = ExtResource("1_qqn5x")
+region = Rect2(96, 64, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1kcpx"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tanda")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_82b5a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rlkwf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cp52j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nrk2g")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7itd3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_si7oa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0v644")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h4ptj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iasp8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rf0h7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gx6cx")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="DragonFly" type="DragonFly"]
+collision_layer = 2
+collision_mask = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_oms00")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_1kcpx")
+autoplay = "default"
+frame = 8
+frame_progress = 0.779204

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://d21gnaayew22y"]
+[gd_scene load_steps=4 format=3 uid="uid://d21gnaayew22y"]
 
 [ext_resource type="PackedScene" uid="uid://cp3dvkg3kpecl" path="res://wall.tscn" id="1_h0ni2"]
 [ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_q6if4"]
+[ext_resource type="PackedScene" uid="uid://b5dlmv4suu55n" path="res://dragon_fly.tscn" id="3_6e55g"]
 
 [node name="Main" type="Node2D"]
 
@@ -62,3 +63,8 @@ direction = "Right"
 max_jump_strength = 400.0
 z_index = 1
 position = Vector2(90, 78)
+
+[node name="DragonFlies" type="Node" parent="."]
+
+[node name="DragonFly" parent="DragonFlies" instance=ExtResource("3_6e55g")]
+position = Vector2(187, 483)
