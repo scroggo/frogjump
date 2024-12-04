@@ -20,7 +20,7 @@ impl INode for JumpHandler {
     fn init(base: Base<Node>) -> Self {
         Self {
             start_of_jump_press_ms: None,
-            max_time_ms: 1000,
+            max_time_ms: 400,
             base,
         }
     }

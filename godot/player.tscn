@@ -124,7 +124,6 @@ wait_time = 5.0
 autostart = true
 
 [node name="JumpHandler" type="JumpHandler" parent="."]
-max_time_ms = 400
 
 [node name="JumpMeter" type="JumpMeter" parent="."]
 size = Vector2(45, 10)
