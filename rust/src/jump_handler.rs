@@ -2,6 +2,24 @@ use crate::jump_meter::JumpMeter;
 use godot::classes::Time;
 use godot::prelude::*;
 
+pub trait JumpDetector {
+    fn is_jump_pressed(&self) -> bool;
+}
+
+struct JumpKeyDetector;
+
+impl JumpDetector for JumpKeyDetector {
+    fn is_jump_pressed(&self) -> bool {
+        Input::singleton().is_action_pressed("jump")
+    }
+}
+
+impl JumpKeyDetector {
+    fn new() -> Self {
+        Self
+    }
+}
+
 #[derive(GodotClass)]
 #[class(base=Node)]
 pub struct JumpHandler {
@@ -12,6 +30,7 @@ pub struct JumpHandler {
     // Maximum time to make jump more powerful.
     #[export]
     max_time_ms: i32,
+    jump_detector: Box<dyn JumpDetector>,
     base: Base<Node>,
 }
 
@@ -21,6 +40,7 @@ impl INode for JumpHandler {
         Self {
             start_of_jump_press_ms: None,
             max_time_ms: 400,
+            jump_detector: Box::new(JumpKeyDetector::new()),
             base,
         }
     }
@@ -35,9 +55,8 @@ impl JumpHandler {
     // Check input. If the player should jump, return `Some<float>`, where
     // `float` is between `0` and `1` and `1` is a max strength jump.
     pub fn handle_input(&mut self) -> Option<f32> {
-        let input = Input::singleton();
         if self.start_of_jump_press_ms.is_none() {
-            if input.is_action_pressed("jump") {
+            if self.jump_detector.is_jump_pressed() {
                 self.start_of_jump_press_ms = Some(Time::singleton().get_ticks_msec());
                 let mut jump_meter = self.jump_meter();
                 jump_meter.bind_mut().set_ratio(0.0);
@@ -50,7 +69,7 @@ impl JumpHandler {
             duration if duration >= self.max_time_ms as u64 => 1.0,
             duration => duration as f32 / self.max_time_ms as f32,
         };
-        if input.is_action_pressed("jump") {
+        if self.jump_detector.is_jump_pressed() {
             // Still holding jump.
             self.jump_meter().bind_mut().set_ratio(strength);
             return None;
