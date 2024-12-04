@@ -37,7 +37,7 @@ impl JumpHandler {
     pub fn handle_input(&mut self) -> Option<f32> {
         let input = Input::singleton();
         if self.start_of_jump_press_ms.is_none() {
-            if input.is_action_just_pressed("jump") {
+            if input.is_action_pressed("jump") {
                 self.start_of_jump_press_ms = Some(Time::singleton().get_ticks_msec());
                 let mut jump_meter = self.jump_meter();
                 jump_meter.bind_mut().set_ratio(0.0);
