@@ -105,7 +105,9 @@ animations = [{
 }]
 
 [node name="Player" type="Player" groups=["player"]]
+max_jump_strength = 400.0
 fall_acceleration = 200.0
+z_index = 1
 collision_mask = 4
 metadata/_edit_group_ = true
 
