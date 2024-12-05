@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dkphkh1yr7xd4"]
+
+[node name="Arrow" type="Arrow"]
+chevron_degrees = 45
+offset_right = 40.0
+offset_bottom = 40.0
