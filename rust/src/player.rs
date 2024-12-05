@@ -23,6 +23,7 @@ pub struct Player {
     max_jump_strength: f32,
     #[export]
     fall_acceleration: f32,
+    #[export]
     on_surface: bool, // True when on any surface: floor, wall, ceiling.
     on_ceiling: bool,
     base: Base<CharacterBody2D>,
@@ -49,6 +50,9 @@ impl ICharacterBody2D for Player {
             .connect("timeout", &blink);
         if self.direction == Direction::Right {
             self.sprite().set_flip_h(true);
+        }
+        if self.on_surface {
+            self.sprite().set_frame(0);
         }
     }
 
