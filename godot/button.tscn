@@ -1,0 +1,50 @@
+[gd_scene load_steps=8 format=3 uid="uid://d3swuv15ybug6"]
+
+[ext_resource type="Texture2D" uid="uid://cghoh7lpr38d2" path="res://button/pushthebutton.svg" id="1_vxpss"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wy4g7"]
+atlas = ExtResource("1_vxpss")
+region = Rect2(0, 0, 36, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bulgo"]
+atlas = ExtResource("1_vxpss")
+region = Rect2(36, 0, 36, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7mmli"]
+atlas = ExtResource("1_vxpss")
+region = Rect2(72, 0, 36, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fjjp4"]
+atlas = ExtResource("1_vxpss")
+region = Rect2(108, 0, 36, 28)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6cep3"]
+atlas = ExtResource("1_vxpss")
+region = Rect2(144, 0, 36, 28)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_yankm"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wy4g7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bulgo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7mmli")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fjjp4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6cep3")
+}],
+"loop": false,
+"name": &"press",
+"speed": 20.0
+}]
+
+[node name="Button" type="AnimatedSprite2D"]
+sprite_frames = SubResource("SpriteFrames_yankm")
+animation = &"press"
