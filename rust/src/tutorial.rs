@@ -100,6 +100,12 @@ impl INode2D for Tutorial {
     }
 
     fn physics_process(&mut self, _delta: f64) {
+        if Input::singleton().is_action_pressed("jump") {
+            if let Some(mut tree) = self.base().get_tree() {
+                tree.change_scene_to_file("res://main.tscn");
+                return;
+            }
+        }
         if Time::singleton().get_ticks_msec() < self.next_step_time_ms {
             return;
         }
