@@ -83,4 +83,8 @@ impl JumpHandler {
     fn jump_meter(&self) -> Gd<JumpMeter> {
         self.base().get_node_as::<JumpMeter>("../JumpMeter")
     }
+
+    pub fn replace_jump_detector(&mut self, detector: Box<dyn JumpDetector>) {
+        self.jump_detector = detector;
+    }
 }
