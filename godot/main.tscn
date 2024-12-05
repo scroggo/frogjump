@@ -192,7 +192,8 @@ position = Vector2(506, 151)
 
 [node name="Player" parent="." instance=ExtResource("2_q6if4")]
 direction = "Right"
-position = Vector2(110, 469)
+target_velocity = Vector2(200, 200)
+position = Vector2(44, 469)
 
 [node name="DragonFlies" type="Node" parent="."]
 
