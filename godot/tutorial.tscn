@@ -1,45 +1,28 @@
-[gd_scene load_steps=5 format=3 uid="uid://cmmu3yov25w21"]
+[gd_scene load_steps=5 format=4 uid="uid://cmmu3yov25w21"]
 
-[ext_resource type="PackedScene" uid="uid://cp3dvkg3kpecl" path="res://wall.tscn" id="1_msa35"]
 [ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_r38lq"]
 [ext_resource type="PackedScene" uid="uid://d3swuv15ybug6" path="res://button.tscn" id="3_h7hon"]
 [ext_resource type="PackedScene" uid="uid://dkphkh1yr7xd4" path="res://arrow.tscn" id="4_03uty"]
+[ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="4_u76qf"]
 
 [node name="Tutorial" type="Tutorial"]
+three_show_arrow_ms = 1500.0
 process_mode = 3
-
-[node name="Walls" type="Node" parent="."]
-
-[node name="Wall" parent="Walls" instance=ExtResource("1_msa35")]
-position = Vector2(191, 301)
-rotation = 1.5708
-
-[node name="Wall2" parent="Walls" instance=ExtResource("1_msa35")]
-position = Vector2(386, 301)
-rotation = 1.5708
-
-[node name="Wall3" parent="Walls" instance=ExtResource("1_msa35")]
-position = Vector2(581, 301)
-rotation = 1.5708
-
-[node name="Wall4" parent="Walls" instance=ExtResource("1_msa35")]
-position = Vector2(718, 301)
-rotation = 1.5708
 
 [node name="Player" parent="." instance=ExtResource("2_r38lq")]
 direction = "Right"
 on_surface = true
-position = Vector2(78, 278)
+position = Vector2(31, 318)
 
 [node name="Button" parent="." instance=ExtResource("3_h7hon")]
-position = Vector2(77, 362)
+position = Vector2(80, 138)
 
 [node name="ShortPress" type="Label" parent="."]
 visible = false
-offset_left = 166.0
-offset_top = 184.0
-offset_right = 366.0
-offset_bottom = 207.0
+offset_left = 183.0
+offset_top = 233.0
+offset_right = 383.0
+offset_bottom = 256.0
 text = "Short press => short jump"
 
 [node name="Arrow" parent="ShortPress" instance=ExtResource("4_03uty")]
@@ -54,10 +37,10 @@ offset_bottom = 64.0
 
 [node name="LongPress" type="Label" parent="."]
 visible = false
-offset_left = 515.0
-offset_top = 171.0
-offset_right = 715.0
-offset_bottom = 194.0
+offset_left = 393.0
+offset_top = 134.0
+offset_right = 593.0
+offset_bottom = 157.0
 text = "Long press => long jump"
 
 [node name="Arrow" parent="LongPress" instance=ExtResource("4_03uty")]
@@ -69,3 +52,7 @@ offset_left = 101.0
 offset_top = 24.0
 offset_right = 141.0
 offset_bottom = 64.0
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." groups=["wall"]]
+tile_map_data = PackedByteArray("AAAAAAUAAQADAAMAAAABAAUAAQABAAMAAAACAAUAAQAAAAEAAAADAAUAAQAAAAAAAAAEAAUAAQABAAAAAAAFAAUAAQACAAAAAAAGAAUAAQADAAAAAAAHAAUAAQACAAMAAAAIAAUAAQADAAMAAAAJAAUAAQADAAMAAAAKAAUAAQAEAAMAAAAAAAYAAQADAAQAAAAAAAcAAQADAAQAAAAAAAgAAQADAAQAAAABAAYAAQABAAQAAAABAAcAAQABAAQAAAABAAgAAQABAAQAAAACAAYAAQAEAAQAAAADAAYAAQAEAAQAAAAEAAYAAQAEAAQAAAAFAAYAAQAEAAQAAAAGAAYAAQAEAAQAAAAGAAcAAQAEAAQAAAAFAAcAAQAEAAQAAAAEAAcAAQAEAAQAAAADAAcAAQAEAAQAAAACAAcAAQAEAAQAAAACAAgAAQAEAAQAAAADAAgAAQAEAAQAAAAEAAgAAQAEAAQAAAAFAAgAAQAEAAQAAAAGAAgAAQAEAAQAAAALAAUAAQADAAMAAAAHAAYAAQACAAQAAAAIAAYAAQADAAQAAAAIAAcAAQADAAQAAAAJAAcAAQADAAQAAAAKAAcAAQADAAQAAAAJAAYAAQADAAQAAAAKAAYAAQADAAQAAAALAAYAAQADAAQAAAAHAAcAAQACAAQAAAAHAAgAAQACAAQAAAAIAAgAAQADAAQAAAAJAAgAAQADAAQAAAAKAAgAAQADAAQAAAALAAgAAQADAAQAAAALAAcAAQADAAQAAAAKAAQAAQAEAAIAAAAKAAMAAQAEAAIAAAAKAAIAAQAEAAEAAAAJAAIAAQACAAEAAAALAAIAAQADAAIAAAAKAAEAAQAEAAIAAAAKAAAAAQAEAAIAAAA=")
+tile_set = ExtResource("4_u76qf")
