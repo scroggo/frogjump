@@ -1,5 +1,4 @@
 use crate::jump_meter::JumpMeter;
-use godot::classes::Time;
 use godot::prelude::*;
 
 pub trait JumpDetector {
@@ -24,12 +23,12 @@ impl JumpKeyDetector {
 #[class(base=Node)]
 pub struct JumpHandler {
     // If `None`, jump is not pressed.
-    // If `Some`, the start of holding jump.
-    start_of_jump_press_ms: Option<u64>,
+    // If `Some`, how long jump has been held.
+    length_of_jump_press_ms: Option<f32>,
 
     // Maximum time to make jump more powerful.
     #[export]
-    max_time_ms: i32,
+    max_time_ms: f32,
     jump_detector: Box<dyn JumpDetector>,
     base: Base<Node>,
 }
@@ -38,8 +37,8 @@ pub struct JumpHandler {
 impl INode for JumpHandler {
     fn init(base: Base<Node>) -> Self {
         Self {
-            start_of_jump_press_ms: None,
-            max_time_ms: 400,
+            length_of_jump_press_ms: None,
+            max_time_ms: 400.0,
             jump_detector: Box::new(JumpKeyDetector::new()),
             base,
         }
@@ -51,23 +50,25 @@ impl INode for JumpHandler {
 }
 
 impl JumpHandler {
-    // Player jumps based on how long the jump button was held before releasing.
-    // Check input. If the player should jump, return `Some<float>`, where
-    // `float` is between `0` and `1` and `1` is a max strength jump.
-    pub fn handle_input(&mut self) -> Option<f32> {
-        if self.start_of_jump_press_ms.is_none() {
+    /// Player jumps based on how long the jump button was held before releasing.
+    /// Check input. If the player should jump, return `Some<float>`, where
+    /// `float` is between `0` and `1` and `1` is a max strength jump.
+    /// `delta`: number of seconds since the last frame update.
+    pub fn handle_input(&mut self, delta: f64) -> Option<f32> {
+        if self.length_of_jump_press_ms.is_none() {
             if self.jump_detector.is_jump_pressed() {
-                self.start_of_jump_press_ms = Some(Time::singleton().get_ticks_msec());
+                self.length_of_jump_press_ms = Some(0.0);
                 let mut jump_meter = self.jump_meter();
                 jump_meter.bind_mut().set_ratio(0.0);
                 jump_meter.show();
             }
             return None;
         }
-        let duration_ms = Time::singleton().get_ticks_msec() - self.start_of_jump_press_ms.unwrap();
-        let strength = match duration_ms {
-            duration if duration >= self.max_time_ms as u64 => 1.0,
-            duration => duration as f32 / self.max_time_ms as f32,
+        let prev_duration_ms = self.length_of_jump_press_ms.unwrap();
+        self.length_of_jump_press_ms = Some(prev_duration_ms + (delta * 1000.0) as f32);
+        let strength = match self.length_of_jump_press_ms.unwrap() {
+            duration if duration >= self.max_time_ms => 1.0,
+            duration => duration / self.max_time_ms,
         };
         if self.jump_detector.is_jump_pressed() {
             // Still holding jump.
@@ -75,7 +76,7 @@ impl JumpHandler {
             return None;
         }
         // Released jump.
-        self.start_of_jump_press_ms = None;
+        self.length_of_jump_press_ms = None;
         self.jump_meter().hide();
         Some(strength)
     }

@@ -108,7 +108,7 @@ impl ICharacterBody2D for Player {
         }
 
         if self.on_surface {
-            if let Some(jump_strength) = self.jump_handler().bind_mut().handle_input() {
+            if let Some(jump_strength) = self.jump_handler().bind_mut().handle_input(delta) {
                 if !self.on_ceiling {
                     // Jump right-side up, facing `Direction`.
                     self.base_mut().set_rotation(0.0);
