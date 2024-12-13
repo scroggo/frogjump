@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://btwjll3ip1yjw" path="res://frog_spritesheet.webp" id="1_sjfq4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kj3ho"]
-size = Vector2(48, 33)
+size = Vector2(38, 25)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_cspye"]
 atlas = ExtResource("1_sjfq4")
@@ -112,14 +112,15 @@ collision_mask = 4
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(2, 6.5)
+position = Vector2(1, 5.5)
 shape = SubResource("RectangleShape2D_kj3ho")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(-9.53674e-07, -9.53674e-07)
+scale = Vector2(0.6875, 0.6875)
 sprite_frames = SubResource("SpriteFrames_wluyo")
 animation = &"jump"
 frame = 3
-frame_progress = 1.0
 
 [node name="BlinkTimer" type="Timer" parent="."]
 wait_time = 5.0
