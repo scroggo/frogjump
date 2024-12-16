@@ -76,25 +76,25 @@ impl ICharacterBody2D for Player {
                         .done();
                     // Note: Assumes just vertical (and horizontal) walls for now.
                     match collision.get_normal() {
-                        Vector2 { x, y: _ } if x > 0.0 => {
+                        Vector2 { x, y: _ } if x > 0.5 => {
                             self.direction = Direction::Right;
                             self.base_mut().set_rotation(PI / 2.0);
                             self.sprite().set_flip_v(false);
                             self.sprite().set_flip_h(false);
                         }
-                        Vector2 { x, y: _ } if x < 0.0 => {
+                        Vector2 { x, y: _ } if x < -0.5 => {
                             self.direction = Direction::Left;
                             self.base_mut().set_rotation(PI / 2.0);
                             self.sprite().set_flip_v(true);
                             self.sprite().set_flip_h(false);
                         }
-                        Vector2 { x: _, y } if y > 0.0 => {
+                        Vector2 { x: _, y } if y > 0.5 => {
                             self.on_ceiling = true;
                             self.base_mut().set_rotation(PI);
                             let flip_h = self.direction == Direction::Left;
                             self.sprite().set_flip_h(flip_h);
                         }
-                        Vector2 { x: _, y } if y < 0.0 => {
+                        Vector2 { x: _, y } if y < -0.5 => {
                             self.base_mut().set_rotation(0.0);
                             let flip_h = self.direction == Direction::Right;
                             self.sprite().set_flip_h(flip_h);
