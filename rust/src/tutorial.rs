@@ -1,7 +1,7 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
-use godot::classes::{AnimatedSprite2D, Label};
+use godot::classes::{AnimatedSprite2D, InputEvent, InputEventScreenTouch, Label};
 use godot::prelude::*;
 
 use crate::jump_handler::{JumpDetector, JumpHandler};
@@ -101,12 +101,18 @@ impl INode2D for Tutorial {
         jump_handler.bind_mut().replace_jump_detector(detector);
     }
 
+    fn unhandled_input(&mut self, event: Gd<InputEvent>) {
+        if let Some(touch_event) = event.try_cast::<InputEventScreenTouch>().ok() {
+            if !touch_event.is_pressed() {
+                self.load_level();
+            }
+        }
+    }
+
     fn physics_process(&mut self, delta: f64) {
         if Input::singleton().is_action_pressed("jump") {
-            if let Some(mut tree) = self.base().get_tree() {
-                tree.change_scene_to_file("res://level.tscn");
-                return;
-            }
+            self.load_level();
+            return;
         }
         self.curr_time_ms += delta * 1000.0;
         if self.curr_time_ms < self.next_step_time_ms {
@@ -181,5 +187,11 @@ impl Tutorial {
 
     fn player(&self) -> Gd<Player> {
         self.base().get_node_as::<Player>("Player")
+    }
+
+    fn load_level(&self) {
+        if let Some(mut tree) = self.base().get_tree() {
+            tree.change_scene_to_file("res://level.tscn");
+        }
     }
 }

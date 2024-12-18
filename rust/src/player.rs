@@ -1,8 +1,31 @@
 use std::f32::consts::PI;
+use std::sync::atomic::AtomicBool;
+use std::sync::Arc;
 
-use crate::jump_handler::JumpHandler;
-use godot::classes::{AnimatedSprite2D, CharacterBody2D, ICharacterBody2D, Timer};
+use crate::jump_handler::{JumpDetector, JumpHandler};
+use godot::classes::{
+    AnimatedSprite2D, CharacterBody2D, ICharacterBody2D, InputEvent, InputEventScreenTouch, Timer,
+};
 use godot::prelude::*;
+
+struct TouchJumpHandler {
+    touch_is_pressed: Arc<AtomicBool>,
+}
+
+impl TouchJumpHandler {
+    fn new(atomic_bool: &Arc<AtomicBool>) -> Self {
+        TouchJumpHandler {
+            touch_is_pressed: atomic_bool.clone(),
+        }
+    }
+}
+
+impl JumpDetector for TouchJumpHandler {
+    fn is_jump_pressed(&self) -> bool {
+        self.touch_is_pressed
+            .load(std::sync::atomic::Ordering::SeqCst)
+    }
+}
 
 /// Direction the player is facing.
 #[derive(PartialEq, GodotConvert, Var, Export)]
@@ -26,6 +49,16 @@ pub struct Player {
     #[export]
     on_surface: bool, // True when on any surface: floor, wall, ceiling.
     on_ceiling: bool,
+    // Whether the screen is being touched, which is an alternative to using the
+    // "jump" input action. Uses reference counting since it will be shared with
+    // the `TouchJumpHandler`. (Note: Maybe an `RwLock` would be more clear,
+    // since the handler will only read it.) Uses atomics out of caution. (I do
+    // not think Godot will access from multiple threads, but I'm still
+    // learning Godot.)
+    touch_is_pressed: Arc<AtomicBool>,
+    // Keep track of whether the player has jumped in order to decide whether to
+    // switch to touches. Only switch prior to any jumps.
+    has_jumped: bool,
     base: Base<CharacterBody2D>,
 }
 
@@ -39,6 +72,8 @@ impl ICharacterBody2D for Player {
             fall_acceleration: 75.0,
             on_surface: false,
             on_ceiling: false,
+            touch_is_pressed: Arc::new(AtomicBool::new(false)),
+            has_jumped: false,
             base,
         }
     }
@@ -120,9 +155,22 @@ impl ICharacterBody2D for Player {
                 self.sprite().play_ex().name("jump").done();
                 self.on_surface = false;
                 self.on_ceiling = false;
+                self.has_jumped = true;
             } else {
                 self.target_velocity = Vector2::ZERO;
             }
+        }
+    }
+
+    fn unhandled_input(&mut self, event: Gd<InputEvent>) {
+        if let Some(touch_event) = event.try_cast::<InputEventScreenTouch>().ok() {
+            if touch_event.is_pressed() && !self.has_jumped {
+                self.use_touch();
+            }
+            self.touch_is_pressed.store(
+                touch_event.is_pressed(),
+                std::sync::atomic::Ordering::SeqCst,
+            );
         }
     }
 }
@@ -158,5 +206,12 @@ impl Player {
 
     fn jump_handler(&self) -> Gd<JumpHandler> {
         self.base().get_node_as::<JumpHandler>("JumpHandler")
+    }
+
+    fn use_touch(&mut self) {
+        let detector = Box::new(TouchJumpHandler::new(&self.touch_is_pressed));
+        self.jump_handler()
+            .bind_mut()
+            .replace_jump_detector(detector);
     }
 }
