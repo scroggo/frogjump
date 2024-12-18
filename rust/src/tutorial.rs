@@ -104,7 +104,7 @@ impl INode2D for Tutorial {
     fn physics_process(&mut self, delta: f64) {
         if Input::singleton().is_action_pressed("jump") {
             if let Some(mut tree) = self.base().get_tree() {
-                tree.change_scene_to_file("res://main.tscn");
+                tree.change_scene_to_file("res://level.tscn");
                 return;
             }
         }
