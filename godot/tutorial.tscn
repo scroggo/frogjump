@@ -1,9 +1,12 @@
-[gd_scene load_steps=5 format=4 uid="uid://cmmu3yov25w21"]
+[gd_scene load_steps=6 format=4 uid="uid://cmmu3yov25w21"]
 
 [ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_r38lq"]
 [ext_resource type="PackedScene" uid="uid://d3swuv15ybug6" path="res://button.tscn" id="3_h7hon"]
 [ext_resource type="PackedScene" uid="uid://dkphkh1yr7xd4" path="res://arrow.tscn" id="4_03uty"]
 [ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="4_u76qf"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ph6mm"]
+font_size = 48
 
 [node name="Tutorial" type="Tutorial"]
 three_show_arrow_ms = 1500.0
@@ -15,7 +18,7 @@ on_surface = true
 position = Vector2(31, 318)
 
 [node name="Button" parent="." instance=ExtResource("3_h7hon")]
-position = Vector2(80, 138)
+position = Vector2(360, 137)
 
 [node name="ShortPress" type="Label" parent="."]
 visible = false
@@ -56,3 +59,20 @@ offset_bottom = 64.0
 [node name="TileMapLayer" type="TileMapLayer" parent="." groups=["wall"]]
 tile_map_data = PackedByteArray("AAAAAAUAAQADAAMAAAABAAUAAQABAAMAAAACAAUAAQAAAAEAAAADAAUAAQAAAAAAAAAEAAUAAQABAAAAAAAFAAUAAQACAAAAAAAGAAUAAQADAAAAAAAHAAUAAQACAAMAAAAIAAUAAQADAAMAAAAJAAUAAQADAAMAAAAKAAUAAQAEAAMAAAAAAAYAAQADAAQAAAAAAAcAAQADAAQAAAAAAAgAAQADAAQAAAABAAYAAQABAAQAAAABAAcAAQABAAQAAAABAAgAAQABAAQAAAACAAYAAQAEAAQAAAADAAYAAQAEAAQAAAAEAAYAAQAEAAQAAAAFAAYAAQAEAAQAAAAGAAYAAQAEAAQAAAAGAAcAAQAEAAQAAAAFAAcAAQAEAAQAAAAEAAcAAQAEAAQAAAADAAcAAQAEAAQAAAACAAcAAQAEAAQAAAACAAgAAQAEAAQAAAADAAgAAQAEAAQAAAAEAAgAAQAEAAQAAAAFAAgAAQAEAAQAAAAGAAgAAQAEAAQAAAALAAUAAQADAAMAAAAHAAYAAQACAAQAAAAIAAYAAQADAAQAAAAIAAcAAQADAAQAAAAJAAcAAQADAAQAAAAKAAcAAQADAAQAAAAJAAYAAQADAAQAAAAKAAYAAQADAAQAAAALAAYAAQADAAQAAAAHAAcAAQACAAQAAAAHAAgAAQACAAQAAAAIAAgAAQADAAQAAAAJAAgAAQADAAQAAAAKAAgAAQADAAQAAAALAAgAAQADAAQAAAALAAcAAQADAAQAAAAKAAQAAQAEAAIAAAAKAAMAAQAEAAIAAAAKAAIAAQAEAAEAAAAJAAIAAQACAAEAAAALAAIAAQADAAIAAAAKAAEAAQAEAAIAAAAKAAAAAQAEAAIAAAA=")
 tile_set = ExtResource("4_u76qf")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="HowToPlay" type="Label" parent="HUD"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -137.5
+offset_top = 56.0
+offset_right = 137.5
+offset_bottom = 123.0
+grow_horizontal = 2
+size_flags_horizontal = 4
+text = "How to play"
+label_settings = SubResource("LabelSettings_ph6mm")
+horizontal_alignment = 1
+vertical_alignment = 1
