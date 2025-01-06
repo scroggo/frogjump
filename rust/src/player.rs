@@ -98,45 +98,43 @@ impl ICharacterBody2D for Player {
         let motion = self.target_velocity * delta as f32;
         let collision_opt = self.base_mut().move_and_collide(motion);
         if let Some(collision) = collision_opt {
-            if let Some(collider) = collision.get_collider() {
-                if collider.cast::<Node>().is_in_group("wall") {
-                    self.on_surface = true;
+            if let Some(_collider) = collision.get_collider() {
+                self.on_surface = true;
 
-                    // Reverse the jump animation to land.
-                    self.sprite()
-                        .play_ex()
-                        .name("jump")
-                        .custom_speed(-3.0)
-                        .from_end(true)
-                        .done();
-                    // Note: Assumes just vertical (and horizontal) walls for now.
-                    match collision.get_normal() {
-                        Vector2 { x, y: _ } if x > 0.5 => {
-                            self.direction = Direction::Right;
-                            self.base_mut().set_rotation(PI / 2.0);
-                            self.sprite().set_flip_v(false);
-                            self.sprite().set_flip_h(false);
-                        }
-                        Vector2 { x, y: _ } if x < -0.5 => {
-                            self.direction = Direction::Left;
-                            self.base_mut().set_rotation(PI / 2.0);
-                            self.sprite().set_flip_v(true);
-                            self.sprite().set_flip_h(false);
-                        }
-                        Vector2 { x: _, y } if y > 0.5 => {
-                            self.on_ceiling = true;
-                            self.base_mut().set_rotation(PI);
-                            let flip_h = self.direction == Direction::Left;
-                            self.sprite().set_flip_h(flip_h);
-                        }
-                        Vector2 { x: _, y } if y < -0.5 => {
-                            self.base_mut().set_rotation(0.0);
-                            let flip_h = self.direction == Direction::Right;
-                            self.sprite().set_flip_h(flip_h);
-                        }
-                        normal => {
-                            godot_error!("Landed with surprise normal {normal}");
-                        }
+                // Reverse the jump animation to land.
+                self.sprite()
+                    .play_ex()
+                    .name("jump")
+                    .custom_speed(-3.0)
+                    .from_end(true)
+                    .done();
+                // Note: Assumes just vertical (and horizontal) walls for now.
+                match collision.get_normal() {
+                    Vector2 { x, y: _ } if x > 0.5 => {
+                        self.direction = Direction::Right;
+                        self.base_mut().set_rotation(PI / 2.0);
+                        self.sprite().set_flip_v(false);
+                        self.sprite().set_flip_h(false);
+                    }
+                    Vector2 { x, y: _ } if x < -0.5 => {
+                        self.direction = Direction::Left;
+                        self.base_mut().set_rotation(PI / 2.0);
+                        self.sprite().set_flip_v(true);
+                        self.sprite().set_flip_h(false);
+                    }
+                    Vector2 { x: _, y } if y > 0.5 => {
+                        self.on_ceiling = true;
+                        self.base_mut().set_rotation(PI);
+                        let flip_h = self.direction == Direction::Left;
+                        self.sprite().set_flip_h(flip_h);
+                    }
+                    Vector2 { x: _, y } if y < -0.5 => {
+                        self.base_mut().set_rotation(0.0);
+                        let flip_h = self.direction == Direction::Right;
+                        self.sprite().set_flip_h(flip_h);
+                    }
+                    normal => {
+                        godot_error!("Landed with surprise normal {normal}");
                     }
                 }
             }
