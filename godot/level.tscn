@@ -161,3 +161,9 @@ speed_scale = 0.33
 z_index = -1
 tile_map_data = PackedByteArray("AAAKAAAAAQAEAAIAAAA=")
 tile_set = ExtResource("1_xwihj")
+
+[node name="ForegroundTiles" type="TileMapLayer" parent="."]
+z_index = 3
+position = Vector2(0, 18)
+tile_map_data = PackedByteArray("AAD//wAAAQAAAAYAAAAAAAAAAQAAAAYAAAABAAAAAQAAAAYAAAACAAAAAQAAAAYAAAADAAAAAQAAAAYAAAAEAAAAAQAAAAYAAAAFAAAAAQAAAAYAAAAGAAAAAQAAAAYAAAAHAAAAAQAAAAYAAAAIAAAAAQAAAAYAAAAJAAAAAQAAAAYAAAAKAAAAAQAAAAYAAAA=")
+tile_set = ExtResource("1_xwihj")
