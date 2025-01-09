@@ -165,6 +165,12 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_leckn"]
+radius = 118.207
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_aou8h"]
+radius = 39.0
+
 [node name="Alligator" type="Alligator"]
 metadata/_edit_group_ = true
 
@@ -178,3 +184,14 @@ frame_progress = 1.0
 offset = Vector2(-25, 0)
 
 [node name="IdleTimer" type="Timer" parent="."]
+
+[node name="FocusArea2D" type="Area2D" parent="."]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FocusArea2D"]
+shape = SubResource("CircleShape2D_leckn")
+
+[node name="EatArea2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EatArea2D"]
+shape = SubResource("CircleShape2D_aou8h")
