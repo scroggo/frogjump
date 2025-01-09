@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://bo3t0joauu8lt"]
+
+[ext_resource type="PackedScene" uid="uid://bfdp35wgoi0sy" path="res://alligator.tscn" id="1_6logy"]
+[ext_resource type="Texture2D" uid="uid://btwjll3ip1yjw" path="res://frog_spritesheet.webp" id="2_2iqry"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bm4s7"]
+size = Vector2(25, 22)
+
+[node name="Node2D" type="TestAlligator"]
+
+[node name="Alligator" parent="." instance=ExtResource("1_6logy")]
+position = Vector2(351, 282)
+
+[node name="FakePlayer" type="CharacterBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FakePlayer"]
+position = Vector2(1.5, 0)
+shape = SubResource("RectangleShape2D_bm4s7")
+
+[node name="Sprite2D" type="Sprite2D" parent="FakePlayer"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_2iqry")
+region_enabled = true
+region_rect = Rect2(0, 18, 66, 49)

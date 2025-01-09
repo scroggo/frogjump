@@ -6,6 +6,7 @@ mod dragon_fly;
 mod jump_handler;
 mod jump_meter;
 mod player;
+mod test_alligator;
 mod tutorial;
 
 struct RustExtension;
