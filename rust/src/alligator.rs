@@ -1,7 +1,7 @@
 use std::fmt::Display;
 
-use godot::classes::{AnimatedSprite2D, Area2D, InputEvent, InputEventKey, Node2D, Timer};
-use godot::global::{absf, clampf, maxf, randf, randf_range, Key};
+use godot::classes::{AnimatedSprite2D, Area2D, Node2D, Timer};
+use godot::global::{absf, clampf, maxf, randf, randf_range};
 use godot::prelude::*;
 
 #[derive(PartialEq, Clone)]
@@ -27,7 +27,7 @@ impl Display for State {
 
 #[derive(GodotClass)]
 #[class(base=Node2D)]
-struct Alligator {
+pub struct Alligator {
     // TODO: What happens to this if we try to free the player?
     state: State,
     #[export]
@@ -110,22 +110,6 @@ impl INode2D for Alligator {
             _ => (),
         }
     }
-
-    // For testing animations.
-    // TODO: Remove
-    fn unhandled_input(&mut self, event: Gd<InputEvent>) {
-        if let Some(key) = event.try_cast::<InputEventKey>().ok() {
-            if key.is_pressed() {
-                match key.get_keycode() {
-                    Key::B => self.animate("blink", true),
-                    Key::F => self.animate("flash_eyes", true),
-                    Key::S => self.animate("shift_eyes", true),
-                    Key::Q => self.animate("default", true),
-                    _ => (),
-                }
-            }
-        }
-    }
 }
 
 #[godot_api]
@@ -135,7 +119,7 @@ impl Alligator {
             .get_node_as::<AnimatedSprite2D>("lower_jaw/upper_jaw")
     }
 
-    fn animate(&self, anim: &str, force: bool) {
+    pub fn animate(&self, anim: &str, force: bool) {
         let mut sprite = self.upper_jaw();
         if !sprite.is_playing() || force {
             sprite.play_ex().name(anim).done();
