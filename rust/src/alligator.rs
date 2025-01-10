@@ -197,7 +197,7 @@ impl Alligator {
         // is unspecified. (I've seen both orders.) So treat the two as though
         // they may happen in either order. Note that this is primarily relevant
         // in the `test_alligator.tscn`, when the (fake) player can actually
-        // warp.
+        // warp. (Maybe this is totally irrelevant during gameplay?)
         match self.state.clone() {
             State::OpeningJaw { player } => {
                 self.state = if self.focus_area2d().overlaps_body(&player) {
@@ -205,6 +205,7 @@ impl Alligator {
                 } else {
                     State::Idle
                 };
+                self.animate("default", true);
             }
             _ => (),
         }
