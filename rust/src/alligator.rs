@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use godot::classes::{AnimatedSprite2D, Area2D, InputEvent, InputEventKey, Node2D, Timer};
 use godot::global::{absf, clampf, maxf, randf, randf_range, Key};
 use godot::prelude::*;
@@ -9,6 +11,18 @@ enum State {
     Focus { player: Gd<Node2D> },
     OpeningJaw { player: Gd<Node2D> },
     ClosingJaw { player: Gd<Node2D> },
+}
+
+impl Display for State {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            State::Idle => "Idle",
+            State::Focus { player: _ } => "Focus",
+            State::OpeningJaw { player: _ } => "Opening Jaw",
+            State::ClosingJaw { player: _ } => "Closing Jaw",
+        };
+        write!(f, "{}", s)
+    }
 }
 
 #[derive(GodotClass)]
@@ -76,6 +90,7 @@ impl INode2D for Alligator {
                 // Clamp down when the player gets close.
                 if d < 5.0 {
                     self.state = State::ClosingJaw { player };
+                    godot_print!("Eat the player!");
                 }
             }
             State::ClosingJaw { player } => {
@@ -176,6 +191,7 @@ impl Alligator {
     #[func]
     fn on_player_exited_focus_area(&mut self, _body: Gd<Node2D>) {
         self.state = State::Idle;
+        godot_print!("Player exited focus area! Now in state {}", self.state);
     }
 
     fn eat_area2d(&self) -> Gd<Area2D> {
@@ -208,5 +224,6 @@ impl Alligator {
             }
             _ => (),
         }
+        godot_print!("Player exited EAT area! Now in state: {}", self.state);
     }
 }
