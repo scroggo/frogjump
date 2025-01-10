@@ -9,6 +9,7 @@ size = Vector2(25, 22)
 [node name="Node2D" type="TestAlligator"]
 
 [node name="Alligator" parent="." instance=ExtResource("1_6logy")]
+z_index = 1
 position = Vector2(351, 282)
 
 [node name="FakePlayer" type="CharacterBody2D" parent="."]

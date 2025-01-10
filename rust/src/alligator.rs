@@ -1,13 +1,23 @@
 use godot::classes::{AnimatedSprite2D, Area2D, InputEvent, InputEventKey, Node2D, Timer};
-use godot::global::{randf, randf_range, Key};
+use godot::global::{absf, clampf, maxf, randf, randf_range, Key};
 use godot::prelude::*;
+
+#[derive(PartialEq, Clone)]
+enum State {
+    Idle,
+    // If the player is in the focus area 2d, track them.
+    Focus { player: Gd<Node2D> },
+    OpeningJaw { player: Gd<Node2D> },
+    ClosingJaw { player: Gd<Node2D> },
+}
 
 #[derive(GodotClass)]
 #[class(base=Node2D)]
 struct Alligator {
-    // If the player is in the focus area 2d, track them.
     // TODO: What happens to this if we try to free the player?
-    focused_player: Option<Gd<Node2D>>,
+    state: State,
+    #[export]
+    jaw_close_speed: f32,
     base: Base<Node2D>,
 }
 
@@ -15,7 +25,8 @@ struct Alligator {
 impl INode2D for Alligator {
     fn init(base: Base<Node2D>) -> Self {
         Self {
-            focused_player: None,
+            state: State::Idle,
+            jaw_close_speed: 512.0,
             base,
         }
     }
@@ -37,22 +48,51 @@ impl INode2D for Alligator {
         let mut eat_area = self.eat_area2d();
         let player_entered_eat_area = self.base().callable("on_player_entered_eat_area");
         eat_area.connect("body_entered", &player_entered_eat_area);
+
+        let player_exited_eat_area = self.base().callable("on_player_exited_eat_area");
+        eat_area.connect("body_exited", &player_exited_eat_area);
     }
 
-    fn physics_process(&mut self, _delta: f64) {
-        if self.focused_player.is_some() {
-            match self.focused_player.as_ref().unwrap().get_position().x
-                - self.base().get_position().x
-            {
-                0.0 => (),
-                d if d < 0.0 => {
-                    self.base_mut().set_scale(Vector2 { x: 1.0, y: 1.0 });
-                }
-                d if d > 0.0 => self.base_mut().set_scale(Vector2 { x: -1.0, y: 1.0 }),
-                // The positions should always subtract; i.e. in practice we do not
-                // need to handle infinities/NaN.
-                _ => (),
+    fn physics_process(&mut self, delta: f64) {
+        match self.state.clone() {
+            State::Focus { player } => {
+                self.face_player(player);
             }
+            State::OpeningJaw { player } => {
+                // Calculate how wide the jaw should be open based on distance
+                // to the player. Based on trial and error, I want the jaw to
+                // be open 60 degrees when the player is at distance 0, and
+                // closed (0 degrees) when the player is at distance 38.
+                let d = absf((player.get_position().x - self.base().get_position().x).into());
+                let rotation = 60.0 - clampf(d, 0.0, 60.0);
+                self.upper_jaw().set_rotation_degrees(rotation as f32);
+
+                // I am tempted to call `face_player`, but this could result in
+                // flipping the alligator at the last moment. I only think I
+                // want to face the player because my test scene lets me warp
+                // the player.
+                //self.face_player(player);
+
+                // Clamp down when the player gets close.
+                if d < 5.0 {
+                    self.state = State::ClosingJaw { player };
+                }
+            }
+            State::ClosingJaw { player } => {
+                let mut jaw = self.upper_jaw();
+                let curr_rotation = jaw.get_rotation_degrees();
+                let new_rotation = maxf(
+                    0.0,
+                    (curr_rotation - delta as f32 * self.jaw_close_speed).into(),
+                );
+                jaw.set_rotation_degrees(new_rotation as f32);
+                // TODO: Remove player.
+                if new_rotation == 0.0 {
+                    // TODO: Gloat!
+                    self.state = State::Idle;
+                }
+            }
+            _ => (),
         }
     }
 
@@ -87,9 +127,22 @@ impl Alligator {
         }
     }
 
+    fn face_player(&mut self, player: Gd<Node2D>) {
+        match player.get_position().x - self.base().get_position().x {
+            0.0 => (),
+            d if d < 0.0 => {
+                self.base_mut().set_scale(Vector2 { x: 1.0, y: 1.0 });
+            }
+            d if d > 0.0 => self.base_mut().set_scale(Vector2 { x: -1.0, y: 1.0 }),
+            // The positions should always subtract; i.e. in practice we do not
+            // need to handle infinities/NaN.
+            _ => (),
+        }
+    }
+
     #[func]
     fn on_idle_timeout(&self) {
-        if self.focused_player.is_none() {
+        if self.state == State::Idle {
             let animation = if randf() > 0.5 { "blink" } else { "shift_eyes" };
             self.animate(&animation, false);
         }
@@ -114,26 +167,15 @@ impl Alligator {
     fn on_player_entered_focus_area(&mut self, body: Gd<Node2D>) {
         // Assume that `body` is the player, since the mask is set to only scan
         // for the player's layer.
-        if self.focused_player.is_some() {
-            godot_error!("A second player entered?");
-            return;
-        }
-        self.focused_player = Some(body.clone());
+        self.state = State::Focus {
+            player: body.clone(),
+        };
         self.animate("default", true);
     }
 
     #[func]
-    fn on_player_exited_focus_area(&mut self, body: Gd<Node2D>) {
-        if self.focused_player.is_none() {
-            godot_error!("Body exited without already being there?");
-            return;
-        }
-        if body.instance_id() != self.focused_player.as_ref().unwrap().instance_id() {
-            godot_error!("Are there multiple players?");
-            return;
-        }
-        godot_print!("Player exited focus area!");
-        self.focused_player = None;
+    fn on_player_exited_focus_area(&mut self, _body: Gd<Node2D>) {
+        self.state = State::Idle;
     }
 
     fn eat_area2d(&self) -> Gd<Area2D> {
@@ -142,13 +184,29 @@ impl Alligator {
 
     #[func]
     fn on_player_entered_eat_area(&mut self, body: Gd<Node2D>) {
+        self.state = State::OpeningJaw {
+            player: body.clone(),
+        };
         self.animate("flash_eyes", true);
-        self.upper_jaw().set_rotation_degrees(60.0);
     }
 
-    /* Hmm, do we need this? Or will the player just get eaten?
     #[func]
-    fn on_player_exited_eat_area(&mut self, body: Gd<Node2D>) {
+    fn on_player_exited_eat_area(&mut self, _body: Gd<Node2D>) {
+        // If the player warps outside the focus area from the eat area, it
+        // seems that the order of this signal and `on_player_exited_focus_area`
+        // is unspecified. (I've seen both orders.) So treat the two as though
+        // they may happen in either order. Note that this is primarily relevant
+        // in the `test_alligator.tscn`, when the (fake) player can actually
+        // warp.
+        match self.state.clone() {
+            State::OpeningJaw { player } => {
+                self.state = if self.focus_area2d().overlaps_body(&player) {
+                    State::Focus { player }
+                } else {
+                    State::Idle
+                };
+            }
+            _ => (),
+        }
     }
-    */
 }
