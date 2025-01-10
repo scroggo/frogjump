@@ -1,45 +1,45 @@
 [gd_scene load_steps=8 format=3 uid="uid://b5dlmv4suu55n"]
 
-[ext_resource type="Texture2D" uid="uid://njp73861qnuk" path="res://dragonfly/dragonfly.png" id="1_qqn5x"]
+[ext_resource type="Texture2D" uid="uid://bvmtsib004kf2" path="res://leon_assets/fly_frames.png" id="1_y5ubl"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_oms00"]
 radius = 12.0
 height = 24.0
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_tanda"]
-atlas = ExtResource("1_qqn5x")
-region = Rect2(0, 0, 32, 32)
+[sub_resource type="AtlasTexture" id="AtlasTexture_ik0jl"]
+atlas = ExtResource("1_y5ubl")
+region = Rect2(0, 0, 64, 64)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_82b5a"]
-atlas = ExtResource("1_qqn5x")
-region = Rect2(32, 0, 32, 32)
+[sub_resource type="AtlasTexture" id="AtlasTexture_r4ugw"]
+atlas = ExtResource("1_y5ubl")
+region = Rect2(64, 0, 64, 64)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_rlkwf"]
-atlas = ExtResource("1_qqn5x")
-region = Rect2(64, 0, 32, 32)
+[sub_resource type="AtlasTexture" id="AtlasTexture_nb72i"]
+atlas = ExtResource("1_y5ubl")
+region = Rect2(128, 0, 64, 64)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_cp52j"]
-atlas = ExtResource("1_qqn5x")
-region = Rect2(96, 0, 32, 32)
+[sub_resource type="AtlasTexture" id="AtlasTexture_qglmy"]
+atlas = ExtResource("1_y5ubl")
+region = Rect2(192, 0, 64, 64)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_1kcpx"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_tanda")
+"texture": SubResource("AtlasTexture_ik0jl")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_82b5a")
+"texture": SubResource("AtlasTexture_r4ugw")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_rlkwf")
+"texture": SubResource("AtlasTexture_nb72i")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_cp52j")
+"texture": SubResource("AtlasTexture_qglmy")
 }],
 "loop": true,
 "name": &"default",
-"speed": 5.0
+"speed": 20.0
 }]
 
 [node name="DragonFly" type="DragonFly"]
@@ -51,6 +51,8 @@ metadata/_edit_group_ = true
 shape = SubResource("CapsuleShape2D_oms00")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(3, -1)
+scale = Vector2(-0.476, 0.476)
 sprite_frames = SubResource("SpriteFrames_1kcpx")
 autoplay = "default"
-frame_progress = 0.00954811
+frame_progress = 0.867331
