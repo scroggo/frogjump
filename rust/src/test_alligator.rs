@@ -23,14 +23,7 @@ impl INode2D for TestAlligator {
         }
         if let Some(key) = event.try_cast::<InputEventKey>().ok() {
             if key.is_pressed() {
-                match key.get_keycode() {
-                    Key::B => self.alligator().bind_mut().animate("blink", true),
-                    Key::F => self.alligator().bind_mut().animate("flash_eyes", true),
-                    Key::Q => self.alligator().bind_mut().animate("default", true),
-                    Key::R => self.alligator().bind_mut().animate("raise_eyebrows", true),
-                    Key::S => self.alligator().bind_mut().animate("shift_eyes", true),
-                    _ => (),
-                }
+                self.animate_from_key(key.get_keycode());
             }
         }
     }
@@ -43,5 +36,17 @@ impl TestAlligator {
 
     fn alligator(&self) -> Gd<Alligator> {
         self.base().get_node_as::<Alligator>("Alligator")
+    }
+
+    fn animate_from_key(&self, key: Key) {
+        let anim = match key {
+            Key::B => "blink",
+            Key::F => "flash_eyes",
+            Key::Q => "default",
+            Key::R => "raise_eyebrows",
+            Key::S => "shift_eyes",
+            _ => return,
+        };
+        self.alligator().bind_mut().animate(anim, true);
     }
 }
