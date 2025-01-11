@@ -1,7 +1,8 @@
-[gd_scene load_steps=19 format=3 uid="uid://bfdp35wgoi0sy"]
+[gd_scene load_steps=26 format=3 uid="uid://bfdp35wgoi0sy"]
 
 [ext_resource type="Texture2D" uid="uid://dpqwv33k0dfex" path="res://leon_assets/alligator_lower_jaw.png" id="1_1ios1"]
 [ext_resource type="Texture2D" uid="uid://dj7tu1ywg7eo8" path="res://leon_assets/Alligator_frames.png" id="2_42vko"]
+[ext_resource type="Texture2D" uid="uid://c6p1i5xvb2sfj" path="res://leon_assets/alligator_eyebrows.png" id="3_f7poj"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_m6wjw"]
 atlas = ExtResource("2_42vko")
@@ -34,6 +35,30 @@ region = Rect2(64, 64, 64, 64)
 [sub_resource type="AtlasTexture" id="AtlasTexture_hub4s"]
 atlas = ExtResource("2_42vko")
 region = Rect2(128, 64, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g1o61"]
+atlas = ExtResource("2_42vko")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d6rkh"]
+atlas = ExtResource("3_f7poj")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xr67h"]
+atlas = ExtResource("3_f7poj")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_38qe8"]
+atlas = ExtResource("3_f7poj")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qh0qn"]
+atlas = ExtResource("3_f7poj")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_afj6m"]
+atlas = ExtResource("3_f7poj")
+region = Rect2(256, 0, 64, 64)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_rq8sa"]
 atlas = ExtResource("2_42vko")
@@ -134,6 +159,68 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_g1o61")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d6rkh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xr67h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_38qe8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qh0qn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_afj6m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qh0qn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_38qe8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xr67h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d6rkh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xr67h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_38qe8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qh0qn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_afj6m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qh0qn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_38qe8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xr67h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d6rkh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g1o61")
+}],
+"loop": false,
+"name": &"raise_eyebrows",
+"speed": 20.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_rq8sa")
 }, {
 "duration": 1.0,
@@ -180,7 +267,6 @@ texture = ExtResource("1_1ios1")
 [node name="upper_jaw" type="AnimatedSprite2D" parent="lower_jaw"]
 position = Vector2(24, 4)
 sprite_frames = SubResource("SpriteFrames_5ewng")
-frame_progress = 1.0
 offset = Vector2(-25, 0)
 
 [node name="IdleTimer" type="Timer" parent="."]

@@ -103,8 +103,14 @@ impl INode2D for Alligator {
                 jaw.set_rotation_degrees(new_rotation as f32);
                 // TODO: Remove player.
                 if new_rotation == 0.0 {
-                    // TODO: Gloat!
+                    // I considered adding an intermediate state here during the
+                    // animation, but it doesn't seem straightforward to change
+                    // back to idle when it finishes. There *is* an
+                    // `animation_finished` signal, but it doesn't specify the
+                    // animation, so I think I'd need to connect/disconnect the
+                    // signal.
                     self.state = State::Idle;
+                    self.animate("raise_eyebrows", true);
                 }
             }
             _ => (),
