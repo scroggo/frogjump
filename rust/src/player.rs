@@ -1,4 +1,5 @@
 use std::f32::consts::PI;
+use std::ops::Not;
 use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
 
@@ -33,6 +34,17 @@ impl JumpDetector for TouchJumpHandler {
 enum Direction {
     Left,
     Right,
+}
+
+impl Not for Direction {
+    fn not(self) -> Self::Output {
+        match self {
+            Direction::Left => Direction::Right,
+            Direction::Right => Direction::Left,
+        }
+    }
+
+    type Output = Self;
 }
 
 #[derive(GodotClass)]
