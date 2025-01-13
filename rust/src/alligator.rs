@@ -93,7 +93,7 @@ impl INode2D for Alligator {
                     godot_print!("Eat the player!");
                 }
             }
-            State::ClosingJaw { player } => {
+            State::ClosingJaw { player: _ } => {
                 let mut jaw = self.upper_jaw();
                 let curr_rotation = jaw.get_rotation_degrees();
                 let new_rotation = maxf(
@@ -101,7 +101,6 @@ impl INode2D for Alligator {
                     (curr_rotation - delta as f32 * self.jaw_close_speed).into(),
                 );
                 jaw.set_rotation_degrees(new_rotation as f32);
-                // TODO: Remove player.
                 if new_rotation == 0.0 {
                     // I considered adding an intermediate state here during the
                     // animation, but it doesn't seem straightforward to change
@@ -110,6 +109,7 @@ impl INode2D for Alligator {
                     // animation, so I think I'd need to connect/disconnect the
                     // signal.
                     self.state = State::Idle;
+                    self.base_mut().emit_signal("player_eaten", &[]);
                     self.animate("raise_eyebrows", true);
                 }
             }
@@ -120,6 +120,9 @@ impl INode2D for Alligator {
 
 #[godot_api]
 impl Alligator {
+    #[signal]
+    fn player_eaten();
+
     fn upper_jaw(&self) -> Gd<AnimatedSprite2D> {
         self.base()
             .get_node_as::<AnimatedSprite2D>("lower_jaw/upper_jaw")

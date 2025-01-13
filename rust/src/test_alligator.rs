@@ -15,6 +15,11 @@ impl INode2D for TestAlligator {
         Self { base }
     }
 
+    fn ready(&mut self) {
+        let on_player_eaten = self.base().callable("on_player_eaten");
+        self.alligator().connect("player_eaten", &on_player_eaten);
+    }
+
     fn unhandled_input(&mut self, event: Gd<InputEvent>) {
         if let Some(touch_event) = event.clone().try_cast::<InputEventScreenTouch>().ok() {
             if touch_event.is_pressed() {
@@ -29,9 +34,23 @@ impl INode2D for TestAlligator {
     }
 }
 
+#[godot_api]
 impl TestAlligator {
-    fn fake_player(&self) -> Gd<CharacterBody2D> {
-        self.base().get_node_as::<CharacterBody2D>("FakePlayer")
+    fn fake_player(&mut self) -> Gd<CharacterBody2D> {
+        // This name matches the name set in the editor. The editor version is
+        // arguably redundant, since we'll just create a new one if it's not in
+        // the editor (or has a different name!), but it demonstrates where the
+        // node will go.
+        let name = "FakePlayer";
+        if let Some(fake_player) = self.base().try_get_node_as::<CharacterBody2D>(name) {
+            return fake_player;
+        }
+        // Respawn.
+        let scene = load::<PackedScene>("res://fake_player.tscn");
+        let mut fake_player = scene.instantiate().unwrap().cast::<CharacterBody2D>();
+        fake_player.set_name(name);
+        self.base_mut().add_child(fake_player.clone());
+        fake_player
     }
 
     fn alligator(&self) -> Gd<Alligator> {
@@ -48,5 +67,13 @@ impl TestAlligator {
             _ => return,
         };
         self.alligator().bind_mut().animate(anim, true);
+    }
+
+    #[func]
+    fn on_player_eaten(&mut self) {
+        godot_print!("on_player_eaten");
+        let mut fake_player = self.fake_player();
+        self.base_mut().remove_child(fake_player.clone());
+        fake_player.queue_free();
     }
 }
