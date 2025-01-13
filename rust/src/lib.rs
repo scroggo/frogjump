@@ -7,6 +7,7 @@ mod jump_handler;
 mod jump_meter;
 mod player;
 mod test_alligator;
+mod toucan;
 mod tutorial;
 
 struct RustExtension;

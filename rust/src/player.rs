@@ -28,10 +28,10 @@ impl JumpDetector for TouchJumpHandler {
     }
 }
 
-/// Direction the player is facing.
-#[derive(PartialEq, GodotConvert, Var, Export)]
+// TODO: Move to its own module?
+#[derive(PartialEq, GodotConvert, Var, Export, Clone, Copy)]
 #[godot(via=GString)]
-enum Direction {
+pub enum Direction {
     Left,
     Right,
 }

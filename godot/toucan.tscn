@@ -1,0 +1,115 @@
+[gd_scene load_steps=15 format=3 uid="uid://bu5oairemc8af"]
+
+[ext_resource type="Texture2D" uid="uid://ctwfmdh83hngv" path="res://leon_assets/Toucan sprite.png" id="1_cnwwb"]
+[ext_resource type="Texture2D" uid="uid://bodbpwqaxapw" path="res://leon_assets/Toucan tail.png" id="2_nbjdx"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2468c"]
+atlas = ExtResource("1_cnwwb")
+region = Rect2(0, 0, 128, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4vl21"]
+atlas = ExtResource("1_cnwwb")
+region = Rect2(0, 0, 128, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o26jv"]
+atlas = ExtResource("1_cnwwb")
+region = Rect2(128, 0, 128, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tuqmp"]
+atlas = ExtResource("1_cnwwb")
+region = Rect2(256, 0, 128, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vypgk"]
+atlas = ExtResource("1_cnwwb")
+region = Rect2(384, 0, 128, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fcxbb"]
+atlas = ExtResource("1_cnwwb")
+region = Rect2(512, 0, 128, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s8eor"]
+atlas = ExtResource("1_cnwwb")
+region = Rect2(512, 0, 128, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m4pp8"]
+atlas = ExtResource("1_cnwwb")
+region = Rect2(0, 64, 128, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3vjkt"]
+atlas = ExtResource("1_cnwwb")
+region = Rect2(128, 64, 128, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y1g3k"]
+atlas = ExtResource("1_cnwwb")
+region = Rect2(256, 64, 128, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v88sw"]
+atlas = ExtResource("1_cnwwb")
+region = Rect2(384, 64, 128, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_u6x23"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2468c")
+}],
+"loop": false,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4vl21")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o26jv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tuqmp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vypgk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fcxbb")
+}],
+"loop": false,
+"name": &"turn_head_left",
+"speed": 11.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s8eor")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m4pp8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3vjkt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y1g3k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v88sw")
+}],
+"loop": false,
+"name": &"turn_head_right",
+"speed": 11.0
+}]
+
+[node name="Toucan" type="Toucan"]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_u6x23")
+animation = &"turn_head_left"
+autoplay = "default"
+frame = 4
+frame_progress = 1.0
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = -4
+texture = ExtResource("2_nbjdx")
+metadata/_edit_group_ = true
+
+[node name="Timer" type="Timer" parent="."]
