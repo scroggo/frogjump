@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://cylwq8peencac"]
+
+[ext_resource type="Texture2D" uid="uid://btwjll3ip1yjw" path="res://frog_spritesheet.webp" id="1_q6nqc"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bm4s7"]
+size = Vector2(25, 22)
+
+[node name="FakePlayer" type="CharacterBody2D"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1.5, 0)
+shape = SubResource("RectangleShape2D_bm4s7")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_q6nqc")
+region_enabled = true
+region_rect = Rect2(0, 18, 66, 49)
