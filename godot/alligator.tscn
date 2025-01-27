@@ -277,7 +277,7 @@ collision_layer = 0
 [node name="CollisionShape2D" type="CollisionShape2D" parent="FocusArea2D"]
 shape = SubResource("CircleShape2D_leckn")
 
-[node name="EatArea2D" type="Area2D" parent="."]
+[node name="OpenJawArea2D" type="Area2D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EatArea2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OpenJawArea2D"]
 shape = SubResource("CircleShape2D_aou8h")

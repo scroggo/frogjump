@@ -59,12 +59,12 @@ impl INode2D for Alligator {
         let player_exited = self.base().callable("on_player_exited_focus_area");
         focus_area.connect("body_exited", &player_exited);
 
-        let mut eat_area = self.eat_area2d();
-        let player_entered_eat_area = self.base().callable("on_player_entered_eat_area");
-        eat_area.connect("body_entered", &player_entered_eat_area);
+        let mut open_jaw_area = self.open_jaw_area2d();
+        let player_entered_open_jaw_area = self.base().callable("on_player_entered_open_jaw_area");
+        open_jaw_area.connect("body_entered", &player_entered_open_jaw_area);
 
-        let player_exited_eat_area = self.base().callable("on_player_exited_eat_area");
-        eat_area.connect("body_exited", &player_exited_eat_area);
+        let player_exited_open_jaw_area = self.base().callable("on_player_exited_open_jaw_area");
+        open_jaw_area.connect("body_exited", &player_exited_open_jaw_area);
     }
 
     fn physics_process(&mut self, delta: f64) {
@@ -187,12 +187,12 @@ impl Alligator {
         godot_print!("Player exited focus area! Now in state {}", self.state);
     }
 
-    fn eat_area2d(&self) -> Gd<Area2D> {
-        self.base().get_node_as::<Area2D>("EatArea2D")
+    fn open_jaw_area2d(&self) -> Gd<Area2D> {
+        self.base().get_node_as::<Area2D>("OpenJawArea2D")
     }
 
     #[func]
-    fn on_player_entered_eat_area(&mut self, body: Gd<Node2D>) {
+    fn on_player_entered_open_jaw_area(&mut self, body: Gd<Node2D>) {
         self.state = State::OpeningJaw {
             player: body.clone(),
         };
@@ -200,8 +200,8 @@ impl Alligator {
     }
 
     #[func]
-    fn on_player_exited_eat_area(&mut self, _body: Gd<Node2D>) {
-        // If the player warps outside the focus area from the eat area, it
+    fn on_player_exited_open_jaw_area(&mut self, _body: Gd<Node2D>) {
+        // If the player warps outside the focus area from the open jaw area, it
         // seems that the order of this signal and `on_player_exited_focus_area`
         // is unspecified. (I've seen both orders.) So treat the two as though
         // they may happen in either order. Note that this is primarily relevant
@@ -218,6 +218,6 @@ impl Alligator {
             }
             _ => (),
         }
-        godot_print!("Player exited EAT area! Now in state: {}", self.state);
+        godot_print!("Player exited OPEN JAW area! Now in state: {}", self.state);
     }
 }
