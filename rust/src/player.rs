@@ -36,6 +36,13 @@ pub enum Direction {
     Right,
 }
 
+impl Default for Direction {
+    fn default() -> Self {
+        // Platformers traditionally play to the right.
+        Self::Right
+    }
+}
+
 impl Not for Direction {
     fn not(self) -> Self::Output {
         match self {
@@ -45,6 +52,14 @@ impl Not for Direction {
     }
 
     type Output = Self;
+}
+
+// Useful info for spawning a new Player.
+#[derive(Default, Clone, Copy)]
+pub struct PlayerInfo {
+    pos: Vector2,
+    vel: Vector2,
+    dir: Direction,
 }
 
 #[derive(GodotClass)]
@@ -223,5 +238,19 @@ impl Player {
         self.jump_handler()
             .bind_mut()
             .replace_jump_detector(detector);
+    }
+
+    pub fn get_player_info(&self) -> PlayerInfo {
+        PlayerInfo {
+            pos: self.base().get_position(),
+            vel: self.target_velocity,
+            dir: self.direction,
+        }
+    }
+
+    pub fn set_player_info(&mut self, info: &PlayerInfo) {
+        self.base_mut().set_position(info.pos);
+        self.target_velocity = info.vel;
+        self.direction = info.dir;
     }
 }
