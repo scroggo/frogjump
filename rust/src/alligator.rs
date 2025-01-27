@@ -65,6 +65,13 @@ impl INode2D for Alligator {
 
         let player_exited_open_jaw_area = self.base().callable("on_player_exited_open_jaw_area");
         open_jaw_area.connect("body_exited", &player_exited_open_jaw_area);
+
+        let mut eat_area = self.eat_area2d();
+        let player_entered_eat_area = self.base().callable("on_player_entered_eat_area");
+        eat_area.connect("body_entered", &player_entered_eat_area);
+
+        let player_exited_eat_area = self.base().callable("on_player_exited_eat_area");
+        eat_area.connect("body_exited", &player_exited_eat_area);
     }
 
     fn physics_process(&mut self, delta: f64) {
@@ -86,12 +93,6 @@ impl INode2D for Alligator {
                 // want to face the player because my test scene lets me warp
                 // the player.
                 //self.face_player(player);
-
-                // Clamp down when the player gets close.
-                if d < 5.0 {
-                    self.state = State::ClosingJaw { player };
-                    godot_print!("Eat the player!");
-                }
             }
             State::ClosingJaw { player } => {
                 let mut jaw = self.upper_jaw();
@@ -216,9 +217,48 @@ impl Alligator {
                     State::Idle
                 };
                 self.animate("default", true);
+                self.close_jaw();
             }
             _ => (),
         }
         godot_print!("Player exited OPEN JAW area! Now in state: {}", self.state);
+    }
+
+    fn eat_area2d(&self) -> Gd<Area2D> {
+        self.base().get_node_as::<Area2D>("EatArea2D")
+    }
+
+    #[func]
+    fn on_player_entered_eat_area(&mut self, body: Gd<Node2D>) {
+        self.state = State::ClosingJaw {
+            player: body.clone(),
+        };
+        godot_print!("Player entered (new) EAT area");
+    }
+
+    #[func]
+    fn on_player_exited_eat_area(&mut self, _body: Gd<Node2D>) {
+        // Note: See `on_player_exited_open_jaw_area`.
+        match self.state.clone() {
+            State::ClosingJaw { player } => {
+                self.state = if self.open_jaw_area2d().overlaps_body(&player) {
+                    State::OpeningJaw { player }
+                } else if self.focus_area2d().overlaps_body(&player) {
+                    self.animate("default", true);
+                    self.close_jaw();
+                    State::Focus { player }
+                } else {
+                    self.animate("default", true);
+                    self.close_jaw();
+                    State::Idle
+                };
+            }
+            _ => (),
+        }
+        godot_print!("Player exited (new) EAT area! Now in state: {}", self.state);
+    }
+
+    fn close_jaw(&self) {
+        self.upper_jaw().set_rotation_degrees(0.0);
     }
 }
