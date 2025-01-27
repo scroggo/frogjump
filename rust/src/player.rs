@@ -5,7 +5,7 @@ use std::sync::Arc;
 
 use crate::jump_handler::{JumpDetector, JumpHandler};
 use godot::classes::{
-    AnimatedSprite2D, CharacterBody2D, ICharacterBody2D, InputEvent, InputEventScreenTouch, Timer,
+    AnimatedSprite2D, CharacterBody2D, ICharacterBody2D, InputEvent, InputEventScreenTouch, KinematicCollision2D, Timer
 };
 use godot::global::randf_range;
 use godot::prelude::*;
@@ -127,7 +127,9 @@ impl ICharacterBody2D for Player {
         let motion = self.target_velocity * delta as f32;
         let collision_opt = self.base_mut().move_and_collide(motion);
         if let Some(collision) = collision_opt {
-            if let Some(_collider) = collision.get_collider() {
+            print_collision(&collision);
+            if let Some(collider) = collision.get_collider() {
+                godot_print!("Collided with {:?}", collider);
                 self.on_surface = true;
 
                 // Reverse the jump animation to land.
@@ -265,4 +267,18 @@ impl Player {
         self.target_velocity = info.vel;
         self.direction = info.dir;
     }
+}
+
+fn print_collision(collision: &Gd<KinematicCollision2D>) {
+    godot_print!("collision {:?}", collision);
+    godot_print!("\tangle: {}", collision.get_angle());
+    godot_print!("\tnormal: {}", collision.get_normal());
+    godot_print!("\tcollider velocity: {}", collision.get_collider_velocity());
+    godot_print!("\ttravel: {}", collision.get_travel());
+    godot_print!("\tremainder: {}", collision.get_remainder());
+    godot_print!("\tposition: {}", collision.get_position());
+    godot_print!("\tdepth: {}", collision.get_depth());
+    godot_print!("\tlocal shape: {:?}", collision.get_local_shape());
+    godot_print!("\tcollider shape: {:?}", collision.get_collider_shape());
+
 }
