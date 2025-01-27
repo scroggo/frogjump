@@ -7,6 +7,7 @@ use crate::jump_handler::{JumpDetector, JumpHandler};
 use godot::classes::{
     AnimatedSprite2D, CharacterBody2D, ICharacterBody2D, InputEvent, InputEventScreenTouch, Timer,
 };
+use godot::global::randf_range;
 use godot::prelude::*;
 
 struct TouchJumpHandler {
@@ -107,9 +108,10 @@ impl ICharacterBody2D for Player {
 
     fn ready(&mut self) {
         let blink = self.base().callable("on_blink_timeout");
-        self.base()
-            .get_node_as::<Timer>("BlinkTimer")
-            .connect("timeout", &blink);
+        let mut blink_timer = self.blink_timer();
+        blink_timer.connect("timeout", &blink);
+        self.start_blink_timer();
+
         if self.direction == Direction::Right {
             self.sprite().set_flip_h(true);
         }
@@ -216,12 +218,22 @@ impl Player {
         Vector2::new(0.0, jump_strength).rotated(jump_angle)
     }
 
+    fn blink_timer(&self) -> Gd<Timer> {
+        self.base().get_node_as::<Timer>("BlinkTimer")
+    }
+
+    fn start_blink_timer(&self) {
+        let wait_time = randf_range(3.0, 7.0);
+        self.blink_timer().start_ex().time_sec(wait_time).done();
+    }
+
     #[func]
     fn on_blink_timeout(&self) {
         let mut sprite = self.sprite();
         if self.on_surface && !sprite.is_playing() {
             sprite.play_ex().name("blink").done();
         }
+        self.start_blink_timer();
     }
 
     fn sprite(&self) -> Gd<AnimatedSprite2D> {

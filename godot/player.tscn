@@ -108,8 +108,6 @@ animation = &"jump"
 frame = 3
 
 [node name="BlinkTimer" type="Timer" parent="."]
-wait_time = 5.0
-autostart = true
 
 [node name="JumpHandler" type="JumpHandler" parent="."]
 
