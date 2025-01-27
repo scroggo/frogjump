@@ -1,0 +1,26 @@
+{
+    // Modified version of the launch configuration in
+    // https://godot-rust.github.io/book/toolchain/debugging.html
+    // specific to my computer.
+    "configurations": [
+        {
+            "name": "Debug Project (Godot 4)",
+            "type": "lldb", // type provided by CodeLLDB extension
+            "request": "launch",
+            "preLaunchTask": "rust: cargo build",
+            "cwd": "${workspaceFolder}/../godot", // From this folder, `rust`, we go up a
+                                                  // directory, and into godot, so that we
+                                                  // launch the default scene.
+            "args": [
+                //"-e", // run editor (remove this to launch the scene directly)
+                "-w", // windowed mode
+                //"-d", // "Debug (local stdout debugger)." from `--help`. In my usage, it
+                        // didn't seem to make a difference.
+            ],
+            "linux": {
+                "program": "/usr/local/bin/godot",
+            },
+        }
+    ]
+}
+
