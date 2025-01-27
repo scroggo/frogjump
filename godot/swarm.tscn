@@ -1,0 +1,114 @@
+[gd_scene load_steps=4 format=4 uid="uid://ofmm8n88jj4f"]
+
+[ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="1_fixnt"]
+[ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_1u2ym"]
+[ext_resource type="PackedScene" uid="uid://b5dlmv4suu55n" path="res://dragon_fly.tscn" id="3_uckr2"]
+
+[node name="Level" type="Level"]
+tile_map_data = PackedByteArray("AAAAAAgAAQAFAAMAAAAAAAcAAQAFAAIAAAAAAAYAAQAEAAEAAAAAAAUAAQAEAAIAAAAAAAQAAQAEAAEAAAAAAAMAAQAFAAIAAAAAAAIAAQAEAAEAAAAAAAEAAQAFAAIAAAAAAAAAAQAFAAIAAAABAAgAAQADAAMAAAACAAgAAQADAAMAAAADAAgAAQADAAMAAAAEAAgAAQADAAMAAAAFAAgAAQADAAMAAAAGAAgAAQADAAMAAAAHAAgAAQADAAMAAAAIAAgAAQADAAMAAAAJAAgAAQADAAMAAAAKAAgAAQAEAAMAAAALAAgAAQADAAMAAAAKAAcAAQAEAAIAAAAKAAYAAQAEAAIAAAAKAAUAAQAEAAIAAAAKAAQAAQAEAAIAAAAKAAMAAQAEAAIAAAAKAAIAAQAEAAIAAAAKAAEAAQAEAAIAAAAKAAAAAQAEAAIAAAABAAQAAQACAAIAAAABAAYAAQADAAIAAAABAAIAAQADAAIAAAACAAQAAQADAAIAAAADAAUAAQABAAYAAAAEAAUAAQACAAYAAAAFAAUAAQACAAYAAAAGAAUAAQACAAYAAAAHAAUAAQADAAYAAAAGAAIAAQADAAYAAAAFAAIAAQACAAYAAAAEAAIAAQABAAYAAAA=")
+tile_set = ExtResource("1_fixnt")
+
+[node name="BackgroundTiles" type="TileMapLayer" parent="."]
+position = Vector2(0, -33)
+tile_map_data = PackedByteArray("AAAAAAAAAQACAAIAAAABAAAAAQACAAIAAAACAAAAAQACAAIAAAADAAAAAQACAAIAAAAEAAAAAQACAAIAAAAFAAAAAQACAAIAAAAGAAAAAQACAAIAAAAIAAAAAQACAAIAAAAJAAAAAQACAAIAAAAKAAAAAQACAAIAAAAHAAAAAQACAAIAAAA=")
+tile_set = ExtResource("1_fixnt")
+
+[node name="Frogs" type="Node2D" parent="."]
+
+[node name="Player" parent="Frogs" instance=ExtResource("2_1u2ym")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(75, 487)
+
+[node name="Player13" parent="Frogs" instance=ExtResource("2_1u2ym")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(125, 488)
+
+[node name="Player2" parent="Frogs" instance=ExtResource("2_1u2ym")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(67, 397)
+
+[node name="Player3" parent="Frogs" instance=ExtResource("2_1u2ym")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(71, 264)
+
+[node name="Player4" parent="Frogs" instance=ExtResource("2_1u2ym")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(116, 265)
+
+[node name="Player5" parent="Frogs" instance=ExtResource("2_1u2ym")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(71, 135)
+
+[node name="Player6" parent="Frogs" instance=ExtResource("2_1u2ym")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(310, 114)
+
+[node name="Player8" parent="Frogs" instance=ExtResource("2_1u2ym")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(361, 114)
+
+[node name="Player7" parent="Frogs" instance=ExtResource("2_1u2ym")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(241, 311)
+
+[node name="Player9" parent="Frogs" instance=ExtResource("2_1u2ym")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(293, 306)
+
+[node name="Player10" parent="Frogs" instance=ExtResource("2_1u2ym")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(345, 312)
+
+[node name="Player11" parent="Frogs" instance=ExtResource("2_1u2ym")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(400, 308)
+
+[node name="Player12" parent="Frogs" instance=ExtResource("2_1u2ym")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(452, 309)
+
+[node name="Player14" parent="Frogs" instance=ExtResource("2_1u2ym")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(452, 309)
+
+[node name="Flies" type="Node2D" parent="."]
+
+[node name="DragonFly" parent="Flies" instance=ExtResource("3_uckr2")]
+position = Vector2(615, 485)
+
+[node name="DragonFly2" parent="Flies" instance=ExtResource("3_uckr2")]
+position = Vector2(615, 433)
+
+[node name="DragonFly3" parent="Flies" instance=ExtResource("3_uckr2")]
+position = Vector2(611, 379)
+
+[node name="DragonFly4" parent="Flies" instance=ExtResource("3_uckr2")]
+position = Vector2(615, 334)
+
+[node name="DragonFly5" parent="Flies" instance=ExtResource("3_uckr2")]
+position = Vector2(608, 282)
+
+[node name="DragonFly6" parent="Flies" instance=ExtResource("3_uckr2")]
+position = Vector2(621, 246)
+
+[node name="DragonFly7" parent="Flies" instance=ExtResource("3_uckr2")]
+position = Vector2(621, 208)
+
+[node name="ForegroundTiles" type="TileMapLayer" parent="."]
+position = Vector2(0, -11)
+tile_map_data = PackedByteArray("AAAAAAAAAQAAAAYAAAABAAAAAQAAAAYAAAACAAAAAQAAAAYAAAADAAAAAQAAAAYAAAAEAAAAAQAAAAYAAAAFAAAAAQAAAAYAAAAGAAAAAQAAAAYAAAAHAAAAAQAAAAYAAAAIAAAAAQAAAAYAAAAJAAAAAQAAAAYAAAAKAAAAAQAAAAYAAAA=")
+tile_set = ExtResource("1_fixnt")
