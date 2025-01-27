@@ -93,7 +93,7 @@ impl INode2D for Alligator {
                     godot_print!("Eat the player!");
                 }
             }
-            State::ClosingJaw { player: _ } => {
+            State::ClosingJaw { player } => {
                 let mut jaw = self.upper_jaw();
                 let curr_rotation = jaw.get_rotation_degrees();
                 let new_rotation = maxf(
@@ -109,7 +109,8 @@ impl INode2D for Alligator {
                     // animation, so I think I'd need to connect/disconnect the
                     // signal.
                     self.state = State::Idle;
-                    self.base_mut().emit_signal("player_eaten", &[]);
+                    self.base_mut()
+                        .emit_signal("player_eaten", &[player.to_variant()]);
                     self.animate("raise_eyebrows", true);
                 }
             }
@@ -121,7 +122,7 @@ impl INode2D for Alligator {
 #[godot_api]
 impl Alligator {
     #[signal]
-    fn player_eaten();
+    fn player_eaten(mut player: Gd<Node2D>);
 
     fn upper_jaw(&self) -> Gd<AnimatedSprite2D> {
         self.base()

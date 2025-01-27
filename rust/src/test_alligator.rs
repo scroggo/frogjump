@@ -70,10 +70,12 @@ impl TestAlligator {
     }
 
     #[func]
-    fn on_player_eaten(&mut self) {
-        godot_print!("on_player_eaten");
-        let mut fake_player = self.fake_player();
-        self.base_mut().remove_child(fake_player.clone());
-        fake_player.queue_free();
+    fn on_player_eaten(&mut self, mut player: Gd<Node2D>) {
+        if let Some(mut parent) = player.get_parent() {
+            parent.remove_child(player.clone());
+        } else {
+            godot_error!("Attempting to eat player not in tree?");
+        }
+        player.queue_free();
     }
 }
