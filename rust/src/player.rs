@@ -5,7 +5,8 @@ use std::sync::Arc;
 
 use crate::jump_handler::{JumpDetector, JumpHandler};
 use godot::classes::{
-    AnimatedSprite2D, CharacterBody2D, ICharacterBody2D, InputEvent, InputEventScreenTouch, KinematicCollision2D, Timer
+    AnimatedSprite2D, CharacterBody2D, ICharacterBody2D, InputEvent, InputEventScreenTouch,
+    KinematicCollision2D, TileMapLayer, Timer,
 };
 use godot::global::randf_range;
 use godot::prelude::*;
@@ -130,6 +131,29 @@ impl ICharacterBody2D for Player {
             print_collision(&collision);
             if let Some(collider) = collision.get_collider() {
                 godot_print!("Collided with {:?}", collider);
+                if let Some(tile_map_layer) = collider.try_cast::<TileMapLayer>().ok() {
+                    let local_collision = tile_map_layer.to_local(collision.get_position());
+                    let map_coordinates = tile_map_layer.local_to_map(local_collision);
+                    let local_tile_center = tile_map_layer.map_to_local(map_coordinates);
+                    godot_print!("\tcell {map_coordinates}");
+                    if let Some(tile_data) = tile_map_layer.get_cell_tile_data(map_coordinates) {
+                        // This should correspond to the layer I've used in the editor.
+                        const LAYER_ID: i32 = 0;
+                        let count = tile_data.get_collision_polygons_count(LAYER_ID);
+                        godot_print!("\t\thave {count} polygons");
+                        for i in 0..count {
+                            let points = tile_data.get_collision_polygon_points(LAYER_ID, i);
+                            godot_print!("\t\t\tpolygon {i}: {points}");
+                            for point in points.as_slice() {
+                                let local_point = local_tile_center + *point;
+                                let global_point = tile_map_layer.to_global(local_point);
+                                godot_print!("\t\t\t\tglobal: {global_point}");
+                            }
+                        }
+                    } else {
+                        godot_print!("\t\tno tile data??");
+                    }
+                }
                 self.on_surface = true;
 
                 // Reverse the jump animation to land.
@@ -280,5 +304,4 @@ fn print_collision(collision: &Gd<KinematicCollision2D>) {
     godot_print!("\tdepth: {}", collision.get_depth());
     godot_print!("\tlocal shape: {:?}", collision.get_local_shape());
     godot_print!("\tcollider shape: {:?}", collision.get_collider_shape());
-
 }
