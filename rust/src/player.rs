@@ -125,9 +125,15 @@ impl ICharacterBody2D for Player {
         if !self.on_surface {
             self.target_velocity.y += delta as f32 * self.fall_acceleration;
         }
+        let old_position = self.base().get_position();
         let motion = self.target_velocity * delta as f32;
         let collision_opt = self.base_mut().move_and_collide(motion);
         if let Some(collision) = collision_opt {
+            let new_position = self.base().get_position();
+            godot_print!(
+                "moved from {old_position} to {new_position}; diff: {}",
+                new_position - old_position
+            );
             print_collision(&collision);
             if let Some(collider) = collision.get_collider() {
                 godot_print!("Collided with {:?}", collider);
