@@ -170,7 +170,7 @@ impl ICharacterBody2D for Player {
                     .from_end(true)
                     .done();
                 // Note: Assumes just vertical (and horizontal) walls for now.
-                match collision.get_normal() {
+/*                 match collision.get_normal() {
                     Vector2 { x, y: _ } if x > 0.5 => {
                         self.direction = Direction::Right;
                         self.base_mut().set_rotation(PI / 2.0);
@@ -198,7 +198,7 @@ impl ICharacterBody2D for Player {
                         godot_error!("Landed with surprise normal {normal}");
                     }
                 }
-            }
+ */            }
         }
 
         if self.on_surface {
