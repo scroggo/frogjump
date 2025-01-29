@@ -8,6 +8,7 @@ use godot::classes::{
     AnimatedSprite2D, CharacterBody2D, ICharacterBody2D, InputEvent, InputEventScreenTouch,
     KinematicCollision2D, TileMapLayer, Timer,
 };
+use godot::global::cos;
 use godot::global::randf_range;
 use godot::prelude::*;
 
@@ -159,6 +160,17 @@ impl ICharacterBody2D for Player {
                     } else {
                         godot_print!("\t\tno tile data??");
                     }
+                }
+                if collision.get_depth() > 0.0 {
+                    // The player is penetrating the wall. Move back along the
+                    // direction of motion far enough to remove the overlap.
+                    let reverse_motion = -motion.normalized();
+                    let depth_vector = collision.get_depth() * collision.get_normal();
+                    let offset = depth_vector.length() / cos(reverse_motion.angle_to(depth_vector).into()) as f32;
+                    let position = self.base().get_position();
+                    self.base_mut().set_position(position + offset * reverse_motion);
+                    godot_print!("Moving back by {offset} along {reverse_motion} for change of {} from {position} to {}",
+                        offset * reverse_motion, self.base().get_position());
                 }
                 self.on_surface = true;
 
