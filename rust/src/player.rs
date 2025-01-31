@@ -138,29 +138,6 @@ impl ICharacterBody2D for Player {
             print_collision(&collision);
             if let Some(collider) = collision.get_collider() {
                 godot_print!("Collided with {:?}", collider);
-                if let Some(tile_map_layer) = collider.try_cast::<TileMapLayer>().ok() {
-                    let local_collision = tile_map_layer.to_local(collision.get_position());
-                    let map_coordinates = tile_map_layer.local_to_map(local_collision);
-                    let local_tile_center = tile_map_layer.map_to_local(map_coordinates);
-                    godot_print!("\tcell {map_coordinates}");
-                    if let Some(tile_data) = tile_map_layer.get_cell_tile_data(map_coordinates) {
-                        // This should correspond to the layer I've used in the editor.
-                        const LAYER_ID: i32 = 0;
-                        let count = tile_data.get_collision_polygons_count(LAYER_ID);
-                        godot_print!("\t\thave {count} polygons");
-                        for i in 0..count {
-                            let points = tile_data.get_collision_polygon_points(LAYER_ID, i);
-                            godot_print!("\t\t\tpolygon {i}: {points}");
-                            for point in points.as_slice() {
-                                let local_point = local_tile_center + *point;
-                                let global_point = tile_map_layer.to_global(local_point);
-                                godot_print!("\t\t\t\tglobal: {global_point}");
-                            }
-                        }
-                    } else {
-                        godot_print!("\t\tno tile data??");
-                    }
-                }
 
                 // TODO: The check for `is_zero_approx` avoids a divide by zero, but is only
                 // necessary because the manual rotation doesn't (yet) ensure that it doesn't
@@ -175,6 +152,15 @@ impl ICharacterBody2D for Player {
                     self.base_mut().set_position(position + offset * reverse_motion);
                     godot_print!("Moving back by {offset} along {reverse_motion} for change of {} from {position} to {}",
                         offset * reverse_motion, self.base().get_position());
+                }
+                let collision_position = collision.get_position();
+                if let Some(points) = get_collider_points(collider, &collision_position) {
+                    godot_print!("Returned points: {points}");
+                    if points.contains(collision_position) {
+                        godot_print!("hit a corner!");
+                        // TODO: If we hit the corner exactly, we should pick a side and behave
+                        // similarly as if we landed directly on that side.
+                    }
                 }
                 self.on_surface = true;
 
@@ -323,4 +309,38 @@ fn print_collision(collision: &Gd<KinematicCollision2D>) {
     godot_print!("\tdepth: {}", collision.get_depth());
     godot_print!("\tlocal shape: {:?}", collision.get_local_shape());
     godot_print!("\tcollider shape: {:?}", collision.get_collider_shape());
+}
+
+fn get_collider_points(collider: Gd<Object>, collision_position: &Vector2) -> Option<PackedVector2Array> {
+    // As of this writing, the player only detects collisions with the environment, i.e.
+    // walls/ceilings/trees the player can land on. So this should always be a
+    // `TileMapLayer`.
+    if let Some(tile_map_layer) = collider.try_cast::<TileMapLayer>().ok() {
+        let local_collision = tile_map_layer.to_local(*collision_position);
+        let map_coordinates = tile_map_layer.local_to_map(local_collision);
+        let local_tile_center = tile_map_layer.map_to_local(map_coordinates);
+        godot_print!("\tcell {map_coordinates}");
+        if let Some(tile_data) = tile_map_layer.get_cell_tile_data(map_coordinates) {
+            // This should correspond to the layer I've used in the editor.
+            const LAYER_ID: i32 = 0;
+            let count = tile_data.get_collision_polygons_count(LAYER_ID);
+            if count > 1 {
+                godot_error!("Need to handle {count} polygons in one tile!");
+            }
+
+            let mut points = tile_data.get_collision_polygon_points(LAYER_ID, 0);
+            godot_print!("\t\t\tpolygon 0: {points}");
+            for point in points.as_mut_slice() {
+                let local_point = local_tile_center + *point;
+                *point = tile_map_layer.to_global(local_point);
+                godot_print!("\t\t\t\tglobal: {}", *point);
+            }
+            return Some(points);
+        } else {
+            godot_error!("\t\tno tile data??");
+        }
+    } else {
+        godot_error!("Collided with something other than a TileMapLayer??");
+    }
+    None
 }
