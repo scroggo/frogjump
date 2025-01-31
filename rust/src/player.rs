@@ -161,7 +161,11 @@ impl ICharacterBody2D for Player {
                         godot_print!("\t\tno tile data??");
                     }
                 }
-                if collision.get_depth() > 0.0 {
+
+                // TODO: The check for `is_zero_approx` avoids a divide by zero, but is only
+                // necessary because the manual rotation doesn't (yet) ensure that it doesn't
+                // create a new collision.
+                if collision.get_depth() > 0.0  && !motion.is_zero_approx() {
                     // The player is penetrating the wall. Move back along the
                     // direction of motion far enough to remove the overlap.
                     let reverse_motion = -motion.normalized();
