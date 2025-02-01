@@ -5,11 +5,11 @@ use std::sync::Arc;
 
 use crate::jump_handler::{JumpDetector, JumpHandler};
 use godot::classes::{
-    AnimatedSprite2D, CharacterBody2D, ICharacterBody2D, InputEvent, InputEventScreenTouch,
-    KinematicCollision2D, TileMapLayer, Timer,
+    AnimatedSprite2D, CharacterBody2D, CollisionShape2D, ICharacterBody2D, InputEvent,
+    InputEventScreenTouch, KinematicCollision2D, TileMapLayer, Timer,
 };
-use godot::global::cos;
 use godot::global::randf_range;
+use godot::global::{cos, pow};
 use godot::prelude::*;
 
 struct TouchJumpHandler {
@@ -63,6 +63,13 @@ pub struct PlayerInfo {
     pos: Vector2,
     vel: Vector2,
     dir: Direction,
+}
+
+#[derive(Debug, Clone, Copy)]
+struct LandingSurface {
+    a: Vector2,
+    b: Vector2,
+    normal: Vector2,
 }
 
 #[derive(GodotClass)]
@@ -142,17 +149,20 @@ impl ICharacterBody2D for Player {
                 // TODO: The check for `is_zero_approx` avoids a divide by zero, but is only
                 // necessary because the manual rotation doesn't (yet) ensure that it doesn't
                 // create a new collision.
-                if collision.get_depth() > 0.0  && !motion.is_zero_approx() {
+                if collision.get_depth() > 0.0 && !motion.is_zero_approx() {
                     // The player is penetrating the wall. Move back along the
                     // direction of motion far enough to remove the overlap.
                     let reverse_motion = -motion.normalized();
                     let depth_vector = collision.get_depth() * collision.get_normal();
-                    let offset = depth_vector.length() / cos(reverse_motion.angle_to(depth_vector).into()) as f32;
+                    let offset = depth_vector.length()
+                        / cos(reverse_motion.angle_to(depth_vector).into()) as f32;
                     let position = self.base().get_position();
-                    self.base_mut().set_position(position + offset * reverse_motion);
+                    self.base_mut()
+                        .set_position(position + offset * reverse_motion);
                     godot_print!("Moving back by {offset} along {reverse_motion} for change of {} from {position} to {}",
                         offset * reverse_motion, self.base().get_position());
                 }
+                let mut landing_surface: Option<LandingSurface> = None;
                 let collision_position = collision.get_position();
                 if let Some(points) = get_collider_points(collider, &collision_position) {
                     godot_print!("Returned points: {points}");
@@ -160,8 +170,11 @@ impl ICharacterBody2D for Player {
                         godot_print!("hit a corner!");
                         // TODO: If we hit the corner exactly, we should pick a side and behave
                         // similarly as if we landed directly on that side.
+                        landing_surface =
+                            self.pick_side_to_land_on(&points, &collision_position, motion);
                     }
                 }
+                godot_print!("Landing surface: {landing_surface:?}");
                 self.on_surface = true;
 
                 // Reverse the jump animation to land.
@@ -171,26 +184,26 @@ impl ICharacterBody2D for Player {
                     .custom_speed(-3.0)
                     .from_end(true)
                     .done();
-                // Note: Assumes just vertical (and horizontal) walls for now.
-                match collision.get_normal() {
+                let normal = landing_surface
+                    .map_or_else(|| collision.get_normal(), |surface| surface.normal);
+                let new_angle = normal.angle() + PI / 2.0;
+                godot_print!("rotating to angle {}", new_angle);
+                self.base_mut().set_rotation(new_angle);
+                match normal {
                     Vector2 { x, y: _ } if x > 0.5 => {
                         self.direction = Direction::Right;
-                        self.base_mut().set_rotation(PI / 2.0);
                         self.sprite().set_flip_h(false);
                     }
                     Vector2 { x, y: _ } if x < -0.5 => {
                         self.direction = Direction::Left;
-                        self.base_mut().set_rotation(-PI / 2.0);
                         self.sprite().set_flip_h(true);
                     }
                     Vector2 { x: _, y } if y > 0.5 => {
                         self.on_ceiling = true;
-                        self.base_mut().set_rotation(PI);
                         let flip_h = self.direction == Direction::Left;
                         self.sprite().set_flip_h(flip_h);
                     }
                     Vector2 { x: _, y } if y < -0.5 => {
-                        self.base_mut().set_rotation(0.0);
                         let flip_h = self.direction == Direction::Right;
                         self.sprite().set_flip_h(flip_h);
                     }
@@ -296,6 +309,94 @@ impl Player {
         self.target_velocity = info.vel;
         self.direction = info.dir;
     }
+
+    // TODO: `collision_location` need not be a reference
+    fn pick_side_to_land_on(
+        &self,
+        points: &PackedVector2Array,
+        collision_location: &Vector2,
+        player_motion: Vector2,
+    ) -> Option<LandingSurface> {
+        let index = points
+            .find(*collision_location, None)
+            .expect("points should contain the collision!");
+        let prior_point_index = prior_point(points, index);
+        let next_point_index = next_point(points, index);
+        let mut end_point: Option<Vector2> = None;
+        if self.can_land_on_surface(collision_location, &points[prior_point_index]) {
+            // TODO: Pick this one!
+            godot_print!(
+                "land on prior side, with point {}",
+                &points[prior_point_index]
+            );
+            end_point = Some(points[prior_point_index]);
+        } else if self.can_land_on_surface(collision_location, &points[next_point_index]) {
+            // TODO: Pick this one!
+            godot_print!(
+                "land on next side, with point {}",
+                &points[next_point_index]
+            );
+            end_point = Some(points[next_point_index]);
+        }
+        if end_point.is_none() {
+            // TODO: We might hit this case if you land close to the branch - then we'll have to add
+            // in the adjacent tile. Also the bottom left corner of the vine is too narrow.
+            godot_error!("Couldn't land anywhere!");
+            return None;
+        }
+        if player_motion.is_zero_approx() {
+            // I hope to be able to avoid this by properly positioning the player such that new
+            // collisions are not generated.
+            godot_error!("No player motion!");
+            return None;
+        }
+
+        // Compute the normal for the surface. `orthogonal()` gives the proper angle. We use the
+        // player's motion to find the proper direction.
+        let ortho = (end_point.unwrap() - *collision_location).orthogonal();
+        let normal = (-player_motion).project(ortho).normalized();
+        Some(LandingSurface {
+            a: *collision_location,
+            b: end_point.unwrap(),
+            normal,
+        })
+    }
+
+    // For a surface with endpoints (e.g. corners) `a` and `b`,
+    // return whether there is enough room for the player to land on the surface.
+    fn can_land_on_surface(&self, a: &Vector2, b: &Vector2) -> bool {
+        (*a - *b).length_squared() > pow(self.width() as f64, 2.0) as f32
+    }
+
+    fn width(&self) -> f32 {
+        let rect = self
+            .base()
+            .get_node_as::<CollisionShape2D>("CollisionShape2D")
+            .get_shape()
+            .unwrap()
+            .get_rect();
+        godot_print!("bounding box: {rect:?}");
+        rect.size.x
+    }
+}
+
+// TODO: Probably better to return a reference? Or at least change the name?
+fn next_point(points: &PackedVector2Array, i: usize) -> usize {
+    assert!(i < points.len());
+    if i == points.len() - 1 {
+        0
+    } else {
+        i + 1
+    }
+}
+// TODO: Same
+fn prior_point(points: &PackedVector2Array, i: usize) -> usize {
+    assert!(i < points.len());
+    if i == 0 {
+        points.len() - 1
+    } else {
+        i - 1
+    }
 }
 
 fn print_collision(collision: &Gd<KinematicCollision2D>) {
@@ -311,7 +412,10 @@ fn print_collision(collision: &Gd<KinematicCollision2D>) {
     godot_print!("\tcollider shape: {:?}", collision.get_collider_shape());
 }
 
-fn get_collider_points(collider: Gd<Object>, collision_position: &Vector2) -> Option<PackedVector2Array> {
+fn get_collider_points(
+    collider: Gd<Object>,
+    collision_position: &Vector2,
+) -> Option<PackedVector2Array> {
     // As of this writing, the player only detects collisions with the environment, i.e.
     // walls/ceilings/trees the player can land on. So this should always be a
     // `TileMapLayer`.
