@@ -191,7 +191,7 @@ impl Tutorial {
 
     fn load_level(&self) {
         if let Some(mut tree) = self.base().get_tree() {
-            tree.change_scene_to_file("res://level.tscn");
+            tree.change_scene_to_file("res://levels/level.tscn");
         }
     }
 }
