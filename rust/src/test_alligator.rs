@@ -46,7 +46,7 @@ impl TestAlligator {
             return fake_player;
         }
         // Respawn.
-        let scene = load::<PackedScene>("res://fake_player.tscn");
+        let scene = load::<PackedScene>("res://test_scenes/fake_player.tscn");
         let mut fake_player = scene.instantiate().unwrap().cast::<CharacterBody2D>();
         fake_player.set_name(name);
         self.base_mut().add_child(fake_player.clone());

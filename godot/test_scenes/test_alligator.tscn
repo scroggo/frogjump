@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://bo3t0joauu8lt"]
+
+[ext_resource type="PackedScene" uid="uid://bfdp35wgoi0sy" path="res://alligator.tscn" id="1_uw0tf"]
+[ext_resource type="PackedScene" uid="uid://cylwq8peencac" path="res://test_scenes/fake_player.tscn" id="2_vccn1"]
+
+[node name="Node2D" type="TestAlligator"]
+
+[node name="Alligator" parent="." instance=ExtResource("1_uw0tf")]
+z_index = 1
+position = Vector2(351, 282)
+
+[node name="FakePlayer" parent="." instance=ExtResource("2_vccn1")]
