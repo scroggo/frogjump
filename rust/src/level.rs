@@ -15,6 +15,14 @@ struct Level {
     // might be interesting to use later.
     #[export]
     spawn_many_frogs: bool,
+
+    // Enable some testing-only features.
+    // TODO: Should this just depend on Debug vs Release?
+    #[export]
+    is_test_level: bool,
+
+    #[export]
+    next_level: Option<Gd<PackedScene>>,
     base: Base<TileMapLayer>,
 }
 
@@ -24,6 +32,8 @@ impl ITileMapLayer for Level {
         Self {
             player_respawn_info: PlayerInfo::default(),
             spawn_many_frogs: false,
+            is_test_level: false,
+            next_level: None,
             base,
         }
     }
@@ -47,6 +57,22 @@ impl ITileMapLayer for Level {
                 && (self.player().is_none() || self.spawn_many_frogs)
             {
                 self.respawn();
+            }
+            if self.is_test_level {
+                match key_event.get_keycode() {
+                    Key::ESCAPE => {
+                        self.base().get_tree().unwrap().reload_current_scene();
+                    }
+                    Key::ENTER => {
+                        if let Some(scene) = &self.next_level {
+                            self.base()
+                                .get_tree()
+                                .unwrap()
+                                .change_scene_to_packed(scene);
+                        }
+                    }
+                    _ => (),
+                }
             }
             return;
         }
