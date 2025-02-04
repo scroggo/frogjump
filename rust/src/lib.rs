@@ -6,6 +6,7 @@ mod dragon_fly;
 mod jump_handler;
 mod jump_meter;
 mod level;
+mod math;
 mod player;
 mod test_alligator;
 mod toucan;

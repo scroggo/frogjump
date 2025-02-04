@@ -4,6 +4,7 @@ use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
 
 use crate::jump_handler::{JumpDetector, JumpHandler};
+use crate::math;
 use godot::classes::{
     AnimatedSprite2D, CharacterBody2D, CollisionShape2D, ICharacterBody2D, InputEvent,
     InputEventScreenTouch, KinematicCollision2D, TileMapLayer, Timer,
@@ -396,14 +397,10 @@ impl Player {
             return None;
         }
 
-        // Compute the normal for the surface. `orthogonal()` gives the proper angle. We use the
-        // player's motion to find the proper direction.
-        let ortho = (end_point.unwrap() - collision_location).orthogonal();
-        let normal = (-player_motion).project(ortho).normalized();
         Some(LandingSurface {
             a: collision_location,
             b: end_point.unwrap(),
-            normal,
+            normal: math::normal(end_point.unwrap(), collision_location, player_motion),
         })
     }
 
