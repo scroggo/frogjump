@@ -162,11 +162,13 @@ impl ICharacterBody2D for Player {
                     godot_print!("Moving back by {offset} along {reverse_motion} for change of {} from {position} to {}",
                         offset * reverse_motion, self.base().get_position());
                 }
+                let mut hit_a_corner = false;
                 let mut landing_surface: Option<LandingSurface> = None;
                 let collision_position = collision.get_position();
                 if let Some(points) = get_collider_points(collider, &collision_position) {
                     godot_print!("Returned points: {points}");
                     if points.contains(collision_position) {
+                        hit_a_corner = true;
                         godot_print!("hit a corner!");
                         // TODO: If we hit the corner exactly, we should pick a side and behave
                         // similarly as if we landed directly on that side.
@@ -184,6 +186,7 @@ impl ICharacterBody2D for Player {
                     .custom_speed(-3.0)
                     .from_end(true)
                     .done();
+
                 let normal = landing_surface
                     .map_or_else(|| collision.get_normal(), |surface| surface.normal);
                 let new_angle = normal.angle() + PI / 2.0;
@@ -209,6 +212,49 @@ impl ICharacterBody2D for Player {
                     }
                     normal => {
                         godot_error!("Landed with surprise normal {normal}");
+                    }
+                } // match
+
+                // Now that we've rotated the player in the proper direction,
+                // move them so they are properly on their new surface.
+                if hit_a_corner && landing_surface.is_some() {
+                    // Move away from the corner such that the player fits on
+                    // the surface.
+                    // When landing on a corner, `a` represents the corner.
+                    // TODO: This is totally arbitrary. Enforce/make clearer.
+                    let surface_direction =
+                        (landing_surface.unwrap().b - landing_surface.unwrap().a).normalized();
+
+                    // FIXME: In `test_corner.tscn`, a full strength jump
+                    // collides with the corner, and this code adjusts the
+                    // player so they line up well with the new surface. But it
+                    // is a little jarring to warp the player like this. `SLOP`
+                    // helps a little bit - since the frog's feet don't fill the
+                    // bounding box, we can warp the frog a little less. I'll
+                    // revisit this once the other landings are done. It may be
+                    // that this looks good enough, as landing on a corner
+                    // should not be the typical case. Some alternatives:
+                    // - a new sprite with the frog's legs closer together
+                    // - landing on top of the branch, as though the frog
+                    //   went through it
+                    const SLOP: f32 = 0.7;
+                    let mut new_player_position = landing_surface.unwrap().a
+                        + (self.width() / 2.0) * surface_direction * SLOP;
+
+                    // Use the normal to move off of the surface.
+                    new_player_position += normal * (self.height() / 2.0);
+
+                    self.base_mut().set_position(new_player_position);
+
+                    // Just to make sure I didn't create a new overlap:
+                    if let Some(collision) = self
+                        .base_mut()
+                        .move_and_collide_ex(Vector2::ZERO)
+                        .test_only(true)
+                        .done()
+                    {
+                        godot_error!("Created a new collision!");
+                        print_collision(&collision);
                     }
                 }
             }
@@ -368,15 +414,20 @@ impl Player {
         (*a - *b).length_squared() > pow(self.width() as f64, 2.0) as f32
     }
 
-    fn width(&self) -> f32 {
-        let rect = self
-            .base()
+    fn bounding_box(&self) -> Rect2 {
+        self.base()
             .get_node_as::<CollisionShape2D>("CollisionShape2D")
             .get_shape()
             .unwrap()
-            .get_rect();
-        godot_print!("bounding box: {rect:?}");
-        rect.size.x
+            .get_rect()
+    }
+
+    fn width(&self) -> f32 {
+        self.bounding_box().size.x
+    }
+
+    fn height(&self) -> f32 {
+        self.bounding_box().size.y
     }
 }
 
