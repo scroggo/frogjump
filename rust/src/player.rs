@@ -167,13 +167,13 @@ impl ICharacterBody2D for Player {
                 let collision_position = collision.get_position();
                 if let Some(points) = get_collider_points(collider, &collision_position) {
                     godot_print!("Returned points: {points}");
-                    if points.contains(collision_position) {
+                    if let Some(index) = points.find(collision_position, None) {
                         hit_a_corner = true;
                         godot_print!("hit a corner!");
                         // TODO: If we hit the corner exactly, we should pick a side and behave
                         // similarly as if we landed directly on that side.
                         landing_surface =
-                            self.pick_side_to_land_on(&points, &collision_position, motion);
+                            self.pick_side_to_land_on_from_corner(&points, index, motion);
                     }
                 }
                 godot_print!("Landing surface: {landing_surface:?}");
@@ -356,27 +356,26 @@ impl Player {
         self.direction = info.dir;
     }
 
-    // TODO: `collision_location` need not be a reference
-    fn pick_side_to_land_on(
+    fn pick_side_to_land_on_from_corner(
         &self,
         points: &PackedVector2Array,
-        collision_location: &Vector2,
+        index: usize,
         player_motion: Vector2,
     ) -> Option<LandingSurface> {
-        let index = points
-            .find(*collision_location, None)
-            .expect("points should contain the collision!");
+        let collision_location = points
+            .get(index)
+            .expect("Bad index to pick_side_to_land_on_from_corner!");
         let prior_point_index = prior_point(points, index);
         let next_point_index = next_point(points, index);
         let mut end_point: Option<Vector2> = None;
-        if self.can_land_on_surface(collision_location, &points[prior_point_index]) {
+        if self.can_land_on_surface(&collision_location, &points[prior_point_index]) {
             // TODO: Pick this one!
             godot_print!(
                 "land on prior side, with point {}",
                 &points[prior_point_index]
             );
             end_point = Some(points[prior_point_index]);
-        } else if self.can_land_on_surface(collision_location, &points[next_point_index]) {
+        } else if self.can_land_on_surface(&collision_location, &points[next_point_index]) {
             // TODO: Pick this one!
             godot_print!(
                 "land on next side, with point {}",
@@ -399,10 +398,10 @@ impl Player {
 
         // Compute the normal for the surface. `orthogonal()` gives the proper angle. We use the
         // player's motion to find the proper direction.
-        let ortho = (end_point.unwrap() - *collision_location).orthogonal();
+        let ortho = (end_point.unwrap() - collision_location).orthogonal();
         let normal = (-player_motion).project(ortho).normalized();
         Some(LandingSurface {
-            a: *collision_location,
+            a: collision_location,
             b: end_point.unwrap(),
             normal,
         })
