@@ -181,8 +181,7 @@ impl ICharacterBody2D for Player {
                     if let Some(index) = points.find(collision_position, None) {
                         hit_a_corner = true;
                         godot_print!("hit a corner!");
-                        // TODO: If we hit the corner exactly, we should pick a side and behave
-                        // similarly as if we landed directly on that side.
+
                         landing_surface = self.pick_side_to_land_on_from_corner(
                             &points,
                             index,
