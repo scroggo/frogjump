@@ -60,6 +60,7 @@ impl Not for Direction {
 // Useful info for spawning a new Player.
 #[derive(Default, Clone, Copy)]
 pub struct PlayerInfo {
+    // Position local to the parent.
     pos: Vector2,
     vel: Vector2,
     dir: Direction,
@@ -434,7 +435,13 @@ impl Player {
     // they appear to be on the surface.
     // Note: This method assumes the surface is large enough.
     fn land_on_surface(&mut self, position: Vector2, normal: Vector2) {
-        let new_player_position = position + normal * (self.height() / 2.0);
+        let mut new_player_position = position + normal * (self.height() / 2.0);
+        new_player_position = self
+            .base()
+            .get_parent()
+            .unwrap()
+            .cast::<Node2D>()
+            .to_local(new_player_position);
 
         self.base_mut().set_position(new_player_position);
 
