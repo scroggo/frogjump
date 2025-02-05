@@ -9,8 +9,7 @@ use godot::classes::{
     AnimatedSprite2D, CharacterBody2D, CollisionShape2D, ICharacterBody2D, InputEvent,
     InputEventScreenTouch, KinematicCollision2D, TileMapLayer, Timer,
 };
-use godot::global::randf_range;
-use godot::global::{cos, pow};
+use godot::global::{absf, cos, pow, randf_range};
 use godot::prelude::*;
 
 struct TouchJumpHandler {
@@ -175,6 +174,9 @@ impl ICharacterBody2D for Player {
                         // similarly as if we landed directly on that side.
                         landing_surface =
                             self.pick_side_to_land_on_from_corner(&points, index, motion);
+                    } else {
+                        landing_surface =
+                            self.pick_side_to_land_on(&points, collision_position, motion);
                     }
                 }
                 godot_print!("Landing surface: {landing_surface:?}");
@@ -218,44 +220,35 @@ impl ICharacterBody2D for Player {
 
                 // Now that we've rotated the player in the proper direction,
                 // move them so they are properly on their new surface.
-                if hit_a_corner && landing_surface.is_some() {
-                    // Move away from the corner such that the player fits on
-                    // the surface.
-                    // When landing on a corner, `a` represents the corner.
-                    // TODO: This is totally arbitrary. Enforce/make clearer.
-                    let surface_direction =
-                        (landing_surface.unwrap().b - landing_surface.unwrap().a).normalized();
+                if landing_surface.is_some() {
+                    if hit_a_corner {
+                        // Move away from the corner such that the player fits on
+                        // the surface.
+                        // When landing on a corner, `a` represents the corner.
+                        // TODO: This is totally arbitrary. Enforce/make clearer.
+                        let surface_direction =
+                            (landing_surface.unwrap().b - landing_surface.unwrap().a).normalized();
 
-                    // FIXME: In `test_corner.tscn`, a full strength jump
-                    // collides with the corner, and this code adjusts the
-                    // player so they line up well with the new surface. But it
-                    // is a little jarring to warp the player like this. `SLOP`
-                    // helps a little bit - since the frog's feet don't fill the
-                    // bounding box, we can warp the frog a little less. I'll
-                    // revisit this once the other landings are done. It may be
-                    // that this looks good enough, as landing on a corner
-                    // should not be the typical case. Some alternatives:
-                    // - a new sprite with the frog's legs closer together
-                    // - landing on top of the branch, as though the frog
-                    //   went through it
-                    const SLOP: f32 = 0.7;
-                    let mut new_player_position = landing_surface.unwrap().a
-                        + (self.width() / 2.0) * surface_direction * SLOP;
+                        // FIXME: In `test_corner.tscn`, a full strength jump
+                        // collides with the corner, and this code adjusts the
+                        // player so they line up well with the new surface. But it
+                        // is a little jarring to warp the player like this. `SLOP`
+                        // helps a little bit - since the frog's feet don't fill the
+                        // bounding box, we can warp the frog a little less. I'll
+                        // revisit this once the other landings are done. It may be
+                        // that this looks good enough, as landing on a corner
+                        // should not be the typical case. Some alternatives:
+                        // - a new sprite with the frog's legs closer together
+                        // - landing on top of the branch, as though the frog
+                        //   went through it
+                        const SLOP: f32 = 0.7;
+                        let new_player_position = landing_surface.unwrap().a
+                            + (self.width() / 2.0) * surface_direction * SLOP;
 
-                    // Use the normal to move off of the surface.
-                    new_player_position += normal * (self.height() / 2.0);
-
-                    self.base_mut().set_position(new_player_position);
-
-                    // Just to make sure I didn't create a new overlap:
-                    if let Some(collision) = self
-                        .base_mut()
-                        .move_and_collide_ex(Vector2::ZERO)
-                        .test_only(true)
-                        .done()
-                    {
-                        godot_error!("Created a new collision!");
-                        print_collision(&collision);
+                        // Use the normal to move off of the surface.
+                        self.land_on_surface(new_player_position, normal);
+                    } else {
+                        self.land_on_surface(collision_position, normal);
                     }
                 }
             }
@@ -357,6 +350,39 @@ impl Player {
         self.direction = info.dir;
     }
 
+    fn pick_side_to_land_on(
+        &self,
+        points: &PackedVector2Array,
+        collision_position: Vector2,
+        player_motion: Vector2,
+    ) -> Option<LandingSurface> {
+        for i in 0..points.len() {
+            let i2 = next_point(points, i);
+            let a = points[i];
+            let b = points[i2];
+
+            // Construct a plane from a normal and a point. See
+            // https://docs.godotengine.org/en/stable/tutorials/math/vectors_advanced.html#constructing-a-plane-in-2d
+            let n = math::normal(a, b, player_motion);
+            let d = n.dot(a);
+
+            // If the collision is in this plane, this is the side we landed on.
+            // Check the distance to the plane and use a tolerance.
+            let distance = n.dot(collision_position) - d;
+            // TODO: Fine-tune this tolerance. The first collision I measured
+            // had a `distance` of 0, so maybe it's not necessary at all, but
+            // I would expect that there might be rounding errors.
+            const TOLERANCE: f64 = 0.05;
+            if absf(distance as f64) < TOLERANCE {
+                godot_print!("Collision {collision_position} is {distance} from side {a}-{b}");
+                // TODO: Make sure the side is long enough.
+                // TODO: Check if it's close to the corner?
+                return Some(LandingSurface { a, b, normal: n });
+            }
+        }
+        None
+    }
+
     fn pick_side_to_land_on_from_corner(
         &self,
         points: &PackedVector2Array,
@@ -402,6 +428,26 @@ impl Player {
             b: end_point.unwrap(),
             normal: math::normal(end_point.unwrap(), collision_location, player_motion),
         })
+    }
+
+    // Given a `position` on a surface and its `normal`, adjust the player so
+    // they appear to be on the surface.
+    // Note: This method assumes the surface is large enough.
+    fn land_on_surface(&mut self, position: Vector2, normal: Vector2) {
+        let new_player_position = position + normal * (self.height() / 2.0);
+
+        self.base_mut().set_position(new_player_position);
+
+        // Just to make sure I didn't create a new overlap:
+        if let Some(collision) = self
+            .base_mut()
+            .move_and_collide_ex(Vector2::ZERO)
+            .test_only(true)
+            .done()
+        {
+            godot_error!("Created a new collision!");
+            print_collision(&collision);
+        }
     }
 
     // For a surface with endpoints (e.g. corners) `a` and `b`,
