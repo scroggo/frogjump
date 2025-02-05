@@ -14,3 +14,11 @@ tile_set = ExtResource("1_5m76m")
 direction = "Right"
 on_surface = true
 position = Vector2(31, 447)
+
+[node name="Label" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "When landing on a corner with one side that is too small to land on, verify we land
+on the larger side.
+
+A full strength jump reproduces the desired scenario."
