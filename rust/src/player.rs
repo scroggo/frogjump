@@ -6,7 +6,7 @@ use std::sync::Arc;
 use crate::jump_handler::{JumpDetector, JumpHandler};
 use crate::math;
 use godot::classes::{
-    AnimatedSprite2D, CharacterBody2D, CollisionShape2D, ICharacterBody2D, InputEvent,
+    AnimatedSprite2D, CharacterBody2D, CollisionShape2D, Geometry2D, ICharacterBody2D, InputEvent,
     InputEventScreenTouch, KinematicCollision2D, TileMapLayer, Timer,
 };
 use godot::global::{absf, cos, pow, randf_range};
@@ -522,6 +522,7 @@ fn print_collision(collision: &Gd<KinematicCollision2D>) {
     godot_print!("\tcollider shape: {:?}", collision.get_collider_shape());
 }
 
+// Returns global coordinates.
 fn get_collider_points(
     collider: Gd<Object>,
     collision_position: &Vector2,
@@ -532,29 +533,67 @@ fn get_collider_points(
     if let Some(tile_map_layer) = collider.try_cast::<TileMapLayer>().ok() {
         let local_collision = tile_map_layer.to_local(*collision_position);
         let map_coordinates = tile_map_layer.local_to_map(local_collision);
-        let local_tile_center = tile_map_layer.map_to_local(map_coordinates);
-        godot_print!("\tcell {map_coordinates}");
-        if let Some(tile_data) = tile_map_layer.get_cell_tile_data(map_coordinates) {
-            // This should correspond to the layer I've used in the editor.
-            const LAYER_ID: i32 = 0;
-            let count = tile_data.get_collision_polygons_count(LAYER_ID);
-            if count > 1 {
-                godot_error!("Need to handle {count} polygons in one tile!");
-            }
-
-            let mut points = tile_data.get_collision_polygon_points(LAYER_ID, 0);
-            godot_print!("\t\t\tpolygon 0: {points}");
-            for point in points.as_mut_slice() {
-                let local_point = local_tile_center + *point;
-                *point = tile_map_layer.to_global(local_point);
-                godot_print!("\t\t\t\tglobal: {}", *point);
-            }
-            return Some(points);
-        } else {
-            godot_error!("\t\tno tile data??");
-        }
+        return get_collider_points_from_tile_map_layer(
+            &tile_map_layer,
+            map_coordinates,
+            Some(local_collision),
+        );
     } else {
         godot_error!("Collided with something other than a TileMapLayer??");
     }
     None
+}
+
+// Returns global coordinates.
+fn get_collider_points_from_tile_map_layer(
+    tile_map_layer: &Gd<TileMapLayer>,
+    map_coordinates: Vector2i,
+    local_collision: Option<Vector2>,
+) -> Option<PackedVector2Array> {
+    let local_tile_center = tile_map_layer.map_to_local(map_coordinates);
+    if let Some(tile_data) = tile_map_layer.get_cell_tile_data(map_coordinates) {
+        // This should correspond to the layer I've used in the editor.
+        const LAYER_ID: i32 = 0;
+        let count = tile_data.get_collision_polygons_count(LAYER_ID);
+        if count > 1 {
+            godot_error!("Need to handle {count} polygons in one tile!");
+        }
+
+        let mut points = tile_data.get_collision_polygon_points(LAYER_ID, 0);
+        godot_print!("\t\t\tpolygon 0: {points}");
+        for point in points.as_mut_slice() {
+            let local_point = local_tile_center + *point;
+            *point = tile_map_layer.to_global(local_point);
+            godot_print!("\t\t\t\tglobal: {}", *point);
+        }
+        if local_collision.is_some() {
+            // Check for collisions that are directly on the edge of the tile.
+            // Note: This assumes square tiles.
+            // TODO: Check for other edges.
+            let tile_width = tile_map_layer.get_tile_set().unwrap().get_tile_size().x as f32;
+            if local_collision.unwrap().x == local_tile_center.x - tile_width / 2.0 {
+                let left_map_coord = map_coordinates + Vector2i::LEFT;
+                if let Some(left_points) =
+                    get_collider_points_from_tile_map_layer(tile_map_layer, left_map_coord, None)
+                {
+                    let polygon_array =
+                        Geometry2D::singleton().merge_polygons(&left_points, &points);
+                    if polygon_array.len() == 1 {
+                        godot_print!("have a new merged polygon!");
+                        return Some(polygon_array.at(0));
+                    } else {
+                        godot_print!(
+                            "Merge resulted in {} polygons: {polygon_array}",
+                            polygon_array.len()
+                        );
+                    }
+                } else {
+                    godot_print!("\tcouldn't get tile data to the left!")
+                }
+            }
+        }
+        return Some(points);
+    } else {
+        return None;
+    }
 }
