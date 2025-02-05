@@ -73,6 +73,16 @@ struct LandingSurface {
     normal: Vector2,
 }
 
+impl LandingSurface {
+    fn new(a: Vector2, b: Vector2, player_motion: Vector2) -> LandingSurface {
+        LandingSurface {
+            a,
+            b,
+            normal: math::normal(a, b, player_motion),
+        }
+    }
+}
+
 #[derive(GodotClass)]
 #[class(base=CharacterBody2D)]
 pub struct Player {
@@ -173,8 +183,12 @@ impl ICharacterBody2D for Player {
                         godot_print!("hit a corner!");
                         // TODO: If we hit the corner exactly, we should pick a side and behave
                         // similarly as if we landed directly on that side.
-                        landing_surface =
-                            self.pick_side_to_land_on_from_corner(&points, index, motion);
+                        landing_surface = self.pick_side_to_land_on_from_corner(
+                            &points,
+                            index,
+                            motion,
+                            collision.get_normal(),
+                        );
                     } else {
                         landing_surface =
                             self.pick_side_to_land_on(&points, collision_position, motion);
@@ -389,34 +403,8 @@ impl Player {
         points: &PackedVector2Array,
         index: usize,
         player_motion: Vector2,
+        collision_normal: Vector2,
     ) -> Option<LandingSurface> {
-        let collision_location = points
-            .get(index)
-            .expect("Bad index to pick_side_to_land_on_from_corner!");
-        let prior_point_index = prior_point(points, index);
-        let next_point_index = next_point(points, index);
-        let mut end_point: Option<Vector2> = None;
-        if self.can_land_on_surface(&collision_location, &points[prior_point_index]) {
-            // TODO: Pick this one!
-            godot_print!(
-                "land on prior side, with point {}",
-                &points[prior_point_index]
-            );
-            end_point = Some(points[prior_point_index]);
-        } else if self.can_land_on_surface(&collision_location, &points[next_point_index]) {
-            // TODO: Pick this one!
-            godot_print!(
-                "land on next side, with point {}",
-                &points[next_point_index]
-            );
-            end_point = Some(points[next_point_index]);
-        }
-        if end_point.is_none() {
-            // TODO: We might hit this case if you land close to the branch - then we'll have to add
-            // in the adjacent tile. Also the bottom left corner of the vine is too narrow.
-            godot_error!("Couldn't land anywhere!");
-            return None;
-        }
         if player_motion.is_zero_approx() {
             // I hope to be able to avoid this by properly positioning the player such that new
             // collisions are not generated.
@@ -424,11 +412,35 @@ impl Player {
             return None;
         }
 
-        Some(LandingSurface {
-            a: collision_location,
-            b: end_point.unwrap(),
-            normal: math::normal(end_point.unwrap(), collision_location, player_motion),
-        })
+        let collision_location = points
+            .get(index)
+            .expect("Bad index to pick_side_to_land_on_from_corner!");
+        let prior_point_index = prior_point(points, index);
+        let next_point_index = next_point(points, index);
+
+        let mut landing_surface_a =
+            LandingSurface::new(collision_location, points[prior_point_index], player_motion);
+        let mut landing_surface_b =
+            LandingSurface::new(collision_location, points[next_point_index], player_motion);
+
+        // First pick the surface whose normal is closest to the collision normal.
+        // Since we're dealing with normals, we can just use the one with the dot
+        // product that is larger.
+        if landing_surface_b.normal.dot(collision_normal)
+            > landing_surface_a.normal.dot(collision_normal)
+        {
+            std::mem::swap(&mut landing_surface_a, &mut landing_surface_b);
+        }
+
+        for surface in [&landing_surface_a, &landing_surface_b] {
+            if self.can_land_on_surface(surface) {
+                return Some(*surface);
+            }
+        }
+        // TODO: We might hit this case if you land close to the branch - then we'll have to add
+        // in the adjacent tile. Also the bottom left corner of the vine is too narrow.
+        godot_error!("Couldn't land anywhere!");
+        return None;
     }
 
     // Given a `position` on a surface and its `normal`, adjust the player so
@@ -457,10 +469,9 @@ impl Player {
         }
     }
 
-    // For a surface with endpoints (e.g. corners) `a` and `b`,
-    // return whether there is enough room for the player to land on the surface.
-    fn can_land_on_surface(&self, a: &Vector2, b: &Vector2) -> bool {
-        (*a - *b).length_squared() > pow(self.width() as f64, 2.0) as f32
+    // Return whether there is enough room for the player to land on the surface.
+    fn can_land_on_surface(&self, surface: &LandingSurface) -> bool {
+        (surface.a - surface.b).length_squared() > pow(self.width() as f64, 2.0) as f32
     }
 
     fn bounding_box(&self) -> Rect2 {
