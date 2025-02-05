@@ -53,6 +53,9 @@ impl ITileMapLayer for Level {
 
     fn unhandled_input(&mut self, event: Gd<InputEvent>) {
         if let Some(key_event) = event.clone().try_cast::<InputEventKey>().ok() {
+            if key_event.is_echo() || !key_event.is_pressed() {
+                return;
+            }
             if key_event.get_keycode() == Key::SPACE
                 && (self.player().is_none() || self.spawn_many_frogs)
             {
