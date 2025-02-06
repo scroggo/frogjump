@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=4 uid="uid://bdu27kjofwjju"]
+
+[ext_resource type="PackedScene" uid="uid://bsoyhsvegn7s2" path="res://test_scenes/test_corner_seam.tscn" id="1_b6g7p"]
+[ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="1_rft7n"]
+[ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_rhfln"]
+
+[node name="TileMapLayer" type="Level"]
+is_test_level = true
+next_level = ExtResource("1_b6g7p")
+position = Vector2(56, -32)
+tile_map_data = PackedByteArray("AAAAAAgAAQABAAMAAAABAAgAAQABAAAAAAACAAgAAQADAAAAAAADAAgAAQABAAAAAAAEAAgAAQAAAAAAAAAFAAgAAQACAAMAAAAHAAgAAQAEAAMAAAAIAAgAAQADAAMAAAD//wgAAQAEAAMAAAD//wcAAQAEAAIAAAD//wYAAQAEAAIAAAD//wUAAQAEAAIAAAD//wQAAQAEAAIAAAD//wMAAQAEAAIAAAAHAAcAAQAEAAIAAAAGAAgAAQADAAMAAAA=")
+tile_set = ExtResource("1_rft7n")
+
+[node name="Player" parent="." instance=ExtResource("2_rhfln")]
+target_velocity = Vector2(200, 200)
+on_surface = true
+position = Vector2(447.028, 489.653)
+
+[node name="Label" type="Label" parent="."]
+offset_left = -54.0
+offset_top = 33.0
+offset_right = 290.0
+offset_bottom = 56.0
+text = "Verify that landing *near* a corner picks the proper edge, even though the collision point
+may be approximately in the plane of the adjacent side.
+
+The player's orientation at the start is known to be wrong; an actual level will not start with
+the player on a tree (so no code currently handles it), but a full strength jump from this
+position reproduces a situation where the player landed incorrectly on the left tree."
