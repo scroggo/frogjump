@@ -20,4 +20,6 @@ offset_right = 40.0
 offset_bottom = 23.0
 text = "Verify that landing directly on a corner at a seam works as expected.
 
-The player's initial motion lands in the desired spot."
+The player's initial motion lands in the desired spot.
+
+In addition, a small jump after landing should be smooth. (No warping.)"

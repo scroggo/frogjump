@@ -66,6 +66,9 @@ pub struct PlayerInfo {
     dir: Direction,
 }
 
+// Global positions for two end points of a surface, along with the normal.
+// Note that in some cases, the end point is just the end of a tile, and the
+// surface may extend further.
 #[derive(Debug, Clone, Copy)]
 struct LandingSurface {
     a: Vector2,
@@ -266,8 +269,30 @@ impl ICharacterBody2D for Player {
                         // Use the normal to move off of the surface.
                         self.land_on_surface(new_player_position, normal);
                     } else {
-                        self.land_on_surface(collision_position, normal);
+                        // Line up the player so that they appear to be resting directly
+                        // on the surface.
+
+                        // Need the global position for the player, since the surface
+                        // uses global positions.
+                        let global_position = self
+                            .base()
+                            .get_parent()
+                            .unwrap()
+                            .cast::<Node2D>()
+                            .to_global(self.base().get_position());
+
+                        // We have the normal for the plane, we just need its
+                        // distance from the origin.
+                        let d = normal.dot(landing_surface.unwrap().a);
+
+                        let distance_to_surface = normal.dot(global_position) - d;
+                        let desired_distance = self.height() / 2.0;
+                        let dist_to_move = desired_distance - distance_to_surface;
+                        let new_player_position =
+                            self.base().get_position() + dist_to_move * normal;
+                        self.base_mut().set_position(new_player_position);
                     }
+                    godot_print!("Player's local position: {}", self.base().get_position());
                 }
             }
         }
