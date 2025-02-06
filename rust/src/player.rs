@@ -263,11 +263,19 @@ impl ICharacterBody2D for Player {
                         // - landing on top of the branch, as though the frog
                         //   went through it
                         const SLOP: f32 = 0.7;
-                        let new_player_position = landing_surface.unwrap().a
+                        let mut global_position = landing_surface.unwrap().a
                             + (self.width() / 2.0) * surface_direction * SLOP;
 
                         // Use the normal to move off of the surface.
-                        self.land_on_surface(new_player_position, normal);
+                        global_position = global_position + normal * (self.height() / 2.0);
+                        let new_player_position = self
+                            .base()
+                            .get_parent()
+                            .unwrap()
+                            .cast::<Node2D>()
+                            .to_local(global_position);
+
+                        self.base_mut().set_position(new_player_position);
                     } else {
                         // Line up the player so that they appear to be resting directly
                         // on the surface.
@@ -293,6 +301,7 @@ impl ICharacterBody2D for Player {
                         self.base_mut().set_position(new_player_position);
                     }
                     godot_print!("Player's local position: {}", self.base().get_position());
+                    self.check_collisions();
                 }
             }
         }
@@ -475,21 +484,7 @@ impl Player {
         return None;
     }
 
-    // Given a `position` on a surface and its `normal`, adjust the player so
-    // they appear to be on the surface.
-    // Note: This method assumes the surface is large enough.
-    fn land_on_surface(&mut self, position: Vector2, normal: Vector2) {
-        let mut new_player_position = position + normal * (self.height() / 2.0);
-        new_player_position = self
-            .base()
-            .get_parent()
-            .unwrap()
-            .cast::<Node2D>()
-            .to_local(new_player_position);
-
-        self.base_mut().set_position(new_player_position);
-
-        // Just to make sure I didn't create a new overlap:
+    fn check_collisions(&mut self) {
         if let Some(collision) = self
             .base_mut()
             .move_and_collide_ex(Vector2::ZERO)
