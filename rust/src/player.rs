@@ -189,8 +189,12 @@ impl ICharacterBody2D for Player {
                             collision.get_normal(),
                         );
                     } else {
-                        landing_surface =
-                            self.pick_side_to_land_on(&points, collision_position, motion);
+                        landing_surface = self.pick_side_to_land_on(
+                            &points,
+                            collision_position,
+                            motion,
+                            collision.get_normal(),
+                        );
                     }
                 }
                 godot_print!("Landing surface: {landing_surface:?}");
@@ -369,6 +373,7 @@ impl Player {
         points: &PackedVector2Array,
         collision_position: Vector2,
         player_motion: Vector2,
+        collision_normal: Vector2,
     ) -> Option<LandingSurface> {
         for i in 0..points.len() {
             let i2 = next_point(points, i);
@@ -380,8 +385,8 @@ impl Player {
             let n = math::normal(a, b, player_motion);
             let d = n.dot(a);
 
-            // If the collision is in this plane, this is the side we landed on.
-            // Check the distance to the plane and use a tolerance.
+            // If the collision is in this plane and the normal matches, this is
+            // the side we landed on.
             let distance = n.dot(collision_position) - d;
             // TODO: Fine-tune this tolerance. The first collision I measured
             // had a `distance` of 0, so maybe it's not necessary at all, but
@@ -389,9 +394,12 @@ impl Player {
             const TOLERANCE: f64 = 0.05;
             if absf(distance as f64) < TOLERANCE {
                 godot_print!("Collision {collision_position} is {distance} from side {a}-{b}");
-                // TODO: Make sure the side is long enough.
-                // TODO: Check if it's close to the corner?
-                return Some(LandingSurface { a, b, normal: n });
+                let dot_product = n.dot(collision_normal);
+                if ((1.0 - dot_product) as f64) < TOLERANCE {
+                    // TODO: Make sure the side is long enough.
+                    // TODO: Check if it's close to the corner?
+                    return Some(LandingSurface { a, b, normal: n });
+                }
             }
         }
         None
