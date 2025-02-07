@@ -517,42 +517,10 @@ impl Player {
             return None;
         }
 
-        let collision_location = points
-            .get(index)
-            .expect("Bad index to pick_side_to_land_on_from_corner!");
-        let mut prior_point_index = prior_point(points, index);
-        let mut next_point_index = next_point(points, index);
-
         let mut landing_surface_a =
-            LandingSurface::new(collision_location, points[prior_point_index], player_motion);
-        if collision_location.distance_squared_to(landing_surface_a.b) < 1.0 {
-            // It can be hard to get the polygons to line up perfectly. If they
-            // are super close, pretend it's a flat surface.
-            // TODO: This should be split into its own function. One parameter
-            // will be a function, so we can choose between `prior_point` and
-            // `next_point`.
-            godot_print!("Distance from {collision_location} to {} is too small!",
-                landing_surface_a.b);
-            prior_point_index = prior_point(points, prior_point_index);
-            landing_surface_a =
-                LandingSurface::new(collision_location, points[prior_point_index], player_motion);
-            godot_print!("New surface: {landing_surface_a:?}");
-        }
+            Self::pick_adjacent_side(points, index, prior_point, player_motion);
         let mut landing_surface_b =
-            LandingSurface::new(collision_location, points[next_point_index], player_motion);
-        if collision_location.distance_squared_to(landing_surface_b.b) < 1.0 {
-            // It can be hard to get the polygons to line up perfectly. If they
-            // are super close, pretend it's a flat surface.
-            // TODO: This should be split into its own function. One parameter
-            // will be a function, so we can choose between `prior_point` and
-            // `next_point`.
-            godot_print!("Distance from {collision_location} to {} is too small!",
-            landing_surface_b.b);
-            next_point_index = next_point(points, next_point_index);
-            landing_surface_b =
-                LandingSurface::new(collision_location, points[next_point_index], player_motion);
-            godot_print!("New surface: {landing_surface_b:?}");
-        }
+            Self::pick_adjacent_side(points, index, next_point, player_motion);
         // If these two normals are close enough, treat them as a continuous
         // surface.
         const TOLERANCE: f64 = 0.05;
@@ -585,6 +553,23 @@ impl Player {
         return None;
     }
 
+    fn pick_adjacent_side(
+        points: &PackedVector2Array,
+        index: usize,
+        next_pt_fn: fn(&PackedVector2Array, usize) -> usize,
+        player_motion: Vector2,
+    ) -> LandingSurface {
+        let mut next_point_index = next_pt_fn(points, index);
+        let a = points[index];
+        let mut b = points[next_point_index];
+        if a.distance_squared_to(b) < 1.0 {
+            godot_print!("Distance from {a} to {b} is too small!");
+            next_point_index = next_pt_fn(points, next_point_index);
+            b = points[next_point_index];
+            godot_print!("New point: {b}");
+        }
+        LandingSurface::new(a, b, player_motion)
+    }
     fn check_collisions(&mut self) {
         if let Some(collision) = self
             .base_mut()
