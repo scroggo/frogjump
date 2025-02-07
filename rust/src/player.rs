@@ -289,48 +289,6 @@ impl ICharacterBody2D for Player {
                             new_player_position + (self.width() / 2.0) * surface_direction * SLOP,
                         );
                         self.sprite().play_ex().name("shimmy").done();
-                        // Player may need to change directions in order to
-                        // shimmy. Again, assume approximately cardinal
-                        // directions.
-                        match surface_direction {
-                            Vector2 { x, y: _ } if x > 0.5 => {
-                                self.direction = Direction::Right;
-                                if self.on_ceiling {
-                                    self.sprite().set_flip_h(false);
-                                } else {
-                                    self.sprite().set_flip_h(true);
-                                }
-                            }
-                            Vector2 { x, y: _ } if x < -0.5 => {
-                                self.direction = Direction::Left;
-                                if self.on_ceiling {
-                                    self.sprite().set_flip_h(true);
-                                } else {
-                                    self.sprite().set_flip_h(false);
-                                }
-                            }
-                            Vector2 { x: _, y } if y > 0.5 => {
-                                // Moving down. Jump direction (represented by
-                                // `self.direction`) hasn't changed, but we may
-                                // need to flip h.
-                                if normal.x > 0.5 {
-                                    // On a left wall.
-                                    self.sprite().set_flip_h(true);
-                                } else {
-                                    self.sprite().set_flip_h(false);
-                                }
-                            }
-                            Vector2 { x: _, y } if y < -0.5 => {
-                                if normal.x > 0.5 {
-                                    self.sprite().set_flip_h(false);
-                                } else {
-                                    self.sprite().set_flip_h(true);
-                                }
-                            }
-                            normal => {
-                                godot_print!("Shimmying in surprise direction {normal}");
-                            }
-                        }
                         self.base_mut().set_position(new_player_position);
                     } else {
                         // Line up the player so that they appear to be resting directly
