@@ -265,36 +265,29 @@ impl ICharacterBody2D for Player {
                     // When landing on a corner, `a` represents the corner.
                     // TODO: This is totally arbitrary. Enforce/make clearer.
                     if collision_position == landing_surface.unwrap().a {
-                        // Move away from the corner such that the player fits on
-                        // the surface.
-                        let surface_direction =
-                            (landing_surface.unwrap().b - landing_surface.unwrap().a).normalized();
-
-                        // FIXME: In `test_corner.tscn`, a full strength jump
-                        // collides with the corner, and this code adjusts the
-                        // player so they line up well with the new surface. But it
-                        // is a little jarring to warp the player like this. `SLOP`
-                        // helps a little bit - since the frog's feet don't fill the
-                        // bounding box, we can warp the frog a little less. I'll
-                        // revisit this once the other landings are done. It may be
-                        // that this looks good enough, as landing on a corner
-                        // should not be the typical case. Some alternatives:
-                        // - a new sprite with the frog's legs closer together
-                        // - landing on top of the branch, as though the frog
-                        //   went through it
-
-                        // Hmm. Try starting from the corner, though we might be
-                        // better off starting from the initial position?
-                        // Use the normal to move off of the surface.
-                        let global_position = landing_surface.unwrap().a + normal * (self.height() / 2.0);
+                        // Land on the corner directly, pushed away by the
+                        // normal. If this is too jarring in some cases, we can
+                        // try starting from the player's position.
+                        let global_position =
+                            landing_surface.unwrap().a + normal * (self.height() / 2.0);
                         let new_player_position = self
                             .base()
                             .get_parent()
                             .unwrap()
                             .cast::<Node2D>()
                             .to_local(global_position);
+
+                        // Shimmy more fully onto the surface over the next
+                        // several frames.
+                        let surface_direction =
+                            (landing_surface.unwrap().b - landing_surface.unwrap().a).normalized();
+
+                        // The slop means the players body may not be entirely
+                        // on the surface, but at least the feet should be.
                         const SLOP: f32 = 0.7;
-                        self.shimmy_dest = Some(new_player_position + (self.width() / 2.0) * surface_direction * SLOP);
+                        self.shimmy_dest = Some(
+                            new_player_position + (self.width() / 2.0) * surface_direction * SLOP,
+                        );
                         self.sprite().play_ex().name("shimmy").done();
                         // Player may need to change directions in order to
                         // shimmy. Again, assume approximately cardinal
