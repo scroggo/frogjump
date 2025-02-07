@@ -24,6 +24,6 @@ offset_bottom = 56.0
 text = "Verify that landing *near* a corner picks the proper edge, even though the collision point
 may be approximately in the plane of the adjacent side.
 
-The player's orientation at the start is known to be wrong; an actual level will not start with
-the player on a tree (so no code currently handles it), but a full strength jump from this
+The player's orientation at the start is sometimes wrong; an actual level will not start with
+the player on a tree (so no code deliberately handles it), but a full strength jump from this
 position reproduces a situation where the player landed incorrectly on the left tree."
