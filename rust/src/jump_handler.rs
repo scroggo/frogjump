@@ -29,6 +29,9 @@ pub struct JumpHandler {
     // Maximum time to make jump more powerful.
     #[export]
     max_time_ms: f32,
+    // Can be used to ensure hitting a particular number for testing.
+    #[export]
+    max_jump_strength_for_testing: f32,
     jump_detector: Box<dyn JumpDetector>,
     base: Base<Node>,
 }
@@ -39,6 +42,7 @@ impl INode for JumpHandler {
         Self {
             length_of_jump_press_ms: None,
             max_time_ms: 400.0,
+            max_jump_strength_for_testing: 1.0,
             jump_detector: Box::new(JumpKeyDetector::new()),
             base,
         }
@@ -66,16 +70,20 @@ impl JumpHandler {
         }
         let prev_duration_ms = self.length_of_jump_press_ms.unwrap();
         self.length_of_jump_press_ms = Some(prev_duration_ms + (delta * 1000.0) as f32);
-        let strength = match self.length_of_jump_press_ms.unwrap() {
+        let mut strength = match self.length_of_jump_press_ms.unwrap() {
             duration if duration >= self.max_time_ms => 1.0,
             duration => duration / self.max_time_ms,
         };
+        if strength > self.max_jump_strength_for_testing {
+            strength = self.max_jump_strength_for_testing;
+        }
         if self.jump_detector.is_jump_pressed() {
             // Still holding jump.
             self.jump_meter().bind_mut().set_ratio(strength);
             return None;
         }
         // Released jump.
+        godot_print!("Jump strength: {strength}");
         self.length_of_jump_press_ms = None;
         self.jump_meter().hide();
         Some(strength)

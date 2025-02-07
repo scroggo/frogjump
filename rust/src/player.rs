@@ -176,13 +176,11 @@ impl ICharacterBody2D for Player {
                     godot_print!("Moving back by {offset} along {reverse_motion} for change of {} from {position} to {}",
                         offset * reverse_motion, self.base().get_position());
                 }
-                let mut hit_a_corner = false;
                 let mut landing_surface: Option<LandingSurface> = None;
                 let collision_position = collision.get_position();
                 if let Some(points) = get_collider_points(collider, &collision_position) {
                     godot_print!("Returned points: {points}");
                     if let Some(index) = points.find(collision_position, None) {
-                        hit_a_corner = true;
                         godot_print!("hit a corner!");
 
                         landing_surface = self.pick_side_to_land_on_from_corner(
@@ -242,11 +240,11 @@ impl ICharacterBody2D for Player {
                 // Now that we've rotated the player in the proper direction,
                 // move them so they are properly on their new surface.
                 if landing_surface.is_some() {
-                    if hit_a_corner {
+                    // When landing on a corner, `a` represents the corner.
+                    // TODO: This is totally arbitrary. Enforce/make clearer.
+                    if collision_position == landing_surface.unwrap().a {
                         // Move away from the corner such that the player fits on
                         // the surface.
-                        // When landing on a corner, `a` represents the corner.
-                        // TODO: This is totally arbitrary. Enforce/make clearer.
                         let surface_direction =
                             (landing_surface.unwrap().b - landing_surface.unwrap().a).normalized();
 
@@ -463,7 +461,18 @@ impl Player {
             LandingSurface::new(collision_location, points[prior_point_index], player_motion);
         let mut landing_surface_b =
             LandingSurface::new(collision_location, points[next_point_index], player_motion);
-
+        // If these two normals are close enough, treat them as a continuous
+        // surface.
+        const TOLERANCE: f32 = 0.05;
+        if landing_surface_a.normal.angle_to(landing_surface_b.normal) < TOLERANCE {
+            godot_print!("Treat two sides as same surface!");
+            let landing_surface_full =
+                LandingSurface::new(landing_surface_a.b, landing_surface_b.b, player_motion);
+            if !self.can_land_on_surface(&landing_surface_full) {
+                godot_error!("Surfaces are too small! Landing anyway!");
+            }
+            return Some(landing_surface_full);
+        }
         // First pick the surface whose normal is closest to the collision normal.
         // Since we're dealing with normals, we can just use the one with the dot
         // product that is larger.
