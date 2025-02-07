@@ -100,6 +100,9 @@ pub struct Player {
     #[export]
     on_surface: bool, // True when on any surface: floor, wall, ceiling.
     on_ceiling: bool,
+    #[export]
+    shimmy_speed: f32,
+    shimmy_dest: Option<Vector2>,
     // Whether the screen is being touched, which is an alternative to using the
     // "jump" input action. Uses reference counting since it will be shared with
     // the `TouchJumpHandler`. (Note: Maybe an `RwLock` would be more clear,
@@ -123,6 +126,8 @@ impl ICharacterBody2D for Player {
             fall_acceleration: 75.0,
             on_surface: false,
             on_ceiling: false,
+            shimmy_speed: 75.0,
+            shimmy_dest: None,
             touch_is_pressed: Arc::new(AtomicBool::new(false)),
             has_jumped: false,
             base,
@@ -144,10 +149,28 @@ impl ICharacterBody2D for Player {
     }
 
     fn physics_process(&mut self, delta: f64) {
+        let old_position = self.base().get_position();
+        if self.shimmy_dest.is_some() {
+            let direction = (self.shimmy_dest.unwrap() - old_position).normalized();
+            let mut new_position = old_position + direction * self.shimmy_speed * delta as f32;
+            if new_position == self.shimmy_dest.unwrap() {
+                // This would be a nice coincidence, but we need to check this
+                // case before normalizing.
+                self.shimmy_dest = None;
+            } else if ((self.shimmy_dest.unwrap() - new_position).normalized() + direction).is_zero_approx() {
+                // Overshot the destination.
+                new_position = self.shimmy_dest.unwrap();
+                self.shimmy_dest = None;
+            }
+            self.base_mut().set_position(new_position);
+            if self.shimmy_dest.is_none() {
+                self.sprite().play_ex().name("default").done();
+            }
+            return;
+        }
         if !self.on_surface {
             self.target_velocity.y += delta as f32 * self.fall_acceleration;
         }
-        let old_position = self.base().get_position();
         let motion = self.target_velocity * delta as f32;
         let collision_opt = self.base_mut().move_and_collide(motion);
         if let Some(collision) = collision_opt {
@@ -260,19 +283,62 @@ impl ICharacterBody2D for Player {
                         // - a new sprite with the frog's legs closer together
                         // - landing on top of the branch, as though the frog
                         //   went through it
-                        const SLOP: f32 = 0.7;
-                        let mut global_position = landing_surface.unwrap().a
-                            + (self.width() / 2.0) * surface_direction * SLOP;
 
+                        // Hmm. Try starting from the corner, though we might be
+                        // better off starting from the initial position?
                         // Use the normal to move off of the surface.
-                        global_position = global_position + normal * (self.height() / 2.0);
+                        let global_position = landing_surface.unwrap().a + normal * (self.height() / 2.0);
                         let new_player_position = self
                             .base()
                             .get_parent()
                             .unwrap()
                             .cast::<Node2D>()
                             .to_local(global_position);
-
+                        const SLOP: f32 = 0.7;
+                        self.shimmy_dest = Some(new_player_position + (self.width() / 2.0) * surface_direction * SLOP);
+                        self.sprite().play_ex().name("shimmy").done();
+                        // Player may need to change directions in order to
+                        // shimmy. Again, assume approximately cardinal
+                        // directions.
+                        match surface_direction {
+                            Vector2 { x, y: _ } if x > 0.5 => {
+                                self.direction = Direction::Right;
+                                if self.on_ceiling {
+                                    self.sprite().set_flip_h(false);
+                                } else {
+                                    self.sprite().set_flip_h(true);
+                                }
+                            }
+                            Vector2 { x, y: _ } if x < -0.5 => {
+                                self.direction = Direction::Left;
+                                if self.on_ceiling {
+                                    self.sprite().set_flip_h(true);
+                                } else {
+                                    self.sprite().set_flip_h(false);
+                                }
+                            }
+                            Vector2 { x: _, y } if y > 0.5 => {
+                                // Moving down. Jump direction (represented by
+                                // `self.direction`) hasn't changed, but we may
+                                // need to flip h.
+                                if normal.x > 0.5 {
+                                    // On a left wall.
+                                    self.sprite().set_flip_h(true);
+                                } else {
+                                    self.sprite().set_flip_h(false);
+                                }
+                            }
+                            Vector2 { x: _, y } if y < -0.5 => {
+                                if normal.x > 0.5 {
+                                    self.sprite().set_flip_h(false);
+                                } else {
+                                    self.sprite().set_flip_h(true);
+                                }
+                            }
+                            normal => {
+                                godot_print!("Shimmying in surprise direction {normal}");
+                            }
+                        }
                         self.base_mut().set_position(new_player_position);
                     } else {
                         // Line up the player so that they appear to be resting directly
