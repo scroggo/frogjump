@@ -102,6 +102,8 @@ pub struct Player {
     on_ceiling: bool,
     #[export]
     shimmy_speed: f32,
+    // If the player lands on a corner, they will "shimmy" until they're fully on
+    // the surface
     shimmy_dest: Option<Vector2>,
     // Whether the screen is being touched, which is an alternative to using the
     // "jump" input action. Uses reference counting since it will be shared with
