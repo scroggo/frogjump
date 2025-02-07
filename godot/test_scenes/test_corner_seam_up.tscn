@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://ctjegrmckyi3"]
+
+[ext_resource type="PackedScene" uid="uid://b7s1ta0xolrrw" path="res://test_scenes/test_corner.tscn" id="1_bbgy2"]
+[ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="2_ru143"]
+[ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="3_ojyds"]
+
+[node name="TileMapLayer" type="Level"]
+is_test_level = true
+next_level = ExtResource("1_bbgy2")
+tile_map_data = PackedByteArray(0, 0, 0, 0, 7, 0, 1, 0, 3, 0, 3, 0, 0, 0, 1, 0, 7, 0, 1, 0, 3, 0, 3, 0, 0, 0, 3, 0, 6, 0, 1, 0, 4, 0, 2, 0, 0, 0, 3, 0, 5, 0, 1, 0, 4, 0, 2, 0, 0, 0, 4, 0, 6, 0, 1, 0, 4, 0, 4, 0, 0, 0)
+tile_set = ExtResource("2_ru143")
+
+[node name="Player" parent="." instance=ExtResource("3_ojyds")]
+direction = "Right"
+on_surface = true
+position = Vector2(56, 453)
+
+[node name="Label" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Verify that landing on a top corner/seam is smooth (no warping).
+
+A full strength jump *often* lands on the seam.
+(Jump strength is the same; maybe this relates to timing?)"

@@ -597,15 +597,34 @@ fn get_collider_points_from_tile_map_layer(
         if local_collision.is_some() {
             // Check for collisions that are directly on the edge of the tile.
             // Note: This assumes square tiles.
-            // TODO: Check for other edges.
-            let tile_width = tile_map_layer.get_tile_set().unwrap().get_tile_size().x as f32;
-            if local_collision.unwrap().x == local_tile_center.x - tile_width / 2.0 {
-                let left_map_coord = map_coordinates + Vector2i::LEFT;
-                if let Some(left_points) =
-                    get_collider_points_from_tile_map_layer(tile_map_layer, left_map_coord, None)
+            let mut next_tile_offset: Option<Vector2i> = None;
+            let half_tile_width =
+                tile_map_layer.get_tile_set().unwrap().get_tile_size().x as f32 / 2.0;
+            if local_collision.unwrap().x == local_tile_center.x - half_tile_width {
+                next_tile_offset = Some(Vector2i::LEFT);
+            } else if local_collision.unwrap().y == local_tile_center.y - half_tile_width {
+                next_tile_offset = Some(Vector2i::UP);
+            }
+            // Note: I haven't been able to reproduce landing on the right or
+            // bottom edges of a tile, but the code should be similar.
+            else if local_collision.unwrap().x == local_tile_center.x + half_tile_width {
+                // Use `godot_error` just so it will stand out and I can create
+                // a repro case.
+                godot_error!("Found a repro case for right edge of tile?");
+                next_tile_offset = Some(Vector2i::RIGHT);
+            } else if local_collision.unwrap().y == local_tile_center.y + half_tile_width {
+                // Use `godot_error` just so it will stand out and I can create
+                // a repro case.
+                godot_error!("Found a repro case for bottom edge of tile?");
+                next_tile_offset = Some(Vector2i::DOWN);
+            }
+            if let Some(offset) = next_tile_offset {
+                let next_map_coord = map_coordinates + offset;
+                if let Some(next_points) =
+                    get_collider_points_from_tile_map_layer(tile_map_layer, next_map_coord, None)
                 {
                     let polygon_array =
-                        Geometry2D::singleton().merge_polygons(&left_points, &points);
+                        Geometry2D::singleton().merge_polygons(&next_points, &points);
                     if polygon_array.len() == 1 {
                         godot_print!("have a new merged polygon!");
                         return Some(polygon_array.at(0));
