@@ -463,8 +463,8 @@ impl Player {
             LandingSurface::new(collision_location, points[next_point_index], player_motion);
         // If these two normals are close enough, treat them as a continuous
         // surface.
-        const TOLERANCE: f32 = 0.05;
-        if landing_surface_a.normal.angle_to(landing_surface_b.normal) < TOLERANCE {
+        const TOLERANCE: f64 = 0.05;
+        if absf(landing_surface_a.normal.angle_to(landing_surface_b.normal) as f64) < TOLERANCE {
             godot_print!("Treat two sides as same surface!");
             let landing_surface_full =
                 LandingSurface::new(landing_surface_a.b, landing_surface_b.b, player_motion);
