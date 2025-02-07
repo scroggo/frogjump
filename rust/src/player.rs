@@ -151,15 +151,14 @@ impl ICharacterBody2D for Player {
     fn physics_process(&mut self, delta: f64) {
         let old_position = self.base().get_position();
         if self.shimmy_dest.is_some() {
-            let direction = (self.shimmy_dest.unwrap() - old_position).normalized();
-            let mut new_position = old_position + direction * self.shimmy_speed * delta as f32;
-            if new_position == self.shimmy_dest.unwrap() {
-                // This would be a nice coincidence, but we need to check this
-                // case before normalizing.
-                self.shimmy_dest = None;
-            } else if ((self.shimmy_dest.unwrap() - new_position).normalized() + direction).is_zero_approx() {
-                // Overshot the destination.
-                new_position = self.shimmy_dest.unwrap();
+            let shimmy_dest = self.shimmy_dest.unwrap();
+            let direction = (shimmy_dest - old_position).normalized();
+            let movement = direction * self.shimmy_speed * delta as f32;
+            let mut new_position = old_position + movement;
+            let distance_squared_from_dest = new_position.distance_squared_to(shimmy_dest);
+            if distance_squared_from_dest < 1.0 {
+                // Avoid overshooting the destination.
+                new_position = shimmy_dest;
                 self.shimmy_dest = None;
             }
             self.base_mut().set_position(new_position);
