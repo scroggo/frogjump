@@ -136,7 +136,7 @@ tile_set = ExtResource("1_rft7n")
 [node name="Player" parent="." instance=ExtResource("2_rhfln")]
 direction = "Right"
 target_velocity = Vector2(200, 200)
-position = Vector2(6, 470)
+position = Vector2(12, 502)
 
 [node name="DragonFly" parent="." instance=ExtResource("3_tpcs8")]
 position = Vector2(364, 236)
