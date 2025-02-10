@@ -9,7 +9,7 @@ use godot::classes::{
     AnimatedSprite2D, CharacterBody2D, CollisionShape2D, Geometry2D, ICharacterBody2D, InputEvent,
     InputEventScreenTouch, KinematicCollision2D, TileMapLayer, Timer,
 };
-use godot::global::{absf, cos, pow, randf_range};
+use godot::global::{absf, cos, randf_range};
 use godot::prelude::*;
 
 struct TouchJumpHandler {
@@ -539,7 +539,7 @@ impl Player {
 
     // Return whether there is enough room for the player to land on the surface.
     fn can_land_on_surface(&self, surface: &LandingSurface) -> bool {
-        (surface.a - surface.b).length_squared() > pow(self.width() as f64, 2.0) as f32
+        surface.length_squared() > math::squared(self.width())
     }
 
     fn bounding_box(&self) -> Rect2 {
