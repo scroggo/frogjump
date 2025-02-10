@@ -159,14 +159,13 @@ impl ICharacterBody2D for Player {
             let mut new_position = old_position + movement;
             let distance_squared_from_dest = new_position.distance_squared_to(shimmy_dest);
             if distance_squared_from_dest < 1.0 {
-                // Avoid overshooting the destination.
+                // Avoid overshooting the destination. Note: This works because
+                // delta is small.
                 new_position = shimmy_dest;
                 self.shimmy_dest = None;
-            }
-            self.base_mut().set_position(new_position);
-            if self.shimmy_dest.is_none() {
                 self.sprite().play_ex().name("default").done();
             }
+            self.base_mut().set_position(new_position);
             return;
         }
         if !self.on_surface {
