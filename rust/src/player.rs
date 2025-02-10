@@ -321,6 +321,18 @@ impl ICharacterBody2D for Player {
                         let new_player_position =
                             self.base().get_position() + dist_to_move * normal;
                         self.base_mut().set_position(new_player_position);
+
+                        // Shimmy onto the surface, if needed.
+                        if !self.can_land_on_surface(&landing_surface.unwrap()) {
+                            // TODO: Shimmy around a corner?
+                            godot_print!("Don't fit on surface!");
+                        } else {
+                            let shimmy_dest = self.find_shimmy_dest(&landing_surface.unwrap());
+                            if shimmy_dest.is_some() {
+                                self.shimmy_dest = shimmy_dest;
+                                self.sprite().play_ex().name("shimmy").done();
+                            }
+                        }
                     }
                     godot_print!("Player's local position: {}", self.base().get_position());
                     self.check_collisions();
@@ -528,6 +540,7 @@ impl Player {
         }
         LandingSurface::new(a, b, player_motion)
     }
+
     fn check_collisions(&mut self) {
         if let Some(collision) = self
             .base_mut()
@@ -542,7 +555,40 @@ impl Player {
 
     // Return whether there is enough room for the player to land on the surface.
     fn can_land_on_surface(&self, surface: &LandingSurface) -> bool {
-        surface.length_squared() > math::squared(self.width())
+        surface.length_squared() > math::squared(self.width() * WIDTH_MODIFIER)
+    }
+
+    // If the player is hanging off one edge of the surface or the other, return
+    // the location they should shimmy to.
+    fn find_shimmy_dest(&self, surface: &LandingSurface) -> Option<Vector2> {
+        if let Some(shimmy_dest) =
+            self.find_shimmy_dest_internal(surface.a, surface.b, surface.normal)
+        {
+            return Some(shimmy_dest);
+        }
+        if let Some(shimmy_dest) =
+            self.find_shimmy_dest_internal(surface.b, surface.a, surface.normal)
+        {
+            return Some(shimmy_dest);
+        }
+        None
+    }
+
+    fn find_shimmy_dest_internal(&self, a: Vector2, b: Vector2, n: Vector2) -> Option<Vector2> {
+        // The bottom middle of the player, which should be in the plane of the surface.
+        let current_position = self.base().get_position();
+        let player_middle = current_position - n * self.height() / 2.0;
+
+        let surface_direction = (a - b).normalized();
+        let bottom_corner = player_middle + surface_direction * self.width() / 2.0;
+        let v = a - bottom_corner;
+        let dot_product = v.normalized().dot(surface_direction);
+        if dot_product == -1.0 {
+            // Player is overhanging the surface in the direction of `a`. Move
+            // the other way to be on the surface.
+            return Some(current_position + v * WIDTH_MODIFIER);
+        }
+        None
     }
 
     fn bounding_box(&self) -> Rect2 {

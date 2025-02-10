@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://bkiicg7446v1e"]
+
+[ext_resource type="PackedScene" uid="uid://bsgk4d3ee1rqk" path="res://test_scenes/test_over_edge2.tscn" id="1_3utdt"]
+[ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="2_3h8af"]
+[ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="3_r70j4"]
+
+[node name="TileMapLayer" type="Level"]
+is_test_level = true
+next_level = ExtResource("1_3utdt")
+tile_map_data = PackedByteArray(0, 0, 5, 0, 4, 0, 1, 0, 1, 0, 2, 0, 0, 0)
+tile_set = ExtResource("2_3h8af")
+
+[node name="Player" parent="." instance=ExtResource("3_r70j4")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(283, 216)
+
+[node name="Label" type="Label" parent="."]
+offset_right = 553.0
+offset_bottom = 118.0
+text = "Landing on a corner should shimmy on even if the collision is not directly on the corner."
