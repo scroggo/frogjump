@@ -90,6 +90,11 @@ impl LandingSurface {
     }
 }
 
+// The player's width works well for collisions, but make it a little bit
+// smaller so that the player can land on surfaces that have enough room for the
+// player's body but do for their feet.
+const WIDTH_MODIFIER: f32 = 0.7;
+
 #[derive(GodotClass)]
 #[class(base=CharacterBody2D)]
 pub struct Player {
@@ -287,11 +292,9 @@ impl ICharacterBody2D for Player {
                         let surface_direction =
                             (landing_surface.unwrap().b - landing_surface.unwrap().a).normalized();
 
-                        // The slop means the players body may not be entirely
-                        // on the surface, but at least the feet should be.
-                        const SLOP: f32 = 0.7;
                         self.shimmy_dest = Some(
-                            new_player_position + (self.width() / 2.0) * surface_direction * SLOP,
+                            new_player_position
+                                + (self.width() / 2.0) * surface_direction * WIDTH_MODIFIER,
                         );
                         self.sprite().play_ex().name("shimmy").done();
                         self.base_mut().set_position(new_player_position);
