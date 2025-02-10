@@ -84,6 +84,10 @@ impl LandingSurface {
             normal: math::normal(a, b, player_motion),
         }
     }
+
+    fn length_squared(&self) -> f32 {
+        (self.a - self.b).length_squared()
+    }
 }
 
 #[derive(GodotClass)]
