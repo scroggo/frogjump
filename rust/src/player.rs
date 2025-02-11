@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use std::f32::consts::PI;
 use std::ops::Not;
 use std::sync::atomic::AtomicBool;
@@ -669,7 +670,11 @@ fn get_collider_points_from_tile_map_layer(
     local_collision: Option<Vector2>,
 ) -> Option<PackedVector2Array> {
     let local_tile_center = tile_map_layer.map_to_local(map_coordinates);
-    let mut first_tile_points: Option<PackedVector2Array> = None;
+    let mut points_so_far: Option<PackedVector2Array> = None;
+    let half_tile_width = tile_map_layer.get_tile_set().unwrap().get_tile_size().x as f32 / 2.0;
+
+    // Extend in these directions as needed.
+    let mut directions_to_add: HashSet<Vector2i> = HashSet::new();
     if let Some(tile_data) = tile_map_layer.get_cell_tile_data(map_coordinates) {
         // This should correspond to the layer I've used in the editor.
         const LAYER_ID: i32 = 0;
@@ -679,25 +684,51 @@ fn get_collider_points_from_tile_map_layer(
         }
 
         let mut points = tile_data.get_collision_polygon_points(LAYER_ID, 0);
+
+        // Check for edges that align with the tile edges. This indicates that
+        // the collision shape may extend onto the next tile. Use presence of
+        // `local_collision`, which is only set for the first call to this
+        // method (i.e. it is `None` in recursive calls).
+        if local_collision.is_some() {
+            for i in 0..points.len() {
+                let a = points[i];
+                let b = points[next_point(&points, i)];
+                if a.x == b.x {
+                    if a.x == half_tile_width {
+                        directions_to_add.insert(Vector2i::RIGHT);
+                    } else if a.x == -half_tile_width {
+                        directions_to_add.insert(Vector2i::LEFT);
+                    }
+                }
+                if a.y == b.y {
+                    if a.y == half_tile_width {
+                        directions_to_add.insert(Vector2i::DOWN);
+                    } else if a.y == -half_tile_width {
+                        directions_to_add.insert(Vector2i::UP);
+                    }
+                }
+            }
+        }
         godot_print!("\t\t\tpolygon 0: {points}");
         for point in points.as_mut_slice() {
             let local_point = local_tile_center + *point;
             *point = tile_map_layer.to_global(local_point);
             godot_print!("\t\t\t\tglobal: {}", *point);
         }
-        first_tile_points = Some(points);
+        points_so_far = Some(points);
     }
     if local_collision.is_some() {
-        // Check for collisions that are directly on the edge of the tile.
+        // Check for collisions that are directly on the edge of the tile. This
+        // catches some cases missed above. e.g. If a tile is empty, and the
+        // collision occurs on the edge, Godot may pick the empty tile first.
+        // These checks ensure we include the adjacent tile with a collision
+        // polygon.
         // Note: This assumes square tiles.
-        // Note: This does not account for a collision that is directly in the
-        // corner of a tile.
-        let mut next_tile_offset: Option<Vector2i> = None;
-        let half_tile_width = tile_map_layer.get_tile_set().unwrap().get_tile_size().x as f32 / 2.0;
+
         if local_collision.unwrap().x == local_tile_center.x - half_tile_width {
-            next_tile_offset = Some(Vector2i::LEFT);
+            directions_to_add.insert(Vector2i::LEFT);
         } else if local_collision.unwrap().y == local_tile_center.y - half_tile_width {
-            next_tile_offset = Some(Vector2i::UP);
+            directions_to_add.insert(Vector2i::UP);
         }
         // Note: I haven't been able to reproduce landing on the right or
         // bottom edges of a tile, but the code should be similar.
@@ -705,37 +736,48 @@ fn get_collider_points_from_tile_map_layer(
             // Use `godot_error` just so it will stand out and I can create
             // a repro case.
             godot_error!("Found a repro case for right edge of tile?");
-            next_tile_offset = Some(Vector2i::RIGHT);
+            directions_to_add.insert(Vector2i::RIGHT);
         } else if local_collision.unwrap().y == local_tile_center.y + half_tile_width {
             // Use `godot_error` just so it will stand out and I can create
             // a repro case.
             godot_error!("Found a repro case for bottom edge of tile?");
-            next_tile_offset = Some(Vector2i::DOWN);
+            directions_to_add.insert(Vector2i::DOWN);
         }
-        if let Some(offset) = next_tile_offset {
+
+        for offset in directions_to_add {
             let next_map_coord = map_coordinates + offset;
             if let Some(next_points) =
                 get_collider_points_from_tile_map_layer(tile_map_layer, next_map_coord, None)
             {
-                if first_tile_points.is_none() {
+                if points_so_far.is_none() {
+                    // This can only be reached if the collision is directly on
+                    // the edge. We wouldn't want to check tiles adjacent to the
+                    // empty tile anyway, since they would not be adjacent to
+                    // this one.
+                    // Note: With some hypothetical tiles/collision polygons not
+                    // in our current tile set, we might need to add tiles
+                    // adjacent to *this* one.
                     return Some(next_points);
                 }
-                let polygon_array = Geometry2D::singleton()
-                    .merge_polygons(&next_points, &first_tile_points.unwrap());
+                let points = points_so_far.unwrap();
+                let polygon_array = Geometry2D::singleton().merge_polygons(&next_points, &points);
                 if polygon_array.len() == 1 {
                     godot_print!("have a new merged polygon!");
-                    return Some(polygon_array.at(0));
+                    points_so_far = Some(polygon_array.at(0));
                 } else {
                     godot_print!(
                         "Merge resulted in {} polygons: {polygon_array}",
                         polygon_array.len()
                     );
-                    return None;
+                    // This likely means that the next tile over had a
+                    // disconnected polygon. Ignore it. Restore `points_so_far`,
+                    // which was unwrapped for `merge_polygons` above.
+                    points_so_far = Some(points);
                 }
             } else {
                 godot_print!("\tcouldn't get tile data at {next_map_coord}!");
             }
         }
     }
-    return first_tile_points;
+    return points_so_far;
 }

@@ -20,5 +20,8 @@ offset_right = 40.0
 offset_bottom = 23.0
 text = "Verify that landing on a top corner/seam is smooth (no warping).
 
+In addition, the player should not shimmy from near the seam,
+since there is a tile below.
+
 A full strength jump *often* lands on the seam.
 (Jump strength is the same; maybe this relates to timing?)"
