@@ -15,3 +15,10 @@ tile_set = ExtResource("1_rft7n")
 direction = "Right"
 target_velocity = Vector2(200, 200)
 position = Vector2(6, 470)
+
+[node name="Label" type="Label" parent="."]
+offset_left = -56.0
+offset_top = 32.0
+offset_right = 41.0
+offset_bottom = 55.0
+text = "When almost going over the edge and hitting the corner, the player should shimmy back."
