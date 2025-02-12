@@ -802,8 +802,6 @@ fn get_collider_points_from_tile_map_layer(
                     // which was unwrapped for `merge_polygons` above.
                     points_so_far = Some(points);
                 }
-            } else {
-                godot_print!("\tcouldn't get tile data at {next_map_coord}!");
             }
         }
     }
