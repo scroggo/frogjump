@@ -246,7 +246,6 @@ impl ICharacterBody2D for Player {
                 let normal = landing_surface
                     .map_or_else(|| collision.get_normal(), |surface| surface.normal);
                 let new_angle = normal.angle() + PI / 2.0;
-                godot_print!("rotating to angle {}", new_angle);
                 self.base_mut().set_rotation(new_angle);
                 match normal {
                     Vector2 { x, y: _ } if x > 0.5 => {
