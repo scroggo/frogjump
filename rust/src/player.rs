@@ -475,7 +475,11 @@ impl Player {
                     // at a tiny angle that we can treat as a long surface.
                     {
                         let i3 = next_point(points, i2);
-                        let c = points[i3];
+                        let mut c = points[i3];
+                        if b.distance_squared_to(c) < 1.0 {
+                            let i4 = next_point(points, i3);
+                            c = points[i4];
+                        }
                         let bc = LandingSurface::new(b, c, player_motion);
                         if math::same_normals_approx(n, bc.normal) {
                             godot_print!("Appending bc!");
@@ -485,7 +489,10 @@ impl Player {
                     }
                     {
                         let i0 = prior_point(points, i);
-                        let z = points[i0];
+                        let mut z = points[i0];
+                        if z.distance_squared_to(a) < 1.0 {
+                            z = points[prior_point(points, i0)];
+                        }
                         let za = LandingSurface::new(z, a, player_motion);
                         if math::same_normals_approx(za.normal, n) {
                             godot_print!("Appending za!");
