@@ -281,12 +281,7 @@ impl ICharacterBody2D for Player {
                         // try starting from the player's position.
                         let global_position =
                             landing_surface.unwrap().a + normal * (self.height() / 2.0);
-                        let new_player_position = self
-                            .base()
-                            .get_parent()
-                            .unwrap()
-                            .cast::<Node2D>()
-                            .to_local(global_position);
+                        let new_player_position = self.to_local_position(global_position);
 
                         // Shimmy more fully onto the surface over the next
                         // several frames.
@@ -305,12 +300,7 @@ impl ICharacterBody2D for Player {
 
                         // Need the global position for the player, since the surface
                         // uses global positions.
-                        let global_position = self
-                            .base()
-                            .get_parent()
-                            .unwrap()
-                            .cast::<Node2D>()
-                            .to_global(self.base().get_position());
+                        let global_position = self.get_global_position();
 
                         // We have the normal for the plane, we just need its
                         // distance from the origin.
@@ -435,6 +425,22 @@ impl Player {
         self.base_mut().set_position(info.pos);
         self.target_velocity = info.vel;
         self.direction = info.dir;
+    }
+
+    fn get_global_position(&self) -> Vector2 {
+        self.base()
+            .get_parent()
+            .unwrap()
+            .cast::<Node2D>()
+            .to_global(self.base().get_position())
+    }
+
+    fn to_local_position(&self, global_position: Vector2) -> Vector2 {
+        self.base()
+            .get_parent()
+            .unwrap()
+            .cast::<Node2D>()
+            .to_local(global_position)
     }
 
     fn pick_side_to_land_on(
@@ -577,7 +583,8 @@ impl Player {
 
     fn find_shimmy_dest_internal(&self, a: Vector2, b: Vector2, n: Vector2) -> Option<Vector2> {
         // The bottom middle of the player, which should be in the plane of the surface.
-        let current_position = self.base().get_position();
+        let current_position = self.get_global_position();
+
         let player_middle = current_position - n * self.height() / 2.0;
 
         let surface_direction = (a - b).normalized();
@@ -587,7 +594,7 @@ impl Player {
         if dot_product == -1.0 {
             // Player is overhanging the surface in the direction of `a`. Move
             // the other way to be on the surface.
-            return Some(current_position + v * WIDTH_MODIFIER);
+            return Some(self.to_local_position(current_position + v * WIDTH_MODIFIER));
         }
         None
     }
