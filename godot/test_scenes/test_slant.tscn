@@ -24,11 +24,13 @@ offset_left = -53.0
 offset_top = 31.0
 offset_right = 622.0
 offset_bottom = 80.0
-text = "Verify that landing on a corner that is close to 180 degrees treats both edges as a long
+text = "Verify that landing on/near a corner that is close to 180 degrees treats both edges as a long
 surface.
 
 This level modifies the jump handler to make a max jump small enough to trigger the bug.
-Note that it takes several tries to land perfectly on the corner.
-The player should never warp forward or backwards from this jump."
+Note that from run to run, the player may land either on the corner or near it. Both cases
+should be tested.
+
+The player should never warp or shimmy from this jump."
 
 [editable path="Player"]

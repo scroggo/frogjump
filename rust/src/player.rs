@@ -452,12 +452,12 @@ impl Player {
     ) -> Option<LandingSurface> {
         for i in 0..points.len() {
             let i2 = next_point(points, i);
-            let a = points[i];
-            let b = points[i2];
+            let mut a = points[i];
+            let mut b = points[i2];
 
             // Construct a plane from a normal and a point. See
             // https://docs.godotengine.org/en/stable/tutorials/math/vectors_advanced.html#constructing-a-plane-in-2d
-            let n = math::normal(a, b, player_motion);
+            let mut n = math::normal(a, b, player_motion);
             let d = n.dot(a);
 
             // If the collision is in this plane and the normal matches, this is
@@ -471,6 +471,28 @@ impl Player {
                 godot_print!("Collision {collision_position} is {distance} from side {a}-{b}");
                 let dot_product = n.dot(collision_normal);
                 if ((1.0 - dot_product) as f64) < TOLERANCE {
+                    // Found the proper side. Check adjacent sides in case it's
+                    // at a tiny angle that we can treat as a long surface.
+                    {
+                        let i3 = next_point(points, i2);
+                        let c = points[i3];
+                        let bc = LandingSurface::new(b, c, player_motion);
+                        if math::same_normals_approx(n, bc.normal) {
+                            godot_print!("Appending bc!");
+                            b = c;
+                            n = bc.normal;
+                        }
+                    }
+                    {
+                        let i0 = prior_point(points, i);
+                        let z = points[i0];
+                        let za = LandingSurface::new(z, a, player_motion);
+                        if math::same_normals_approx(za.normal, n) {
+                            godot_print!("Appending za!");
+                            a = z;
+                            n = za.normal;
+                        }
+                    }
                     // TODO: Make sure the side is long enough.
                     // TODO: Check if it's close to the corner?
                     return Some(LandingSurface { a, b, normal: n });
@@ -500,8 +522,7 @@ impl Player {
             Self::pick_adjacent_side(points, index, next_point, player_motion);
         // If these two normals are close enough, treat them as a continuous
         // surface.
-        const TOLERANCE: f64 = 0.05;
-        if absf(landing_surface_a.normal.angle_to(landing_surface_b.normal) as f64) < TOLERANCE {
+        if math::same_normals_approx(landing_surface_a.normal, landing_surface_b.normal) {
             godot_print!("Treat two sides as same surface!");
             let landing_surface_full =
                 LandingSurface::new(landing_surface_a.b, landing_surface_b.b, player_motion);

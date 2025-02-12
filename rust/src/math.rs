@@ -1,3 +1,4 @@
+use godot::global::absf;
 use godot::prelude::*;
 
 // Assuming the player collided with the surface specified by points (a, b),
@@ -11,4 +12,9 @@ pub fn normal(a: Vector2, b: Vector2, player_motion: Vector2) -> Vector2 {
 // TODO: Convert to an extension trait?
 pub fn squared(n: f32) -> f32 {
     n * n
+}
+
+pub fn same_normals_approx(n1: Vector2, n2: Vector2) -> bool {
+    const TOLERANCE: f64 = 0.05;
+    absf(n1.angle_to(n2) as f64) < TOLERANCE
 }
