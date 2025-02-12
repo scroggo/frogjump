@@ -103,6 +103,7 @@ pub struct Player {
     direction: Direction,
     #[export]
     target_velocity: Vector2,
+    /// Initial speed when releasing the jump button at full strength.
     #[export]
     max_jump_strength: f32,
     #[export]
