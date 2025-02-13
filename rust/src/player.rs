@@ -278,24 +278,20 @@ impl ICharacterBody2D for Player {
 
                 // Now that we've rotated the player in the proper direction,
                 // move them so they are properly on their new surface.
-                if landing_surface.is_some() {
+                if let Some(surface) = landing_surface {
                     // When landing on a corner, `a` represents the corner.
                     // TODO: This is totally arbitrary. Enforce/make clearer.
-                    if collision_position == landing_surface.unwrap().a {
+                    if collision_position == surface.a {
                         // Land on the corner directly, pushed away by the
                         // normal. If this is too jarring in some cases, we can
                         // try starting from the player's position.
-                        let global_position =
-                            landing_surface.unwrap().a + normal * (self.height() / 2.0);
+                        let global_position = surface.a + normal * (self.height() / 2.0);
                         let new_player_position = self.to_local_position(global_position);
                         self.base_mut().set_position(new_player_position);
 
                         // Shimmy more fully onto the surface over the next
                         // several frames.
-                        if let Some(surface_direction) = (landing_surface.unwrap().b
-                            - landing_surface.unwrap().a)
-                            .try_normalized()
-                        {
+                        if let Some(surface_direction) = (surface.b - surface.a).try_normalized() {
                             let motion = (self.width() / 2.0) * surface_direction * WIDTH_MODIFIER;
                             if self.would_collide(motion) {
                                 godot_print!("Shimmying (corner) would cause collisions!");
@@ -314,7 +310,7 @@ impl ICharacterBody2D for Player {
 
                         // We have the normal for the plane, we just need its
                         // distance from the origin.
-                        let d = normal.dot(landing_surface.unwrap().a);
+                        let d = normal.dot(surface.a);
 
                         let distance_to_surface = normal.dot(global_position) - d;
                         let desired_distance = self.height() / 2.0;
@@ -324,13 +320,11 @@ impl ICharacterBody2D for Player {
                         self.base_mut().set_position(new_player_position);
 
                         // Shimmy onto the surface, if needed.
-                        if !self.can_land_on_surface(&landing_surface.unwrap()) {
+                        if !self.can_land_on_surface(&surface) {
                             // TODO: Shimmy around a corner?
                             godot_print!("Don't fit on surface!");
                         } else {
-                            if let Some(shimmy_dest) =
-                                self.find_shimmy_dest(&landing_surface.unwrap())
-                            {
+                            if let Some(shimmy_dest) = self.find_shimmy_dest(&surface) {
                                 let motion = shimmy_dest - self.base().get_position();
                                 if self.would_collide(motion) {
                                     godot_print!("Shimmying would cause collisions!");
