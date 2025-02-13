@@ -165,14 +165,23 @@ impl ICharacterBody2D for Player {
         let old_position = self.base().get_position();
         if self.shimmy_dest.is_some() {
             let shimmy_dest = self.shimmy_dest.unwrap();
-            let direction = (shimmy_dest - old_position).normalized();
-            let movement = direction * self.shimmy_speed * delta as f32;
-            let mut new_position = old_position + movement;
-            let distance_squared_from_dest = new_position.distance_squared_to(shimmy_dest);
-            if distance_squared_from_dest < 1.0 {
-                // Avoid overshooting the destination. Note: This works because
-                // delta is small.
-                new_position = shimmy_dest;
+            let new_position = match (shimmy_dest - old_position).try_normalized() {
+                Some(direction) => {
+                    let movement = direction * self.shimmy_speed * delta as f32;
+                    let possible_position = old_position + movement;
+                    let distance_squared_from_dest =
+                        possible_position.distance_squared_to(shimmy_dest);
+                    if distance_squared_from_dest < 1.0 {
+                        // Avoid overshooting the destination. Note: This works because
+                        // delta is small.
+                        shimmy_dest
+                    } else {
+                        possible_position
+                    }
+                }
+                None => shimmy_dest,
+            };
+            if new_position == shimmy_dest {
                 self.shimmy_dest = None;
                 self.sprite().play_ex().name("default").done();
             }
@@ -194,21 +203,18 @@ impl ICharacterBody2D for Player {
             if let Some(collider) = collision.get_collider() {
                 godot_print!("Collided with {:?}", collider);
 
-                // TODO: The check for `is_zero_approx` avoids a divide by zero, but is only
-                // necessary because the manual rotation doesn't (yet) ensure that it doesn't
-                // create a new collision.
-                if collision.get_depth() > 0.0 && !motion.is_zero_approx() {
+                if collision.get_depth() > 0.0 {
                     // The player is penetrating the wall. Move back along the
                     // direction of motion far enough to remove the overlap.
-                    let reverse_motion = -motion.normalized();
-                    let depth_vector = collision.get_depth() * collision.get_normal();
-                    let offset = depth_vector.length()
-                        / cos(reverse_motion.angle_to(depth_vector).into()) as f32;
-                    let position = self.base().get_position();
-                    self.base_mut()
-                        .set_position(position + offset * reverse_motion);
-                    godot_print!("Moving back by {offset} along {reverse_motion} for change of {} from {position} to {}",
-                        offset * reverse_motion, self.base().get_position());
+                    if let Some(motion_normalized) = motion.try_normalized() {
+                        let reverse_motion = -motion_normalized;
+                        let depth_vector = collision.get_depth() * collision.get_normal();
+                        let offset = depth_vector.length()
+                            / cos(reverse_motion.angle_to(depth_vector).into()) as f32;
+                        let position = self.base().get_position();
+                        self.base_mut()
+                            .set_position(position + offset * reverse_motion);
+                    }
                 }
                 let mut landing_surface: Option<LandingSurface> = None;
                 let collision_position = collision.get_position();
@@ -286,14 +292,17 @@ impl ICharacterBody2D for Player {
 
                         // Shimmy more fully onto the surface over the next
                         // several frames.
-                        let surface_direction =
-                            (landing_surface.unwrap().b - landing_surface.unwrap().a).normalized();
-                        let motion = (self.width() / 2.0) * surface_direction * WIDTH_MODIFIER;
-                        if self.would_collide(motion) {
-                            godot_print!("Shimmying (corner) would cause collisions!");
-                        } else {
-                            self.shimmy_dest = Some(new_player_position + motion);
-                            self.sprite().play_ex().name("shimmy").done();
+                        if let Some(surface_direction) = (landing_surface.unwrap().b
+                            - landing_surface.unwrap().a)
+                            .try_normalized()
+                        {
+                            let motion = (self.width() / 2.0) * surface_direction * WIDTH_MODIFIER;
+                            if self.would_collide(motion) {
+                                godot_print!("Shimmying (corner) would cause collisions!");
+                            } else {
+                                self.shimmy_dest = Some(new_player_position + motion);
+                                self.sprite().play_ex().name("shimmy").done();
+                            }
                         }
                     } else {
                         // Line up the player so that they appear to be resting directly
@@ -319,7 +328,9 @@ impl ICharacterBody2D for Player {
                             // TODO: Shimmy around a corner?
                             godot_print!("Don't fit on surface!");
                         } else {
-                            if let Some(shimmy_dest) = self.find_shimmy_dest(&landing_surface.unwrap()) {
+                            if let Some(shimmy_dest) =
+                                self.find_shimmy_dest(&landing_surface.unwrap())
+                            {
                                 let motion = shimmy_dest - self.base().get_position();
                                 if self.would_collide(motion) {
                                     godot_print!("Shimmying would cause collisions!");
@@ -623,10 +634,10 @@ impl Player {
 
         let player_middle = current_position - n * self.height() / 2.0;
 
-        let surface_direction = (a - b).normalized();
+        let surface_direction = (a - b).try_normalized()?;
         let bottom_corner = player_middle + surface_direction * self.width() / 2.0;
         let v = a - bottom_corner;
-        let dot_product = v.normalized().dot(surface_direction);
+        let dot_product = v.try_normalized()?.dot(surface_direction);
         if dot_product == -1.0 {
             // Player is overhanging the surface in the direction of `a`. Move
             // the other way to be on the surface.
