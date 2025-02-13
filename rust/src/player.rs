@@ -565,7 +565,7 @@ impl Player {
             }
         }
         // TODO: We might hit this case if you land close to the branch - then we'll have to add
-        // in the adjacent tile. Also the bottom left corner of the vine is too narrow.
+        // in the adjacent tile.
         godot_error!("Couldn't land anywhere!");
         return None;
     }

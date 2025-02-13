@@ -7,6 +7,7 @@ all.
 Add a new test at the beginning, and set its next level to be the next one down.
 
 ## Order
+- `test_vine_left`
 - `test_wedge_corner`
 - `test_wall`
 - `test_tree_top`
