@@ -1,10 +1,10 @@
 [gd_scene load_steps=15 format=3 uid="uid://b4enkwafkexva"]
 
-[ext_resource type="Texture2D" uid="uid://b6b03vkf4ja8w" path="res://frog_ezgif/blink000.png" id="1_7cxyk"]
-[ext_resource type="Texture2D" uid="uid://btwjll3ip1yjw" path="res://frog_spritesheet.webp" id="1_sjfq4"]
-[ext_resource type="Texture2D" uid="uid://bvfav3u0f7op8" path="res://frog_ezgif/blink001.png" id="2_nysx1"]
-[ext_resource type="Texture2D" uid="uid://cqfx32cjw01ll" path="res://frog_ezgif/blink002.png" id="3_bvmeo"]
-[ext_resource type="Texture2D" uid="uid://df8s7ac1hbymo" path="res://frog_ezgif/blink003.png" id="4_cbath"]
+[ext_resource type="Texture2D" uid="uid://b6b03vkf4ja8w" path="res://assets/player/frog_ezgif/blink000.png" id="1_7cxyk"]
+[ext_resource type="Texture2D" uid="uid://btwjll3ip1yjw" path="res://assets/player/frog_spritesheet.webp" id="1_sjfq4"]
+[ext_resource type="Texture2D" uid="uid://bvfav3u0f7op8" path="res://assets/player/frog_ezgif/blink001.png" id="2_nysx1"]
+[ext_resource type="Texture2D" uid="uid://cqfx32cjw01ll" path="res://assets/player/frog_ezgif/blink002.png" id="3_bvmeo"]
+[ext_resource type="Texture2D" uid="uid://df8s7ac1hbymo" path="res://assets/player/frog_ezgif/blink003.png" id="4_cbath"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kj3ho"]
 size = Vector2(38, 25)

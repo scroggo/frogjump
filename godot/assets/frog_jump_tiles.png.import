@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bodbpwqaxapw"
-path="res://.godot/imported/Toucan tail.png-fe12068527fbad257745653452db6e15.ctex"
+uid="uid://2lwhnf67x68j"
+path="res://.godot/imported/frog_jump_tiles.png-4f4266872a0a1bb51cc96ea8e69c835b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://leon_assets/Toucan tail.png"
-dest_files=["res://.godot/imported/Toucan tail.png-fe12068527fbad257745653452db6e15.ctex"]
+source_file="res://assets/frog_jump_tiles.png"
+dest_files=["res://.godot/imported/frog_jump_tiles.png-4f4266872a0a1bb51cc96ea8e69c835b.ctex"]
 
 [params]
 

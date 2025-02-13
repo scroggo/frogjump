@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b6b03vkf4ja8w"
-path="res://.godot/imported/blink000.png-581a1adde12453959c8af3946b7fe375.ctex"
+uid="uid://dpqwv33k0dfex"
+path="res://.godot/imported/alligator_lower_jaw.png-131f52f337fad46537c943a575dce608.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://frog_ezgif/blink000.png"
-dest_files=["res://.godot/imported/blink000.png-581a1adde12453959c8af3946b7fe375.ctex"]
+source_file="res://assets/alligator/alligator_lower_jaw.png"
+dest_files=["res://.godot/imported/alligator_lower_jaw.png-131f52f337fad46537c943a575dce608.ctex"]
 
 [params]
 

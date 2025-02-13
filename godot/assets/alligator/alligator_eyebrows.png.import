@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dpqwv33k0dfex"
-path="res://.godot/imported/alligator_lower_jaw.png-ab132cb75f78eb8dc58635a4f2fd7a4d.ctex"
+uid="uid://c6p1i5xvb2sfj"
+path="res://.godot/imported/alligator_eyebrows.png-231836f17d61c82ac6415f7bf462a06d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://leon_assets/alligator_lower_jaw.png"
-dest_files=["res://.godot/imported/alligator_lower_jaw.png-ab132cb75f78eb8dc58635a4f2fd7a4d.ctex"]
+source_file="res://assets/alligator/alligator_eyebrows.png"
+dest_files=["res://.godot/imported/alligator_eyebrows.png-231836f17d61c82ac6415f7bf462a06d.ctex"]
 
 [params]
 

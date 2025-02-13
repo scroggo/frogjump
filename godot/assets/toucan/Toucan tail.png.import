@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cqfx32cjw01ll"
-path="res://.godot/imported/blink002.png-8fc4737dcfde5fe92b63a00d9d6099e2.ctex"
+uid="uid://bodbpwqaxapw"
+path="res://.godot/imported/Toucan tail.png-649bbb21d26b119d6cd82fd4eaaae4e2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://frog_ezgif/blink002.png"
-dest_files=["res://.godot/imported/blink002.png-8fc4737dcfde5fe92b63a00d9d6099e2.ctex"]
+source_file="res://assets/toucan/Toucan tail.png"
+dest_files=["res://.godot/imported/Toucan tail.png-649bbb21d26b119d6cd82fd4eaaae4e2.ctex"]
 
 [params]
 

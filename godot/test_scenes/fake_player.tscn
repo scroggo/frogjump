@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cylwq8peencac"]
 
-[ext_resource type="Texture2D" uid="uid://btwjll3ip1yjw" path="res://frog_spritesheet.webp" id="1_q6nqc"]
+[ext_resource type="Texture2D" uid="uid://btwjll3ip1yjw" path="res://assets/player/frog_spritesheet.webp" id="1_q6nqc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_bm4s7"]
 size = Vector2(25, 22)

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c6p1i5xvb2sfj"
-path="res://.godot/imported/alligator_eyebrows.png-c43f4b3b3e7c3dec4ef1ae17e68c5165.ctex"
+uid="uid://ctwfmdh83hngv"
+path="res://.godot/imported/Toucan sprite.png-d83f48157f9bed37f3689fae71700c42.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://leon_assets/alligator_eyebrows.png"
-dest_files=["res://.godot/imported/alligator_eyebrows.png-c43f4b3b3e7c3dec4ef1ae17e68c5165.ctex"]
+source_file="res://assets/toucan/Toucan sprite.png"
+dest_files=["res://.godot/imported/Toucan sprite.png-d83f48157f9bed37f3689fae71700c42.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ctwfmdh83hngv"
-path="res://.godot/imported/Toucan sprite.png-195d442147cc04e2c360ca094226a321.ctex"
+uid="uid://df8s7ac1hbymo"
+path="res://.godot/imported/blink003.png-a6576e1a4d7de007d8dd3c34e63936bc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://leon_assets/Toucan sprite.png"
-dest_files=["res://.godot/imported/Toucan sprite.png-195d442147cc04e2c360ca094226a321.ctex"]
+source_file="res://assets/player/frog_ezgif/blink003.png"
+dest_files=["res://.godot/imported/blink003.png-a6576e1a4d7de007d8dd3c34e63936bc.ctex"]
 
 [params]
 

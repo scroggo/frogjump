@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dj7tu1ywg7eo8"
-path="res://.godot/imported/Alligator_frames.png-fe8152b48171e8b6ed68b6805284a789.ctex"
+uid="uid://bvfav3u0f7op8"
+path="res://.godot/imported/blink001.png-2cf59ee579434e3d3edb711d06e179f6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://leon_assets/Alligator_frames.png"
-dest_files=["res://.godot/imported/Alligator_frames.png-fe8152b48171e8b6ed68b6805284a789.ctex"]
+source_file="res://assets/player/frog_ezgif/blink001.png"
+dest_files=["res://.godot/imported/blink001.png-2cf59ee579434e3d3edb711d06e179f6.ctex"]
 
 [params]
 

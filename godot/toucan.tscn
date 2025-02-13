@@ -1,7 +1,7 @@
 [gd_scene load_steps=15 format=3 uid="uid://bu5oairemc8af"]
 
-[ext_resource type="Texture2D" uid="uid://ctwfmdh83hngv" path="res://leon_assets/Toucan sprite.png" id="1_cnwwb"]
-[ext_resource type="Texture2D" uid="uid://bodbpwqaxapw" path="res://leon_assets/Toucan tail.png" id="2_nbjdx"]
+[ext_resource type="Texture2D" uid="uid://ctwfmdh83hngv" path="res://assets/toucan/Toucan sprite.png" id="1_cnwwb"]
+[ext_resource type="Texture2D" uid="uid://bodbpwqaxapw" path="res://assets/toucan/Toucan tail.png" id="2_nbjdx"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2468c"]
 atlas = ExtResource("1_cnwwb")

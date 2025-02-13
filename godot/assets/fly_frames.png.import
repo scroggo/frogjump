@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://2lwhnf67x68j"
-path="res://.godot/imported/frog_jump_tiles.png-bfb05baa05c505bffefafa1f4a532f01.ctex"
+uid="uid://bvmtsib004kf2"
+path="res://.godot/imported/fly_frames.png-710f3eec84f1e884e5b63daff2b9c761.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://leon_assets/frog_jump_tiles.png"
-dest_files=["res://.godot/imported/frog_jump_tiles.png-bfb05baa05c505bffefafa1f4a532f01.ctex"]
+source_file="res://assets/fly_frames.png"
+dest_files=["res://.godot/imported/fly_frames.png-710f3eec84f1e884e5b63daff2b9c761.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://btwjll3ip1yjw"
-path="res://.godot/imported/frog_spritesheet.webp-ad45b43d0e15549b58f226541fe63ecd.ctex"
+uid="uid://cqfx32cjw01ll"
+path="res://.godot/imported/blink002.png-8871c7a07df219db0746f4f22352b4cf.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://frog_spritesheet.webp"
-dest_files=["res://.godot/imported/frog_spritesheet.webp-ad45b43d0e15549b58f226541fe63ecd.ctex"]
+source_file="res://assets/player/frog_ezgif/blink002.png"
+dest_files=["res://.godot/imported/blink002.png-8871c7a07df219db0746f4f22352b4cf.ctex"]
 
 [params]
 

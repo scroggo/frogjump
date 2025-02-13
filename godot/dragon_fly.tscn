@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://b5dlmv4suu55n"]
 
-[ext_resource type="Texture2D" uid="uid://bvmtsib004kf2" path="res://leon_assets/fly_frames.png" id="1_y5ubl"]
+[ext_resource type="Texture2D" uid="uid://bvmtsib004kf2" path="res://assets/fly_frames.png" id="1_y5ubl"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_oms00"]
 radius = 12.0

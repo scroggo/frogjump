@@ -1,9 +1,9 @@
 [gd_resource type="TileSet" load_steps=3 format=3 uid="uid://ccqb3mdn882a7"]
 
-[ext_resource type="Texture2D" uid="uid://2lwhnf67x68j" path="res://leon_assets/frog_jump_tiles.png" id="1_r1f7x"]
+[ext_resource type="Texture2D" uid="uid://2lwhnf67x68j" path="res://assets/frog_jump_tiles.png" id="1_esd34"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_27wbh"]
-texture = ExtResource("1_r1f7x")
+texture = ExtResource("1_esd34")
 texture_region_size = Vector2i(64, 64)
 0:0/0 = 0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, 7.5, 32, 7.5, 32, 32, -32, 32)

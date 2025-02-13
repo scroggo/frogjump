@@ -1,8 +1,8 @@
 [gd_scene load_steps=26 format=3 uid="uid://bfdp35wgoi0sy"]
 
-[ext_resource type="Texture2D" uid="uid://dpqwv33k0dfex" path="res://leon_assets/alligator_lower_jaw.png" id="1_1ios1"]
-[ext_resource type="Texture2D" uid="uid://dj7tu1ywg7eo8" path="res://leon_assets/Alligator_frames.png" id="2_42vko"]
-[ext_resource type="Texture2D" uid="uid://c6p1i5xvb2sfj" path="res://leon_assets/alligator_eyebrows.png" id="3_f7poj"]
+[ext_resource type="Texture2D" uid="uid://dpqwv33k0dfex" path="res://assets/alligator/alligator_lower_jaw.png" id="1_1ios1"]
+[ext_resource type="Texture2D" uid="uid://dj7tu1ywg7eo8" path="res://assets/alligator/Alligator_frames.png" id="2_42vko"]
+[ext_resource type="Texture2D" uid="uid://c6p1i5xvb2sfj" path="res://assets/alligator/alligator_eyebrows.png" id="3_f7poj"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_m6wjw"]
 atlas = ExtResource("2_42vko")
