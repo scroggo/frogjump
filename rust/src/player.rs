@@ -282,18 +282,19 @@ impl ICharacterBody2D for Player {
                         let global_position =
                             landing_surface.unwrap().a + normal * (self.height() / 2.0);
                         let new_player_position = self.to_local_position(global_position);
+                        self.base_mut().set_position(new_player_position);
 
                         // Shimmy more fully onto the surface over the next
                         // several frames.
                         let surface_direction =
                             (landing_surface.unwrap().b - landing_surface.unwrap().a).normalized();
-
-                        self.shimmy_dest = Some(
-                            new_player_position
-                                + (self.width() / 2.0) * surface_direction * WIDTH_MODIFIER,
-                        );
-                        self.sprite().play_ex().name("shimmy").done();
-                        self.base_mut().set_position(new_player_position);
+                        let motion = (self.width() / 2.0) * surface_direction * WIDTH_MODIFIER;
+                        if self.would_collide(motion) {
+                            godot_print!("Shimmying (corner) would cause collisions!");
+                        } else {
+                            self.shimmy_dest = Some(new_player_position + motion);
+                            self.sprite().play_ex().name("shimmy").done();
+                        }
                     } else {
                         // Line up the player so that they appear to be resting directly
                         // on the surface.
@@ -318,15 +319,21 @@ impl ICharacterBody2D for Player {
                             // TODO: Shimmy around a corner?
                             godot_print!("Don't fit on surface!");
                         } else {
-                            let shimmy_dest = self.find_shimmy_dest(&landing_surface.unwrap());
-                            if shimmy_dest.is_some() {
-                                self.shimmy_dest = shimmy_dest;
-                                self.sprite().play_ex().name("shimmy").done();
+                            if let Some(shimmy_dest) = self.find_shimmy_dest(&landing_surface.unwrap()) {
+                                let motion = shimmy_dest - self.base().get_position();
+                                if self.would_collide(motion) {
+                                    godot_print!("Shimmying would cause collisions!");
+                                } else {
+                                    self.shimmy_dest = Some(shimmy_dest);
+                                    self.sprite().play_ex().name("shimmy").done();
+                                }
                             }
                         }
                     }
                     godot_print!("Player's local position: {}", self.base().get_position());
-                    self.check_collisions();
+                    if self.would_collide(Vector2::ZERO) {
+                        godot_error!("Created a new collision!");
+                    }
                 }
             }
         }
@@ -576,16 +583,17 @@ impl Player {
         LandingSurface::new(a, b, player_motion)
     }
 
-    fn check_collisions(&mut self) {
+    fn would_collide(&mut self, motion: Vector2) -> bool {
         if let Some(collision) = self
             .base_mut()
-            .move_and_collide_ex(Vector2::ZERO)
+            .move_and_collide_ex(motion)
             .test_only(true)
             .done()
         {
-            godot_error!("Created a new collision!");
             print_collision(&collision);
+            return true;
         }
+        false
     }
 
     // Return whether there is enough room for the player to land on the surface.
