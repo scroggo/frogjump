@@ -40,7 +40,10 @@ impl IControl for Arrow {
         // Draw the chevron. Choose the length based on the total length of the arrow.
         // TODO: Or let the user specify?
         let length = self.end.length() / 6.0;
-        let chevron_base = (Vector2::ZERO - self.end).normalized() * length;
+        let chevron_base = (Vector2::ZERO - self.end).normalized_or_zero() * length;
+        if chevron_base == Vector2::ZERO {
+            godot_error!("Arrow has no chevron!");
+        }
         let angle = deg_to_rad(self.chevron_degrees as f64) as f32;
         let chevron_a = chevron_base.rotated(-angle) + self.end;
         let chevron_b = chevron_base.rotated(angle) + self.end;
