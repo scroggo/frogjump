@@ -8,7 +8,7 @@ use crate::jump_handler::{JumpDetector, JumpHandler};
 use crate::math;
 use godot::classes::{
     AnimatedSprite2D, CharacterBody2D, CollisionShape2D, Geometry2D, ICharacterBody2D, InputEvent,
-    InputEventScreenTouch, KinematicCollision2D, TileMapLayer, Timer,
+    InputEventScreenTouch, KinematicCollision2D, Os, TileMapLayer, Timer,
 };
 use godot::global::{absf, cos, randf_range};
 use godot::prelude::*;
@@ -147,6 +147,13 @@ impl ICharacterBody2D for Player {
     }
 
     fn ready(&mut self) {
+        let os = Os::singleton();
+        if os.has_feature("debug") {
+            godot_print!("Running a debug build.");
+        }
+        if os.has_feature("release") {
+            godot_print!("Running a release build.");
+        }
         let blink = self.base().callable("on_blink_timeout");
         let mut blink_timer = self.blink_timer();
         blink_timer.connect("timeout", &blink);
