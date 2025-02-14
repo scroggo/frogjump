@@ -1,6 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://d3swuv15ybug6"]
+[gd_scene load_steps=9 format=3 uid="uid://d3swuv15ybug6"]
 
 [ext_resource type="Texture2D" uid="uid://cghoh7lpr38d2" path="res://assets/tutorial/button/pushthebutton.svg" id="1_vxpss"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kd5q7"]
+atlas = ExtResource("1_vxpss")
+region = Rect2(0, 0, 36, 28)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wy4g7"]
 atlas = ExtResource("1_vxpss")
@@ -24,6 +28,14 @@ region = Rect2(144, 0, 36, 28)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_yankm"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kd5q7")
+}],
+"loop": false,
+"name": &"default",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_wy4g7")

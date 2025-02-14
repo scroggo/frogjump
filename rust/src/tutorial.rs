@@ -172,6 +172,7 @@ impl Tutorial {
         self.base()
             .get_node_as::<AnimatedSprite2D>("Button")
             .play_ex()
+            .name("press")
             .custom_speed(custom_speed)
             .from_end(!pressed)
             .done();
