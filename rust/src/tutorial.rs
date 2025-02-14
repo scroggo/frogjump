@@ -1,7 +1,7 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
-use godot::classes::{AnimatedSprite2D, InputEvent, InputEventScreenTouch, Label};
+use godot::classes::{AnimatedSprite2D, InputEvent, InputEventScreenTouch, Label, Os};
 use godot::prelude::*;
 
 use crate::jump_handler::{JumpDetector, JumpHandler};
@@ -69,6 +69,7 @@ struct Tutorial {
     pressed: Arc<AtomicBool>,
     next_step: NextStep,
     player_start_position: Vector2,
+    on_mobile: bool,
     base: Base<Node2D>,
 }
 
@@ -89,6 +90,7 @@ impl INode2D for Tutorial {
             pressed: Arc::new(AtomicBool::new(false)),
             next_step: NextStep::OneStartJump,
             player_start_position: Vector2::default(),
+            on_mobile: is_mobile(),
             base,
         }
     }
@@ -99,6 +101,13 @@ impl INode2D for Tutorial {
         let detector: Box<dyn JumpDetector> = Box::new(TutorialJumpDetector::new(&self.pressed));
         let mut jump_handler = self.base().get_node_as::<JumpHandler>("Player/JumpHandler");
         jump_handler.bind_mut().replace_jump_detector(detector);
+        if self.on_mobile {
+            self.button().hide();
+            self.tap().show();
+        } else {
+            self.button().show();
+            self.tap().hide();
+        }
     }
 
     fn unhandled_input(&mut self, event: Gd<InputEvent>) {
@@ -169,13 +178,25 @@ impl Tutorial {
             true => 1.0,
             false => -1.0,
         };
-        self.base()
-            .get_node_as::<AnimatedSprite2D>("Button")
+        let mut sprite = if self.on_mobile {
+            self.tap()
+        } else {
+            self.button()
+        };
+        sprite
             .play_ex()
             .name("press")
             .custom_speed(custom_speed)
             .from_end(!pressed)
             .done();
+    }
+
+    fn button(&self) -> Gd<AnimatedSprite2D> {
+        self.base().get_node_as::<AnimatedSprite2D>("HUD/Button")
+    }
+
+    fn tap(&self) -> Gd<AnimatedSprite2D> {
+        self.base().get_node_as::<AnimatedSprite2D>("HUD/Tap")
     }
 
     fn short_press_label(&self) -> Gd<Label> {
@@ -195,4 +216,9 @@ impl Tutorial {
             tree.change_scene_to_file("res://levels/level.tscn");
         }
     }
+}
+
+fn is_mobile() -> bool {
+    let os = Os::singleton();
+    os.has_feature("web_android") || os.has_feature("web_ios")
 }
