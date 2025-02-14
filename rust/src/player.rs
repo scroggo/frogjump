@@ -78,12 +78,11 @@ struct LandingSurface {
 }
 
 impl LandingSurface {
-    fn new(a: Vector2, b: Vector2, player_motion: Vector2) -> LandingSurface {
-        LandingSurface {
-            a,
-            b,
-            normal: math::normal(a, b, player_motion),
+    fn new(a: Vector2, b: Vector2, player_motion: Vector2) -> Option<LandingSurface> {
+        if let Some(normal) = math::normal(a, b, player_motion) {
+            return Some(LandingSurface { a, b, normal });
         }
+        None
     }
 
     fn length_squared(&self) -> f32 {
@@ -469,7 +468,12 @@ impl Player {
 
             // Construct a plane from a normal and a point. See
             // https://docs.godotengine.org/en/stable/tutorials/math/vectors_advanced.html#constructing-a-plane-in-2d
-            let mut n = math::normal(a, b, player_motion);
+            let n_opt = math::normal(a, b, player_motion);
+            if n_opt.is_none() {
+                // This side is too small. Skip it.
+                continue;
+            }
+            let mut n = n_opt.unwrap();
             let d = n.dot(a);
 
             // If the collision is in this plane and the normal matches, this is
@@ -492,11 +496,12 @@ impl Player {
                             let i4 = next_point(points, i3);
                             c = points[i4];
                         }
-                        let bc = LandingSurface::new(b, c, player_motion);
-                        if math::same_normals_approx(n, bc.normal) {
-                            godot_print!("Appending bc!");
-                            b = c;
-                            n = bc.normal;
+                        if let Some(bc) = LandingSurface::new(b, c, player_motion) {
+                            if math::same_normals_approx(n, bc.normal) {
+                                godot_print!("Appending bc!");
+                                b = c;
+                                n = bc.normal;
+                            }
                         }
                     }
                     {
@@ -505,11 +510,12 @@ impl Player {
                         if z.distance_squared_to(a) < 1.0 {
                             z = points[prior_point(points, i0)];
                         }
-                        let za = LandingSurface::new(z, a, player_motion);
-                        if math::same_normals_approx(za.normal, n) {
-                            godot_print!("Appending za!");
-                            a = z;
-                            n = za.normal;
+                        if let Some(za) = LandingSurface::new(z, a, player_motion) {
+                            if math::same_normals_approx(za.normal, n) {
+                                godot_print!("Appending za!");
+                                a = z;
+                                n = za.normal;
+                            }
                         }
                     }
                     // TODO: Make sure the side is long enough.
@@ -543,12 +549,14 @@ impl Player {
         // surface.
         if math::same_normals_approx(landing_surface_a.normal, landing_surface_b.normal) {
             godot_print!("Treat two sides as same surface!");
-            let landing_surface_full =
-                LandingSurface::new(landing_surface_a.b, landing_surface_b.b, player_motion);
-            if !self.can_land_on_surface(&landing_surface_full) {
-                godot_error!("Surfaces are too small! Landing anyway!");
+            if let Some(landing_surface_full) =
+                LandingSurface::new(landing_surface_a.b, landing_surface_b.b, player_motion)
+            {
+                if !self.can_land_on_surface(&landing_surface_full) {
+                    godot_error!("Surfaces are too small! Landing anyway!");
+                }
+                return Some(landing_surface_full);
             }
-            return Some(landing_surface_full);
         }
         // First pick the surface whose normal is closest to the collision normal.
         // Since we're dealing with normals, we can just use the one with the dot
@@ -585,7 +593,8 @@ impl Player {
             b = points[next_point_index];
             godot_print!("New point: {b}");
         }
-        LandingSurface::new(a, b, player_motion)
+        // We already checked the distance between these two points.
+        LandingSurface::new(a, b, player_motion).expect("surface should have a normal!")
     }
 
     fn would_collide(&mut self, motion: Vector2) -> bool {
