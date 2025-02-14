@@ -648,7 +648,10 @@ impl Player {
         let bottom_corner = player_middle + surface_direction * self.width() / 2.0;
         let v = a - bottom_corner;
         let dot_product = v.try_normalized()?.dot(surface_direction);
-        if dot_product == -1.0 {
+
+        // Since these are normalized, -1 would be exactly pointing in the
+        // opposite direction. Use a small tolerance.
+        if dot_product < -0.95 {
             // Player is overhanging the surface in the direction of `a`. Move
             // the other way to be on the surface.
             return Some(self.to_local_position(current_position + v * WIDTH_MODIFIER));

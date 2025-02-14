@@ -11,6 +11,7 @@ Add a new test at the beginning, and set its next level to be the next one down.
 - `test_wedge_corner`
 - `test_wall`
 - `test_tree_top`
+- `test_tree_top2`
 - `test_vine_corner`
 - `test_over_edge`
 - `test_over_edge2`
