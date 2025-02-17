@@ -6,7 +6,8 @@ godot/.godot/
 rust/target/
 
 # Generated files for the web version
-web_export/
+web_export/raw
+web_export/zipped
 
 # VIM swap files
 *.swp
