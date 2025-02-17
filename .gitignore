@@ -5,6 +5,9 @@ godot/.godot/
 # My rust output
 rust/target/
 
+# Generated files for the web version
+web_export/
+
 # VIM swap files
 *.swp
 
