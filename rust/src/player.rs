@@ -498,11 +498,7 @@ impl Player {
                     // at a tiny angle that we can treat as a long surface.
                     {
                         let i3 = next_point(points, i2);
-                        let mut c = points[i3];
-                        if b.distance_squared_to(c) < 1.0 {
-                            let i4 = next_point(points, i3);
-                            c = points[i4];
-                        }
+                        let c = points[i3];
                         if let Some(bc) = LandingSurface::new(b, c, player_motion) {
                             if math::same_normals_approx(n, bc.normal) {
                                 godot_print!("Appending bc!");
@@ -513,10 +509,7 @@ impl Player {
                     }
                     {
                         let i0 = prior_point(points, i);
-                        let mut z = points[i0];
-                        if z.distance_squared_to(a) < 1.0 {
-                            z = points[prior_point(points, i0)];
-                        }
+                        let z = points[i0];
                         if let Some(za) = LandingSurface::new(z, a, player_motion) {
                             if math::same_normals_approx(za.normal, n) {
                                 godot_print!("Appending za!");
@@ -591,16 +584,10 @@ impl Player {
         next_pt_fn: fn(&PackedVector2Array, usize) -> usize,
         player_motion: Vector2,
     ) -> LandingSurface {
-        let mut next_point_index = next_pt_fn(points, index);
+        let next_point_index = next_pt_fn(points, index);
         let a = points[index];
-        let mut b = points[next_point_index];
-        if a.distance_squared_to(b) < 1.0 {
-            godot_print!("Distance from {a} to {b} is too small!");
-            next_point_index = next_pt_fn(points, next_point_index);
-            b = points[next_point_index];
-            godot_print!("New point: {b}");
-        }
-        // We already checked the distance between these two points.
+        let b = points[next_point_index];
+        // `smooth_polygon` already checked the distance between these two points.
         LandingSurface::new(a, b, player_motion).expect("surface should have a normal!")
     }
 
@@ -719,11 +706,14 @@ fn get_collider_points(
     if let Some(tile_map_layer) = collider.try_cast::<TileMapLayer>().ok() {
         let local_collision = tile_map_layer.to_local(*collision_position);
         let map_coordinates = tile_map_layer.local_to_map(local_collision);
-        return get_collider_points_from_tile_map_layer(
+        if let Some(mut points) = get_collider_points_from_tile_map_layer(
             &tile_map_layer,
             map_coordinates,
             Some(local_collision),
-        );
+        ) {
+            smooth_polygon(&mut points);
+            return Some(points);
+        }
     } else {
         godot_error!("Collided with something other than a TileMapLayer??");
     }
@@ -845,4 +835,27 @@ fn get_collider_points_from_tile_map_layer(
         }
     }
     return points_so_far;
+}
+
+// Modify the supplied polygon to remove unnecessary points.
+// Tile data may not line up perfectly, resulting in e.g. two points
+// that are right next to each other.
+// Note: Not exhaustive for all hypothetical polygons. This is
+// intended specifically to catch tiles not lining up.
+fn smooth_polygon(polygon: &mut PackedVector2Array) {
+    let mut stack = Vec::new();
+    for i in 0..polygon.len() {
+        let i2 = next_point(&polygon, i);
+        let a = polygon[i];
+        let b = polygon[i2];
+        if a.distance_squared_to(b) < 1.0 {
+            godot_print!("Removing {b}!");
+            stack.push(i2);
+        }
+    }
+
+    // Remove in reverse order so the indices are still correct.
+    while let Some(index) = stack.pop() {
+        polygon.remove(index);
+    }
 }
