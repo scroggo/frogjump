@@ -547,7 +547,12 @@ impl Player {
 
         for surface in [&landing_surface_a, &landing_surface_b] {
             if self.can_land_on_surface(surface) {
-                return Some(*surface);
+                // The surface picked the normal based on the player motion,
+                // which I would expect to generally work - the player must be
+                // colliding from outside the polygon. But corners are funny.
+                // We might pick a side such that the player's motion looks to
+                // come from inside.
+                return Some(surface.correct_normal(points));
             }
         }
         // TODO: We might hit this case if you land close to the branch - then we'll have to add
