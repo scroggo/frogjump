@@ -5,6 +5,7 @@ use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
 
 use crate::jump_handler::{JumpDetector, JumpHandler};
+use crate::landing_surface::LandingSurface;
 use crate::math;
 use godot::classes::{
     AnimatedSprite2D, CharacterBody2D, CollisionShape2D, Geometry2D, ICharacterBody2D, InputEvent,
@@ -65,29 +66,6 @@ pub struct PlayerInfo {
     pos: Vector2,
     vel: Vector2,
     dir: Direction,
-}
-
-// Global positions for two end points of a surface, along with the normal.
-// Note that in some cases, the end point is just the end of a tile, and the
-// surface may extend further.
-#[derive(Debug, Clone, Copy)]
-struct LandingSurface {
-    a: Vector2,
-    b: Vector2,
-    normal: Vector2,
-}
-
-impl LandingSurface {
-    fn new(a: Vector2, b: Vector2, player_motion: Vector2) -> Option<LandingSurface> {
-        if let Some(normal) = math::normal(a, b, player_motion) {
-            return Some(LandingSurface { a, b, normal });
-        }
-        None
-    }
-
-    fn length_squared(&self) -> f32 {
-        (self.a - self.b).length_squared()
-    }
 }
 
 // The player's width works well for collisions, but make it a little bit

@@ -5,6 +5,7 @@ mod arrow;
 mod dragon_fly;
 mod jump_handler;
 mod jump_meter;
+mod landing_surface;
 mod level;
 mod math;
 mod player;
