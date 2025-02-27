@@ -4,7 +4,7 @@ Inspired by the [1-Button Jam](https://itch.io/jam/1-button-jam-2024). Work in p
 
 ## How to play
 
-Go to [scroggo.itch.io/frogjump](https://scroggo.itch.io/frogjump) to play the web version.
+Go to [scroggo.itch.io/frogjump](https://scroggo.itch.io/frogjump) to play the web version. One button (space bar or mouse click, or touch anywhere on mobile) is all you need! Hold to charge up a jump. Hold the button/fill the bar for a longer jump.
 
 ## Exporting to web
 
