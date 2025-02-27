@@ -1,0 +1,134 @@
+[gd_scene load_steps=5 format=4 uid="uid://bwik4gw6hlc4b"]
+
+[ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="1_iwdyn"]
+[ext_resource type="PackedScene" uid="uid://phmuno8lyhtg" path="res://test_scenes/test_branch_tip.tscn" id="1_rpeje"]
+[ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_dgxtf"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_dhyqf"]
+font_size = 24
+
+[node name="Level" type="Level"]
+is_test_level = true
+next_level = ExtResource("1_rpeje")
+tile_map_data = PackedByteArray("AAAAAAgAAQAFAAMAAAAAAAcAAQAFAAIAAAAAAAYAAQAEAAEAAAAAAAUAAQAEAAIAAAAAAAQAAQAEAAEAAAAAAAMAAQAFAAIAAAAAAAIAAQAEAAEAAAAAAAEAAQAFAAIAAAAAAAAAAQAFAAIAAAABAAgAAQADAAMAAAACAAgAAQADAAMAAAADAAgAAQADAAMAAAAEAAgAAQADAAMAAAAFAAgAAQADAAMAAAAGAAgAAQADAAMAAAAHAAgAAQADAAMAAAAIAAgAAQADAAMAAAAJAAgAAQADAAMAAAAKAAgAAQAEAAMAAAALAAgAAQADAAMAAAAKAAcAAQAEAAIAAAAKAAYAAQAEAAIAAAAKAAUAAQAEAAIAAAAKAAQAAQAEAAIAAAAKAAMAAQAEAAIAAAAKAAIAAQAEAAIAAAAKAAEAAQAEAAIAAAAKAAAAAQAEAAIAAAABAAQAAQACAAIAAAABAAYAAQADAAIAAAABAAIAAQADAAIAAAACAAQAAQADAAIAAAADAAUAAQABAAYAAAAEAAUAAQACAAYAAAAFAAUAAQACAAYAAAAGAAUAAQACAAYAAAAHAAUAAQADAAYAAAAGAAIAAQADAAYAAAAFAAIAAQACAAYAAAAEAAIAAQABAAYAAAA=")
+tile_set = ExtResource("1_iwdyn")
+
+[node name="BackgroundTiles" type="TileMapLayer" parent="."]
+position = Vector2(0, -33)
+tile_map_data = PackedByteArray("AAAAAAAAAQACAAIAAAABAAAAAQACAAIAAAACAAAAAQACAAIAAAADAAAAAQACAAIAAAAEAAAAAQACAAIAAAAFAAAAAQACAAIAAAAGAAAAAQACAAIAAAAIAAAAAQACAAIAAAAJAAAAAQACAAIAAAAKAAAAAQACAAIAAAAHAAAAAQACAAIAAAA=")
+tile_set = ExtResource("1_iwdyn")
+
+[node name="Frogs" type="Node2D" parent="."]
+
+[node name="Player" parent="Frogs" instance=ExtResource("2_dgxtf")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(75, 487)
+
+[node name="Player13" parent="Frogs" instance=ExtResource("2_dgxtf")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(125, 488)
+
+[node name="Player2" parent="Frogs" instance=ExtResource("2_dgxtf")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(67, 397)
+
+[node name="Player3" parent="Frogs" instance=ExtResource("2_dgxtf")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(71, 264)
+
+[node name="Player4" parent="Frogs" instance=ExtResource("2_dgxtf")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(116, 265)
+
+[node name="Player5" parent="Frogs" instance=ExtResource("2_dgxtf")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(71, 135)
+
+[node name="Player6" parent="Frogs" instance=ExtResource("2_dgxtf")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(310, 114)
+
+[node name="Player8" parent="Frogs" instance=ExtResource("2_dgxtf")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(361, 114)
+
+[node name="Player7" parent="Frogs" instance=ExtResource("2_dgxtf")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(241, 311)
+
+[node name="Player9" parent="Frogs" instance=ExtResource("2_dgxtf")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(293, 306)
+
+[node name="Player10" parent="Frogs" instance=ExtResource("2_dgxtf")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(345, 312)
+
+[node name="Player11" parent="Frogs" instance=ExtResource("2_dgxtf")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(400, 308)
+
+[node name="Player12" parent="Frogs" instance=ExtResource("2_dgxtf")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(452, 309)
+
+[node name="Player14" parent="Frogs" instance=ExtResource("2_dgxtf")]
+target_velocity = Vector2(-200, 200)
+position = Vector2(412, 487)
+
+[node name="Player15" parent="Frogs" instance=ExtResource("2_dgxtf")]
+target_velocity = Vector2(-200, 200)
+position = Vector2(615, 495)
+
+[node name="Player16" parent="Frogs" instance=ExtResource("2_dgxtf")]
+target_velocity = Vector2(-200, 200)
+position = Vector2(555, 493)
+
+[node name="Player17" parent="Frogs" instance=ExtResource("2_dgxtf")]
+target_velocity = Vector2(-200, 200)
+position = Vector2(484, 491)
+
+[node name="ForegroundTiles" type="TileMapLayer" parent="."]
+z_index = 2
+position = Vector2(0, -11)
+tile_map_data = PackedByteArray("AAAAAAAAAQAAAAYAAAABAAAAAQAAAAYAAAACAAAAAQAAAAYAAAADAAAAAQAAAAYAAAAEAAAAAQAAAAYAAAAFAAAAAQAAAAYAAAAGAAAAAQAAAAYAAAAHAAAAAQAAAAYAAAAIAAAAAQAAAAYAAAAJAAAAAQAAAAYAAAAKAAAAAQAAAAYAAAA=")
+tile_set = ExtResource("1_iwdyn")
+
+[node name="WelcomeLabel" type="Label" parent="."]
+offset_left = 219.0
+offset_top = 59.0
+offset_right = 508.0
+offset_bottom = 93.0
+text = "Welcome to the test bed!"
+label_settings = SubResource("LabelSettings_dhyqf")
+
+[node name="Label" type="Label" parent="."]
+offset_left = 110.0
+offset_top = 198.0
+offset_right = 150.0
+offset_bottom = 221.0
+text = "Each level (after this one) is set up to easily demonstrate a known
+bug to verify it has been fixed."
+
+[node name="Label2" type="Label" parent="."]
+offset_left = 125.0
+offset_top = 375.0
+offset_right = 165.0
+offset_bottom = 398.0
+text = "Play as normal, with a couple of extra features:
+- press ESCAPE to restart the scene. Necessary in some scenes
+  where the same jump may behave differently.
+- press ENTER to move on to the next scene."
