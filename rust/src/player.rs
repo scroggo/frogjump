@@ -575,15 +575,27 @@ impl Player {
     }
 
     fn would_collide(&mut self, motion: Vector2) -> bool {
+        let mut bb = self.bounding_box();
+        bb.position = bb.position + self.get_global_position();
+        let bb2 = Rect2 {
+            position: bb.position + motion,
+            size: bb.size,
+        };
+        godot_print!("would_collide? test for collisions with motion {motion}");
+        godot_print!("\tcurrent position: {bb}");
+        godot_print!("\tafter movement:   {bb2}");
+
         if let Some(collision) = self
             .base_mut()
             .move_and_collide_ex(motion)
             .test_only(true)
             .done()
         {
+            godot_print!("\tYes!");
             print_collision(&collision);
             return true;
         }
+        godot_print!("\tNo");
         false
     }
 
