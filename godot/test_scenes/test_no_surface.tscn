@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=4 uid="uid://c15mobbfjtbbv"]
+
+[ext_resource type="PackedScene" uid="uid://phmuno8lyhtg" path="res://test_scenes/test_branch_tip.tscn" id="1_elx1a"]
+[ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="1_rft7n"]
+[ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_rhfln"]
+
+[node name="TileMapLayer" type="Level"]
+is_test_level = true
+next_level = ExtResource("1_elx1a")
+position = Vector2(56, -32)
+tile_map_data = PackedByteArray("AAAKAAcAAQAEAAIAAAAKAAgAAQAEAAMAAAAHAAgAAQAEAAMAAAAIAAgAAQADAAMAAAAJAAgAAQADAAMAAAAHAAcAAQAEAAIAAAAGAAQAAQADAAEAAAAHAAQAAQAEAAEAAAAHAAUAAQAEAAIAAAAHAAYAAQAEAAIAAAAIAAQAAQADAAIAAAAGAAgAAQADAAMAAAAFAAQAAQACAAEAAAAHAAMAAQABAAIAAAAKAAYAAQAEAAIAAAAKAAUAAQAEAAIAAAAKAAQAAQAEAAIAAAAKAAMAAQAEAAIAAAA=")
+tile_set = ExtResource("1_rft7n")
+
+[node name="Player" parent="." instance=ExtResource("2_rhfln")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(645.625, 242.174)
+
+[node name="JumpHandler" parent="Player" index="3"]
+max_jump_strength_for_testing = 0.417
+
+[node name="Label" type="Label" parent="."]
+offset_left = -53.0
+offset_top = 35.0
+offset_right = 539.0
+offset_bottom = 58.0
+text = "With the current jump strength, the player lands on a surface, but somehow the code
+reported no LandingSurface. It seems the TOLERANCE was too low. Verify the player lands
+solidly on the surface, rather than floating off of it."
+
+[editable path="Player"]

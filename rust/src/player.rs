@@ -464,10 +464,7 @@ impl Player {
             // If the collision is in this plane and the normal matches, this is
             // the side we landed on.
             let distance = n.dot(collision_position) - d;
-            // TODO: Fine-tune this tolerance. The first collision I measured
-            // had a `distance` of 0, so maybe it's not necessary at all, but
-            // I would expect that there might be rounding errors.
-            const TOLERANCE: f64 = 0.05;
+            const TOLERANCE: f64 = 0.2;
             if absf(distance as f64) < TOLERANCE {
                 godot_print!("Collision {collision_position} is {distance} from side {a}-{b}");
                 let dot_product = n.dot(collision_normal);

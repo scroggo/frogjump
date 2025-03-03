@@ -9,6 +9,7 @@ the tests.
 
 ## Order
 - `test_bed`
+- `test_no_surface`
 - `test_branch_tip`
 - `test_branch_tip2`
 - `test_vine_left`
