@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=4 uid="uid://c2jhbgbtghro4"]
+
+[ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="1_iwdyn"]
+[ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_dgxtf"]
+
+[node name="Level" type="Level"]
+is_test_level = true
+tile_map_data = PackedByteArray("AAAAAAgAAQAFAAMAAAAAAAcAAQAFAAIAAAAAAAYAAQAEAAEAAAAAAAUAAQAEAAIAAAABAAgAAQADAAMAAAACAAgAAQADAAMAAAADAAgAAQADAAMAAAAEAAgAAQADAAMAAAAFAAgAAQADAAMAAAAGAAgAAQADAAMAAAAHAAgAAQADAAMAAAAIAAgAAQADAAMAAAAJAAgAAQADAAMAAAABAAYAAQADAAIAAAADAAUAAQABAAYAAAAEAAUAAQACAAYAAAAFAAUAAQACAAYAAAAGAAUAAQACAAYAAAAHAAUAAQADAAYAAAA=")
+tile_set = ExtResource("1_iwdyn")
+
+[node name="Player" parent="." instance=ExtResource("2_dgxtf")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(67, 397)
+
+[node name="Label" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Full strength jump. Not enough space to land on the edge, but the player hits a corner, which
+(currently) follows a different code path.
+
+TODO: The bottom surface is computed as not being long enough, but I suspect we're not
+checking for adjacent tiles in the corner case."
