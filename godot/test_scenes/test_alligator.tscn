@@ -10,3 +10,12 @@ z_index = 1
 position = Vector2(351, 282)
 
 [node name="FakePlayer" parent="." instance=ExtResource("2_vccn1")]
+position = Vector2(109, 288)
+
+[node name="Label" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Unlike other test scenes, this one uses touch/mouse click to reposition the player and test
+the alligator's detection of the player.
+
+This is the final test scene, and ENTER is not supported."
