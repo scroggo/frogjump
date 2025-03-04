@@ -30,7 +30,7 @@ pub struct JumpHandler {
     #[export]
     max_time_ms: f32,
     // Can be used to ensure hitting a particular number for testing.
-    #[export]
+    #[export(range = (0.0, 1.0))]
     max_jump_strength_for_testing: f32,
     jump_detector: Box<dyn JumpDetector>,
     base: Base<Node>,
