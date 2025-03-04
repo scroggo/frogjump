@@ -23,3 +23,11 @@ text = "Verify that landing directly on a corner at a seam works as expected.
 The player's initial motion lands in the desired spot.
 
 In addition, a small jump after landing should be smooth. (No warping.)"
+
+[node name="SceneName" type="Label" parent="."]
+offset_left = 2.0
+offset_top = 517.0
+offset_right = 138.0
+offset_bottom = 540.0
+text = "test_corner_seam
+"

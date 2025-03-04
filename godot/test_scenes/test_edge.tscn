@@ -27,3 +27,10 @@ may be approximately in the plane of the adjacent side.
 The player's orientation at the start is sometimes wrong; an actual level will not start with
 the player on a tree (so no code deliberately handles it), but a full strength jump from this
 position reproduces a situation where the player landed incorrectly on the left tree."
+
+[node name="SceneName" type="Label" parent="."]
+offset_left = -54.0
+offset_top = 550.0
+offset_right = 20.0
+offset_bottom = 573.0
+text = "test_edge"

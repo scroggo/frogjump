@@ -28,4 +28,11 @@ text = "Landing directly on a surface that is too small for the player (like the
 should move the player onto another side.
 TODO: Implement."
 
+[node name="SceneName" type="Label" parent="."]
+offset_left = -50.0
+offset_top = 544.0
+offset_right = 69.0
+offset_bottom = 567.0
+text = "test_branch_tip"
+
 [editable path="Player"]

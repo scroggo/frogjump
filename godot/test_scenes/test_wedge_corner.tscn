@@ -26,3 +26,10 @@ corner.
 
 TODO: Test the non-corner version, and/or unify the code.
 TODO: Shimmy around the corner, if possible?"
+
+[node name="SceneName" type="Label" parent="."]
+offset_left = -50.0
+offset_top = 545.0
+offset_right = 95.0
+offset_bottom = 568.0
+text = "test_wedge_corner"

@@ -19,3 +19,10 @@ position = Vector2(283, 216)
 offset_right = 553.0
 offset_bottom = 118.0
 text = "Landing on a corner should shimmy on even if the collision is not directly on the corner."
+
+[node name="SceneName" type="Label" parent="."]
+offset_left = 1.0
+offset_top = 515.0
+offset_right = 117.0
+offset_bottom = 538.0
+text = "test_over_edge"

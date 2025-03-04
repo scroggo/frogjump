@@ -18,3 +18,9 @@ position = Vector2(200, 447)
 offset_right = 40.0
 offset_bottom = 23.0
 text = "Jumping onto the vine's bottom right corner should shimmy up."
+
+[node name="SceneName" type="Label" parent="."]
+offset_top = 515.0
+offset_right = 127.0
+offset_bottom = 538.0
+text = "test_vine_corner"

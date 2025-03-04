@@ -28,4 +28,11 @@ text = "With the current jump strength, the player lands on a surface, but someh
 reported no LandingSurface. It seems the TOLERANCE was too low. Verify the player lands
 solidly on the surface, rather than floating off of it."
 
+[node name="SceneName" type="Label" parent="."]
+offset_left = -53.0
+offset_top = 546.0
+offset_right = -13.0
+offset_bottom = 569.0
+text = "test_no_surface"
+
 [editable path="Player"]

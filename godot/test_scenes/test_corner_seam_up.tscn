@@ -25,3 +25,10 @@ since there is a tile below.
 
 A full strength jump *often* lands on the seam.
 (Jump strength is the same; maybe this relates to timing?)"
+
+[node name="SceneName" type="Label" parent="."]
+offset_left = 3.0
+offset_top = 514.0
+offset_right = 166.0
+offset_bottom = 537.0
+text = "test_corner_seam_up"

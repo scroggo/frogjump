@@ -29,4 +29,11 @@ branch. The original computation of the surface normal puts the player on the wr
 the surface, so they intersect with the branch and have to warp out of it.
 Verify this is fixed."
 
+[node name="SceneName" type="Label" parent="."]
+offset_left = -48.0
+offset_top = 545.0
+offset_right = -8.0
+offset_bottom = 568.0
+text = "test_branch_tip2"
+
 [editable path="Player"]

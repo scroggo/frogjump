@@ -22,3 +22,10 @@ text = "When landing on a corner with one side that is too small to land on, ver
 on the larger side.
 
 A full strength jump reproduces the desired scenario."
+
+[node name="SceneName" type="Label" parent="."]
+offset_left = -2.0
+offset_top = 509.0
+offset_right = 86.0
+offset_bottom = 532.0
+text = "test_corner"

@@ -22,3 +22,10 @@ offset_right = 259.0
 offset_bottom = 58.0
 text = "A full strength jump lands near a corner. Previously, this shimmied because the two edges do
 not quite line up. Verify no shimmying."
+
+[node name="SceneName" type="Label" parent="."]
+offset_left = -54.0
+offset_top = 544.0
+offset_right = 14.0
+offset_bottom = 567.0
+text = "test_wall"

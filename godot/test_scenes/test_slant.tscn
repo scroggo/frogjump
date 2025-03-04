@@ -33,4 +33,11 @@ should be tested.
 
 The player should never warp or shimmy from this jump."
 
+[node name="SceneName" type="Label" parent="."]
+offset_left = -51.0
+offset_top = 545.0
+offset_right = 24.0
+offset_bottom = 568.0
+text = "test_slant"
+
 [editable path="Player"]

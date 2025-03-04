@@ -18,3 +18,10 @@ position = Vector2(416, 295)
 offset_right = 40.0
 offset_bottom = 23.0
 text = "Same thing in the other direction."
+
+[node name="SceneName" type="Label" parent="."]
+offset_left = 6.0
+offset_top = 513.0
+offset_right = 131.0
+offset_bottom = 536.0
+text = "test_over_edge2"

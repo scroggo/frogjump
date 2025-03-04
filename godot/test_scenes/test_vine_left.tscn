@@ -22,3 +22,9 @@ text = "Jump with full strength!
 
 This lands on the bottom left corner. Verify no exceptions and the player shimmies up the
 vine."
+
+[node name="SceneName" type="Label" parent="."]
+offset_top = 518.0
+offset_right = 40.0
+offset_bottom = 541.0
+text = "test_vine_left"

@@ -22,3 +22,11 @@ offset_top = 32.0
 offset_right = 41.0
 offset_bottom = 55.0
 text = "When almost going over the edge and hitting the corner, the player should shimmy back."
+
+[node name="SceneName" type="Label" parent="."]
+offset_left = 80.0
+offset_top = 547.0
+offset_right = 217.0
+offset_bottom = 570.0
+text = "test_corner_angle
+"

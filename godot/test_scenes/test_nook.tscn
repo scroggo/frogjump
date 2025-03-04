@@ -26,3 +26,10 @@ text = "Another corner landing. The polygons don't line up quite properly, resul
 corner that's hard to reason with.
 
 A full strength jump reproduces the desired scenario."
+
+[node name="SceneName" type="Label" parent="."]
+offset_left = -55.0
+offset_top = 549.0
+offset_right = 21.0
+offset_bottom = 572.0
+text = "test_nook"

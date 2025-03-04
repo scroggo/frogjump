@@ -19,3 +19,10 @@ offset_right = 40.0
 offset_bottom = 23.0
 text = "A full strength jump lands on the bottom right corner. Since this happens to be on the tile
 boundary, TileMapLayer returns the empty tile below. Verify that this causes no problems."
+
+[node name="SceneName" type="Label" parent="."]
+offset_left = 4.0
+offset_top = 512.0
+offset_right = 122.0
+offset_bottom = 535.0
+text = "test_empty_tile"

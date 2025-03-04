@@ -19,3 +19,10 @@ text = "Unlike other test scenes, this one uses touch/mouse click to reposition 
 the alligator's detection of the player.
 
 This is the final test scene, and ENTER is not supported."
+
+[node name="SceneName" type="Label" parent="."]
+offset_left = 3.0
+offset_top = 506.0
+offset_right = 104.0
+offset_bottom = 529.0
+text = "test_alligator"

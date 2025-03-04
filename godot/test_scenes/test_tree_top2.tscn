@@ -28,4 +28,11 @@ text = "Hold jump to its max to repro.
 
 Verify the player shimmies onto the surface."
 
+[node name="SceneName" type="Label" parent="."]
+offset_left = -54.0
+offset_top = 546.0
+offset_right = 57.0
+offset_bottom = 569.0
+text = "test_tree_top2"
+
 [editable path="Player"]
