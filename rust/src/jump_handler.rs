@@ -22,14 +22,16 @@ impl JumpKeyDetector {
 #[derive(GodotClass)]
 #[class(base=Node)]
 pub struct JumpHandler {
-    // If `None`, jump is not pressed.
-    // If `Some`, how long jump has been held.
+    /// If `None`, jump is not pressed.
+    /// If `Some`, how long jump has been held.
     length_of_jump_press_ms: Option<f32>,
 
-    // Maximum time to make jump more powerful.
+    /// How long it takes to max out the jump meter.
     #[export]
     max_time_ms: f32,
-    // Can be used to ensure hitting a particular number for testing.
+    /// Limit the jump strength to a ratio out of 1. If set to 0, the player
+    /// cannot jump. At 0.5, the player's jump will max out at half strength.
+    /// Can be useful to ensure hitting a particular strength for testing.
     #[export(range = (0.0, 1.0))]
     max_jump_strength_for_testing: f32,
     jump_detector: Box<dyn JumpDetector>,
