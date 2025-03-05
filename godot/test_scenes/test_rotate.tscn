@@ -1,0 +1,37 @@
+[gd_scene load_steps=4 format=3 uid="uid://c78emojkpuim2"]
+
+[ext_resource type="PackedScene" uid="uid://bsoyhsvegn7s2" path="res://test_scenes/test_corner_seam_left.tscn" id="1_b6g7p"]
+[ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="1_rft7n"]
+[ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_rhfln"]
+
+[node name="TileMapLayer" type="Level"]
+is_test_level = true
+next_level = ExtResource("1_b6g7p")
+position = Vector2(56, -32)
+tile_map_data = PackedByteArray(0, 0, 5, 0, 8, 0, 1, 0, 2, 0, 3, 0, 0, 0, 7, 0, 8, 0, 1, 0, 4, 0, 3, 0, 0, 0, 7, 0, 7, 0, 1, 0, 4, 0, 2, 0, 0, 0, 6, 0, 8, 0, 1, 0, 3, 0, 3, 0, 0, 0)
+tile_set = ExtResource("1_rft7n")
+
+[node name="Player" parent="." instance=ExtResource("2_rhfln")]
+on_surface = true
+position = Vector2(453.238, 489.603)
+rotation = 4.71239
+
+[node name="JumpHandler" parent="Player" index="3"]
+max_jump_strength_for_testing = 0.208
+
+[node name="Label" type="Label" parent="."]
+offset_left = -54.0
+offset_top = 33.0
+offset_right = 290.0
+offset_bottom = 56.0
+text = "When leaving a wall with a small jump, rotating the player right-side up may result in colliding
+with the wall they are jumping off. Verify this bug is fixed: the player should jump off the wall."
+
+[node name="SceneName" type="Label" parent="."]
+offset_left = -54.0
+offset_top = 550.0
+offset_right = 20.0
+offset_bottom = 573.0
+text = "test_rotate"
+
+[editable path="Player"]

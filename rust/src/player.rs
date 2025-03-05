@@ -334,7 +334,35 @@ impl ICharacterBody2D for Player {
                     self.base_mut().set_rotation(0.0);
                     let flip_h = self.direction == Direction::Right;
                     self.sprite().set_flip_h(flip_h);
+
+                    // Sometimes the rotation causes new collisions. (The change
+                    // to `flip_h` should make no difference because the
+                    // collision rectangle is centered around the player.)
+                    // Remove any overlap.
+                    let position = self.base().get_position();
+                    let bb = self.bounding_box();
+
+                    let mut base_mut = self.base_mut();
+                    if let Some(collision) = base_mut
+                        .move_and_collide_ex(Vector2::ZERO)
+                        .test_only(true)
+                        .done()
+                    {
+                        // Since this is an unusual collision - the rectangle
+                        // instantaneously changed - the depth is incorrect.
+                        // But landing on this surface previously placed the
+                        // player height/2 away from the surface, and now they
+                        // should be width/2 away, so add the difference.
+                        let diff = (bb.size.x - bb.size.y) / 2.0;
+                        let offset = collision.get_normal() * (collision.get_depth() + diff);
+                        let new_position = position + offset;
+                        base_mut.set_position(new_position);
+                    }
                 }
+                if self.would_collide(Vector2::ZERO) {
+                    godot_error!("Shouldn't still have a collision!");
+                }
+
                 self.target_velocity = self.get_jump(jump_strength);
                 self.sprite().play_ex().name("jump").done();
                 self.on_surface = false;
