@@ -269,7 +269,7 @@ impl ICharacterBody2D for Player {
                         // Land on the corner directly, pushed away by the
                         // normal. If this is too jarring in some cases, we can
                         // try starting from the player's position.
-                        let global_position = surface.a + normal * (self.height() / 2.0);
+                        let global_position = surface.a + normal * self.height_above_surface();
                         let new_player_position = self.to_local_position(global_position);
                         self.base_mut().set_position(new_player_position);
 
@@ -297,7 +297,7 @@ impl ICharacterBody2D for Player {
                         let d = normal.dot(surface.a);
 
                         let distance_to_surface = normal.dot(global_position) - d;
-                        let desired_distance = self.height() / 2.0;
+                        let desired_distance = self.height_above_surface();
                         let dist_to_move = desired_distance - distance_to_surface;
                         let new_player_position =
                             self.base().get_position() + dist_to_move * normal;
@@ -474,8 +474,8 @@ impl Player {
         player_motion: Vector2,
         collision_normal: Vector2,
     ) -> Option<LandingSurface> {
-        for i in 0..points.len() {
-            let i2 = next_point(points, i);
+        for mut i in 0..points.len() {
+            let mut i2 = next_point(points, i);
             let mut a = points[i];
             let mut b = points[i2];
 
@@ -507,6 +507,7 @@ impl Player {
                                 godot_print!("Appending bc!");
                                 b = c;
                                 n = bc.normal;
+                                i2 = i3;
                             }
                         }
                     }
@@ -518,12 +519,39 @@ impl Player {
                                 godot_print!("Appending za!");
                                 a = z;
                                 n = za.normal;
+                                i = i0;
                             }
                         }
                     }
-                    // TODO: Make sure the side is long enough.
-                    // TODO: Check if it's close to the corner?
-                    return Some(LandingSurface { a, b, normal: n });
+                    let surface = LandingSurface { a, b, normal: n };
+                    if !self.can_land_on_surface(&surface) {
+                        let can_land_on_surface = |s: &LandingSurface| self.can_land_on_surface(s);
+                        let next_surface =
+                            LandingSurface::find_surface(points, i2, next_point(points, i2))
+                                .filter(can_land_on_surface);
+                        let prior_surface =
+                            LandingSurface::find_surface(points, i, prior_point(points, i))
+                                .filter(can_land_on_surface);
+                        match (next_surface, prior_surface) {
+                            (None, None) => (),
+                            (None, Some(prior_surface)) => return Some(prior_surface),
+                            (Some(next_surface), None) => return Some(next_surface),
+                            (Some(next_surface), Some(prior_surface)) => {
+                                // Pick the closer corner:
+                                let distance_squared = |s: &LandingSurface| {
+                                    self.get_global_position().distance_squared_to(s.a)
+                                };
+                                return if distance_squared(&next_surface)
+                                    < distance_squared(&prior_surface)
+                                {
+                                    Some(next_surface)
+                                } else {
+                                    Some(prior_surface)
+                                };
+                            }
+                        }
+                    }
+                    return Some(surface);
                 }
             }
         }
@@ -649,7 +677,7 @@ impl Player {
         // The bottom middle of the player, which should be in the plane of the surface.
         let current_position = self.get_global_position();
 
-        let player_middle = current_position - n * self.height() / 2.0;
+        let player_middle = current_position - n * self.height_above_surface();
 
         let surface_direction = (a - b).try_normalized()?;
         let bottom_corner = player_middle + surface_direction * self.width() / 2.0;
@@ -680,6 +708,15 @@ impl Player {
 
     fn height(&self) -> f32 {
         self.bounding_box().size.y
+    }
+
+    // How far "above" a surface (in terms of its normal) the player should
+    // rest.
+    fn height_above_surface(&self) -> f32 {
+        // The player's bounding box is centered around the player, so divide
+        // by 2. Add a "safe margin" for a little bit of padding to avoid
+        // further collisions.
+        self.height() / 2.0 + self.base().get_safe_margin()
     }
 }
 

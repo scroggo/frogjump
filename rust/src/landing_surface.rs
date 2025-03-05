@@ -61,4 +61,18 @@ impl LandingSurface {
         }
         return self;
     }
+
+    // Given two indices on a polygon, which are either consecutive or can be
+    // treated as such, return a `LandingSurface` (if any).
+    pub fn find_surface(
+        polygon: &PackedVector2Array,
+        i: usize,
+        i2: usize,
+    ) -> Option<LandingSurface> {
+        let a = polygon[i];
+        let b = polygon[i2];
+        let normal = (a - b).orthogonal().try_normalized()?;
+        let surface = LandingSurface { a, b, normal };
+        Some(surface.correct_normal(polygon))
+    }
 }
