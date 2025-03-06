@@ -497,32 +497,6 @@ impl Player {
                 godot_print!("Collision {collision_position} is {distance} from side {a}-{b}");
                 let dot_product = n.dot(collision_normal);
                 if ((1.0 - dot_product) as f64) < TOLERANCE {
-                    // Found the proper side. Check adjacent sides in case it's
-                    // at a tiny angle that we can treat as a long surface.
-                    {
-                        let i3 = next_point(points, i2);
-                        let c = points[i3];
-                        if let Some(bc) = LandingSurface::new(b, c, player_motion) {
-                            if math::same_normals_approx(n, bc.normal) {
-                                godot_print!("Appending bc!");
-                                b = c;
-                                n = bc.normal;
-                                i2 = i3;
-                            }
-                        }
-                    }
-                    {
-                        let i0 = prior_point(points, i);
-                        let z = points[i0];
-                        if let Some(za) = LandingSurface::new(z, a, player_motion) {
-                            if math::same_normals_approx(za.normal, n) {
-                                godot_print!("Appending za!");
-                                a = z;
-                                n = za.normal;
-                                i = i0;
-                            }
-                        }
-                    }
                     let surface = LandingSurface { a, b, normal: n };
                     if !self.can_land_on_surface(&surface) {
                         let can_land_on_surface = |s: &LandingSurface| self.can_land_on_surface(s);
@@ -897,8 +871,9 @@ fn get_collider_points_from_tile_map_layer(
 // Modify the supplied polygon to remove unnecessary points.
 // Tile data may not line up perfectly, resulting in e.g. two points
 // that are right next to each other.
-// Note: Not exhaustive for all hypothetical polygons. This is
-// intended specifically to catch tiles not lining up.
+// In addition, even if they line up perfectly, due to tiling, there will be
+// intermediate points.
+// Note: Not exhaustive for all hypothetical polygons.
 fn smooth_polygon(polygon: &mut PackedVector2Array) {
     let mut stack = Vec::new();
     for i in 0..polygon.len() {
@@ -908,6 +883,15 @@ fn smooth_polygon(polygon: &mut PackedVector2Array) {
         if a.distance_squared_to(b) < 1.0 {
             godot_print!("Removing {b}!");
             stack.push(i2);
+        } else if let Some(surface_ab) = LandingSurface::find_surface(polygon, i, i2) {
+            // FIXME: This re-introduces some shimmying bugs.
+            let i3 = next_point(&polygon, i2);
+            if let Some(surface_bc) = LandingSurface::find_surface(polygon, i2, i3) {
+                if math::same_normals_approx(surface_ab.normal, surface_bc.normal) {
+                    godot_print!("Removing {b} due to same normals!");
+                    stack.push(i2);
+                }
+            }
         }
     }
 
