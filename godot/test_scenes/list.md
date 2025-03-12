@@ -11,6 +11,7 @@ the tests.
 - `test_bed`
 - `test_warp`
 - `test_no_surface`
+- `test_no_surface2`
 - `test_branch_tip`
 - `test_branch_tip2`
 - `test_vine_left`

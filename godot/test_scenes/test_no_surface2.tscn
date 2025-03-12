@@ -1,0 +1,39 @@
+[gd_scene load_steps=4 format=4 uid="uid://bqb3xcmhhriti"]
+
+[ext_resource type="PackedScene" uid="uid://phmuno8lyhtg" path="res://test_scenes/test_branch_tip.tscn" id="1_efth3"]
+[ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="1_rft7n"]
+[ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_rhfln"]
+
+[node name="TileMapLayer" type="Level"]
+is_test_level = true
+next_level = ExtResource("1_efth3")
+position = Vector2(56, -32)
+tile_map_data = PackedByteArray("AAAKAAcAAQAEAAIAAAAKAAgAAQAEAAMAAAAHAAgAAQAEAAMAAAAIAAgAAQADAAMAAAAJAAgAAQADAAMAAAAHAAcAAQAEAAIAAAAHAAUAAQAEAAIAAAAHAAYAAQAEAAIAAAAGAAgAAQADAAMAAAAKAAYAAQAEAAIAAAAKAAUAAQAEAAIAAAA=")
+tile_set = ExtResource("1_rft7n")
+
+[node name="Player" parent="." instance=ExtResource("2_rhfln")]
+on_surface = true
+position = Vector2(645.101, 483.378)
+rotation = 4.71239
+
+[node name="AnimatedSprite2D" parent="Player" index="1"]
+flip_h = true
+
+[node name="JumpHandler" parent="Player" index="3"]
+max_jump_strength_for_testing = 0.375
+
+[node name="Label" type="Label" parent="."]
+offset_left = -51.0
+offset_top = 34.0
+offset_right = 652.0
+offset_bottom = 57.0
+text = "Modified version of the main level that exemplifies another case of\"Landing surface: None\"."
+
+[node name="SceneName" type="Label" parent="."]
+offset_left = -51.0
+offset_top = 539.0
+offset_right = 79.0
+offset_bottom = 562.0
+text = "test_no_surface2"
+
+[editable path="Player"]
