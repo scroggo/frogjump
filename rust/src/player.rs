@@ -474,10 +474,10 @@ impl Player {
         player_motion: Vector2,
         collision_normal: Vector2,
     ) -> Option<LandingSurface> {
-        for mut i in 0..points.len() {
-            let mut i2 = next_point(points, i);
-            let mut a = points[i];
-            let mut b = points[i2];
+        for i in 0..points.len() {
+            let i2 = next_point(points, i);
+            let a = points[i];
+            let b = points[i2];
 
             // Construct a plane from a normal and a point. See
             // https://docs.godotengine.org/en/stable/tutorials/math/vectors_advanced.html#constructing-a-plane-in-2d
@@ -486,7 +486,7 @@ impl Player {
                 // This side is too small. Skip it.
                 continue;
             }
-            let mut n = n_opt.unwrap();
+            let n = n_opt.unwrap();
             let d = n.dot(a);
 
             // If the collision is in this plane and the normal matches, this is
