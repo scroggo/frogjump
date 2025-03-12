@@ -875,6 +875,17 @@ fn get_collider_points_from_tile_map_layer(
 // intermediate points.
 // Note: Not exhaustive for all hypothetical polygons.
 fn smooth_polygon(polygon: &mut PackedVector2Array) {
+    let remove_points = |polygon: &mut PackedVector2Array, stack: &mut Vec<usize>| {
+        // Remove in reverse order so the indices are still correct.
+        // `0` can be at the end; ensure it is moved to the front.
+        stack.sort();
+        while let Some(index) = stack.pop() {
+            polygon.remove(index);
+        }
+    };
+
+    // In the first pass, remove points that are effectively the same point.
+    // This way the second pass doesn't need to consider these doubles.
     let mut stack = Vec::new();
     for i in 0..polygon.len() {
         let i2 = next_point(&polygon, i);
@@ -883,20 +894,25 @@ fn smooth_polygon(polygon: &mut PackedVector2Array) {
         if a.distance_squared_to(b) < 1.0 {
             godot_print!("Removing {b}!");
             stack.push(i2);
-        } else if let Some(surface_ab) = LandingSurface::find_surface(polygon, i, i2) {
-            // FIXME: This re-introduces some shimmying bugs.
+        }
+    }
+
+    remove_points(polygon, &mut stack);
+
+    // Combine adjacent segments that have approximately the same normals,
+    // resulting in longer continuous surfaces.
+    for i in 0..polygon.len() {
+        let i2 = next_point(&polygon, i);
+        if let Some(surface_ab) = LandingSurface::find_surface(polygon, i, i2) {
             let i3 = next_point(&polygon, i2);
             if let Some(surface_bc) = LandingSurface::find_surface(polygon, i2, i3) {
                 if math::same_normals_approx(surface_ab.normal, surface_bc.normal) {
-                    godot_print!("Removing {b} due to same normals!");
+                    godot_print!("Removing {} due to same normals!", polygon[i2]);
                     stack.push(i2);
                 }
             }
         }
     }
 
-    // Remove in reverse order so the indices are still correct.
-    while let Some(index) = stack.pop() {
-        polygon.remove(index);
-    }
+    remove_points(polygon, &mut stack);
 }
