@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=4 uid="uid://ch8m3m6jmql3"]
+[gd_scene load_steps=4 format=4 uid="uid://b3ee51f4ruqgc"]
 
 [ext_resource type="PackedScene" uid="uid://c15mobbfjtbbv" path="res://test_scenes/test_no_surface.tscn" id="1_4t5c0"]
 [ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="1_iwdyn"]
@@ -11,14 +11,19 @@ tile_map_data = PackedByteArray("AAAAAAgAAQAFAAMAAAAAAAcAAQAFAAIAAAAAAAYAAQAEAAE
 tile_set = ExtResource("1_iwdyn")
 
 [node name="Player" parent="." instance=ExtResource("2_dgxtf")]
-direction = "Right"
-target_velocity = Vector2(200, 200)
-position = Vector2(116, 265)
+on_surface = true
+position = Vector2(645.545, 183.879)
+rotation = 4.71239
+
+[node name="AnimatedSprite2D" parent="Player" index="1"]
+flip_h = true
 
 [node name="Label" type="Label" parent="."]
 offset_left = 110.0
 offset_top = 198.0
 offset_right = 150.0
 offset_bottom = 221.0
-text = "Two full strength jumps trigger the bug: player warps below the
+text = "A full strength jump triggers the bug: the player warps below the
 branch!"
+
+[editable path="Player"]
