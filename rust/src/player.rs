@@ -767,43 +767,46 @@ fn get_collider_points_from_tile_map_layer(
         // This should correspond to the layer I've used in the editor.
         const LAYER_ID: i32 = 0;
         let count = tile_data.get_collision_polygons_count(LAYER_ID);
-        if count > 1 {
-            godot_error!("Need to handle {count} polygons in one tile!");
+        if count >= 1 {
+            points_so_far = Some(tile_data.get_collision_polygon_points(LAYER_ID, 0));
+            if count > 1 {
+                godot_error!("Need to handle {count} polygons in one tile!");
+            }
         }
 
-        let mut points = tile_data.get_collision_polygon_points(LAYER_ID, 0);
-
-        // Check for edges that align with the tile edges. This indicates that
-        // the collision shape may extend onto the next tile. Use presence of
-        // `local_collision`, which is only set for the first call to this
-        // method (i.e. it is `None` in recursive calls).
-        if local_collision.is_some() {
-            for i in 0..points.len() {
-                let a = points[i];
-                let b = points[next_point(&points, i)];
-                if a.x == b.x {
-                    if a.x == half_tile_width {
-                        directions_to_add.insert(Vector2i::RIGHT);
-                    } else if a.x == -half_tile_width {
-                        directions_to_add.insert(Vector2i::LEFT);
+        if let Some(mut points) = points_so_far {
+            // Check for edges that align with the tile edges. This indicates that
+            // the collision shape may extend onto the next tile. Use presence of
+            // `local_collision`, which is only set for the first call to this
+            // method (i.e. it is `None` in recursive calls).
+            if local_collision.is_some() {
+                for i in 0..points.len() {
+                    let a = points[i];
+                    let b = points[next_point(&points, i)];
+                    if a.x == b.x {
+                        if a.x == half_tile_width {
+                            directions_to_add.insert(Vector2i::RIGHT);
+                        } else if a.x == -half_tile_width {
+                            directions_to_add.insert(Vector2i::LEFT);
+                        }
                     }
-                }
-                if a.y == b.y {
-                    if a.y == half_tile_width {
-                        directions_to_add.insert(Vector2i::DOWN);
-                    } else if a.y == -half_tile_width {
-                        directions_to_add.insert(Vector2i::UP);
+                    if a.y == b.y {
+                        if a.y == half_tile_width {
+                            directions_to_add.insert(Vector2i::DOWN);
+                        } else if a.y == -half_tile_width {
+                            directions_to_add.insert(Vector2i::UP);
+                        }
                     }
                 }
             }
+            godot_print!("\t\t\tpolygon 0: {points}");
+            for point in points.as_mut_slice() {
+                let local_point = local_tile_center + *point;
+                *point = tile_map_layer.to_global(local_point);
+                godot_print!("\t\t\t\tglobal: {}", *point);
+            }
+            points_so_far = Some(points);
         }
-        godot_print!("\t\t\tpolygon 0: {points}");
-        for point in points.as_mut_slice() {
-            let local_point = local_tile_center + *point;
-            *point = tile_map_layer.to_global(local_point);
-            godot_print!("\t\t\t\tglobal: {}", *point);
-        }
-        points_so_far = Some(points);
     }
     if local_collision.is_some() {
         // Check for collisions that are directly on the edge of the tile. This
