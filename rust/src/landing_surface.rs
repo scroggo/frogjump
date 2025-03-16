@@ -85,11 +85,6 @@ impl LandingSurface {
         let distance = self.normal.dot(collision_position) - d;
         const TOLERANCE: f64 = 0.2;
         if absf(distance as f64) < TOLERANCE {
-            godot_print!(
-                "Collision {collision_position} is {distance} from side {}-{}",
-                self.a,
-                self.b
-            );
             // Make sure the normals match.
             let dot_product = self.normal.dot(collision_normal);
             if ((1.0 - dot_product) as f64) < TOLERANCE {
