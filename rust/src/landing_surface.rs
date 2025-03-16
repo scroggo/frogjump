@@ -1,5 +1,6 @@
 use crate::math;
 use godot::classes::Geometry2D;
+use godot::global::absf;
 use godot::prelude::*;
 
 // Global positions for two end points of a surface, along with the normal.
@@ -74,5 +75,33 @@ impl LandingSurface {
         let normal = (a - b).orthogonal().try_normalized()?;
         let surface = LandingSurface { a, b, normal };
         Some(surface.correct_normal(polygon))
+    }
+
+    pub fn hit_by(&self, collision_position: Vector2, collision_normal: Vector2) -> bool {
+        // A plane is defined by a normal and a distance from the origin.
+        let d = self.normal.dot(self.a);
+
+        // Compute distance from collision to the plane.
+        let distance = self.normal.dot(collision_position) - d;
+        const TOLERANCE: f64 = 0.2;
+        if absf(distance as f64) < TOLERANCE {
+            godot_print!(
+                "Collision {collision_position} is {distance} from side {}-{}",
+                self.a,
+                self.b
+            );
+            // Make sure the normals match.
+            let dot_product = self.normal.dot(collision_normal);
+            if ((1.0 - dot_product) as f64) < TOLERANCE {
+                // If the collision is between the two points, the length of ab
+                // should roughly equal ac + bc.
+                let ab = (self.a - self.b).length();
+                let ac = (self.a - collision_position).length();
+                let bc = (self.b - collision_position).length();
+                let diff = ab - (ac + bc);
+                return absf(diff as f64) < TOLERANCE;
+            }
+        }
+        false
     }
 }

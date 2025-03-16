@@ -11,7 +11,7 @@ use godot::classes::{
     AnimatedSprite2D, CharacterBody2D, CollisionShape2D, Geometry2D, ICharacterBody2D, InputEvent,
     InputEventScreenTouch, KinematicCollision2D, Os, TileMapLayer, Timer,
 };
-use godot::global::{absf, cos, randf_range};
+use godot::global::{cos, randf_range};
 use godot::prelude::*;
 
 struct TouchJumpHandler {
@@ -487,46 +487,36 @@ impl Player {
                 continue;
             }
             let n = n_opt.unwrap();
-            let d = n.dot(a);
-
-            // If the collision is in this plane and the normal matches, this is
-            // the side we landed on.
-            let distance = n.dot(collision_position) - d;
-            const TOLERANCE: f64 = 0.2;
-            if absf(distance as f64) < TOLERANCE {
-                godot_print!("Collision {collision_position} is {distance} from side {a}-{b}");
-                let dot_product = n.dot(collision_normal);
-                if ((1.0 - dot_product) as f64) < TOLERANCE {
-                    let surface = LandingSurface { a, b, normal: n };
-                    if !self.can_land_on_surface(&surface) {
-                        let can_land_on_surface = |s: &LandingSurface| self.can_land_on_surface(s);
-                        let next_surface =
-                            LandingSurface::find_surface(points, i2, next_point(points, i2))
-                                .filter(can_land_on_surface);
-                        let prior_surface =
-                            LandingSurface::find_surface(points, i, prior_point(points, i))
-                                .filter(can_land_on_surface);
-                        match (next_surface, prior_surface) {
-                            (None, None) => (),
-                            (None, Some(prior_surface)) => return Some(prior_surface),
-                            (Some(next_surface), None) => return Some(next_surface),
-                            (Some(next_surface), Some(prior_surface)) => {
-                                // Pick the closer corner:
-                                let distance_squared = |s: &LandingSurface| {
-                                    self.get_global_position().distance_squared_to(s.a)
-                                };
-                                return if distance_squared(&next_surface)
-                                    < distance_squared(&prior_surface)
-                                {
-                                    Some(next_surface)
-                                } else {
-                                    Some(prior_surface)
-                                };
-                            }
+            let surface = LandingSurface { a, b, normal: n };
+            if surface.hit_by(collision_position, collision_normal) {
+                if !self.can_land_on_surface(&surface) {
+                    let can_land_on_surface = |s: &LandingSurface| self.can_land_on_surface(s);
+                    let next_surface =
+                        LandingSurface::find_surface(points, i2, next_point(points, i2))
+                            .filter(can_land_on_surface);
+                    let prior_surface =
+                        LandingSurface::find_surface(points, i, prior_point(points, i))
+                            .filter(can_land_on_surface);
+                    match (next_surface, prior_surface) {
+                        (None, None) => (),
+                        (None, Some(prior_surface)) => return Some(prior_surface),
+                        (Some(next_surface), None) => return Some(next_surface),
+                        (Some(next_surface), Some(prior_surface)) => {
+                            // Pick the closer corner:
+                            let distance_squared = |s: &LandingSurface| {
+                                self.get_global_position().distance_squared_to(s.a)
+                            };
+                            return if distance_squared(&next_surface)
+                                < distance_squared(&prior_surface)
+                            {
+                                Some(next_surface)
+                            } else {
+                                Some(prior_surface)
+                            };
                         }
                     }
-                    return Some(surface);
                 }
+                return Some(surface);
             }
         }
         None
