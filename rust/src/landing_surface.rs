@@ -85,9 +85,7 @@ impl LandingSurface {
         let distance = self.normal.dot(collision_position) - d;
         const TOLERANCE: f64 = 0.2;
         if absf(distance as f64) < TOLERANCE {
-            // Make sure the normals match.
-            let dot_product = self.normal.dot(collision_normal);
-            if ((1.0 - dot_product) as f64) < TOLERANCE {
+            if crate::math::same_normals_approx(self.normal, collision_normal) {
                 // If the collision is between the two points, the length of ab
                 // should roughly equal ac + bc.
                 let ab = (self.a - self.b).length();
