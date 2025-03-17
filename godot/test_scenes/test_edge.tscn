@@ -12,9 +12,12 @@ tile_map_data = PackedByteArray("AAAAAAgAAQABAAMAAAABAAgAAQABAAAAAAACAAgAAQADAAA
 tile_set = ExtResource("1_rft7n")
 
 [node name="Player" parent="." instance=ExtResource("2_rhfln")]
-target_velocity = Vector2(200, 200)
 on_surface = true
 position = Vector2(447.028, 489.653)
+rotation = 4.71239
+
+[node name="AnimatedSprite2D" parent="Player" index="1"]
+flip_h = true
 
 [node name="Label" type="Label" parent="."]
 offset_left = -54.0
@@ -34,3 +37,5 @@ offset_top = 550.0
 offset_right = 20.0
 offset_bottom = 573.0
 text = "test_edge"
+
+[editable path="Player"]
