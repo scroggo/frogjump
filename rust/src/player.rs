@@ -540,19 +540,6 @@ impl Player {
             Self::pick_adjacent_side(points, index, prior_point, player_motion);
         let mut landing_surface_b =
             Self::pick_adjacent_side(points, index, next_point, player_motion);
-        // If these two normals are close enough, treat them as a continuous
-        // surface.
-        if math::same_normals_approx(landing_surface_a.normal, landing_surface_b.normal) {
-            godot_print!("Treat two sides as same surface!");
-            if let Some(landing_surface_full) =
-                LandingSurface::new(landing_surface_a.b, landing_surface_b.b, player_motion)
-            {
-                if !self.can_land_on_surface(&landing_surface_full) {
-                    godot_error!("Surfaces are too small! Landing anyway!");
-                }
-                return Some(landing_surface_full);
-            }
-        }
         // First pick the surface whose normal is closest to the collision normal.
         // Since we're dealing with normals, we can just use the one with the dot
         // product that is larger.
