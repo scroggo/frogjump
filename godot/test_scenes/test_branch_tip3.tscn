@@ -1,11 +1,13 @@
-[gd_scene load_steps=3 format=4 uid="uid://c2jhbgbtghro4"]
+[gd_scene load_steps=4 format=4 uid="uid://c2jhbgbtghro4"]
 
 [ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="1_iwdyn"]
+[ext_resource type="PackedScene" uid="uid://cb5dwpdhdev6f" path="res://test_scenes/test_vine_left.tscn" id="1_rhblo"]
 [ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_dgxtf"]
 
 [node name="Level" type="Level"]
 is_test_level = true
-tile_map_data = PackedByteArray("AAAAAAgAAQAFAAMAAAAAAAcAAQAFAAIAAAAAAAYAAQAEAAEAAAAAAAUAAQAEAAIAAAABAAgAAQADAAMAAAACAAgAAQADAAMAAAADAAgAAQADAAMAAAAEAAgAAQADAAMAAAAFAAgAAQADAAMAAAAGAAgAAQADAAMAAAAHAAgAAQADAAMAAAAIAAgAAQADAAMAAAAJAAgAAQADAAMAAAABAAYAAQADAAIAAAADAAUAAQABAAYAAAAEAAUAAQACAAYAAAAFAAUAAQACAAYAAAAGAAUAAQACAAYAAAAHAAUAAQADAAYAAAA=")
+next_level = ExtResource("1_rhblo")
+tile_map_data = PackedByteArray("AAAAAAYAAQAEAAEAAAAAAAUAAQAEAAIAAAABAAYAAQADAAIAAAADAAUAAQABAAYAAAAEAAUAAQACAAYAAAAFAAUAAQACAAYAAAAGAAUAAQACAAYAAAAHAAUAAQADAAYAAAA=")
 tile_set = ExtResource("1_iwdyn")
 
 [node name="Player" parent="." instance=ExtResource("2_dgxtf")]
@@ -21,3 +23,10 @@ text = "Full strength jump. Not enough space to land on the edge, but the player
 
 TODO: The bottom surface is computed as not being long enough, but I suspect we're not
 checking for adjacent tiles in the corner case."
+
+[node name="SceneName" type="Label" parent="."]
+offset_left = 1.0
+offset_top = 515.0
+offset_right = 129.0
+offset_bottom = 538.0
+text = "test_branch_tip3"

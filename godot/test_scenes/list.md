@@ -14,6 +14,7 @@ the tests.
 - `test_no_surface2`
 - `test_branch_tip`
 - `test_branch_tip2`
+- `test_branch_tip3`
 - `test_vine_left`
 - `test_wedge_corner`
 - `test_wall`
