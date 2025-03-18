@@ -26,4 +26,11 @@ offset_bottom = 221.0
 text = "A full strength jump triggers the bug: the player warps below the
 branch!"
 
+[node name="SceneName" type="Label" parent="."]
+offset_left = 7.0
+offset_top = 506.0
+offset_right = 83.0
+offset_bottom = 529.0
+text = "test_warp"
+
 [editable path="Player"]

@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=4 uid="uid://bwik4gw6hlc4b"]
 
-[ext_resource type="PackedScene" uid="uid://c15mobbfjtbbv" path="res://test_scenes/test_no_surface.tscn" id="1_4t5c0"]
 [ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="1_iwdyn"]
+[ext_resource type="PackedScene" uid="uid://b3ee51f4ruqgc" path="res://test_scenes/test_warp.tscn" id="1_qop7w"]
 [ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_dgxtf"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_dhyqf"]
@@ -9,7 +9,7 @@ font_size = 24
 
 [node name="Level" type="Level"]
 is_test_level = true
-next_level = ExtResource("1_4t5c0")
+next_level = ExtResource("1_qop7w")
 tile_map_data = PackedByteArray("AAAAAAgAAQAFAAMAAAAAAAcAAQAFAAIAAAAAAAYAAQAEAAEAAAAAAAUAAQAEAAIAAAAAAAQAAQAEAAEAAAAAAAMAAQAFAAIAAAAAAAIAAQAEAAEAAAAAAAEAAQAFAAIAAAAAAAAAAQAFAAIAAAABAAgAAQADAAMAAAACAAgAAQADAAMAAAADAAgAAQADAAMAAAAEAAgAAQADAAMAAAAFAAgAAQADAAMAAAAGAAgAAQADAAMAAAAHAAgAAQADAAMAAAAIAAgAAQADAAMAAAAJAAgAAQADAAMAAAAKAAgAAQAEAAMAAAALAAgAAQADAAMAAAAKAAcAAQAEAAIAAAAKAAYAAQAEAAIAAAAKAAUAAQAEAAIAAAAKAAQAAQAEAAIAAAAKAAMAAQAEAAIAAAAKAAIAAQAEAAIAAAAKAAEAAQAEAAIAAAAKAAAAAQAEAAIAAAABAAQAAQACAAIAAAABAAYAAQADAAIAAAABAAIAAQADAAIAAAACAAQAAQADAAIAAAADAAUAAQABAAYAAAAEAAUAAQACAAYAAAAFAAUAAQACAAYAAAAGAAUAAQACAAYAAAAHAAUAAQADAAYAAAAGAAIAAQADAAYAAAAFAAIAAQACAAYAAAAEAAIAAQABAAYAAAA=")
 tile_set = ExtResource("1_iwdyn")
 
