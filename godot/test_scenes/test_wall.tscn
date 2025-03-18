@@ -16,6 +16,9 @@ on_surface = true
 position = Vector2(453.625, 399.114)
 rotation = 4.71239
 
+[node name="AnimatedSprite2D" parent="Player" index="1"]
+flip_h = true
+
 [node name="Label" type="Label" parent="."]
 offset_left = -54.0
 offset_top = 35.0
@@ -30,3 +33,5 @@ offset_top = 544.0
 offset_right = 14.0
 offset_bottom = 567.0
 text = "test_wall"
+
+[editable path="Player"]
