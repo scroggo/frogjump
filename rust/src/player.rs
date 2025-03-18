@@ -137,7 +137,11 @@ impl ICharacterBody2D for Player {
         blink_timer.connect("timeout", &blink);
         self.start_blink_timer();
 
-        if self.direction == Direction::Right {
+        // In some scenes, the player is rotated such that they are on a wall,
+        // but still facing right. In those cases, no need to flip the sprite.
+        // This check is overly broad; if the rotation was small, we may still
+        // want to flip in theory, but this catches the existing cases.
+        if self.direction == Direction::Right && self.base().get_rotation_degrees() == 0.0 {
             self.sprite().set_flip_h(true);
         }
         if self.on_surface {
