@@ -19,6 +19,8 @@ impl JumpKeyDetector {
     }
 }
 
+/// This struct handles converting input into whether to jump and the jump's
+/// strength, if so.
 #[derive(GodotClass)]
 #[class(base=Node)]
 pub struct JumpHandler {
