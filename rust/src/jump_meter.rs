@@ -86,8 +86,8 @@ impl IControl for JumpMeter {
         let inner_rect = Rect2::new(inset + global_position, inner_size);
 
         self.base_mut().draw_set_transform_matrix(inverse_transform);
-        self.base_mut().draw_style_box(style_box, rect);
-        self.base_mut().draw_style_box(inner_style_box, inner_rect);
+        self.base_mut().draw_style_box(&style_box, rect);
+        self.base_mut().draw_style_box(&inner_style_box, inner_rect);
     }
 }
 

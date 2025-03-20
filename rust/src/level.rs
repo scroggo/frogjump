@@ -94,7 +94,7 @@ impl Level {
     fn on_player_eaten(&mut self, mut player: Gd<Node2D>) {
         godot_print!("on_player_eaten! eating {}", player.get_name());
         if let Some(mut parent) = player.get_parent() {
-            parent.remove_child(player.clone());
+            parent.remove_child(&player.clone());
             player.queue_free();
         } else {
             godot_error!("player_eaten signal called on node not in tree?");
@@ -109,6 +109,6 @@ impl Level {
         let scene = load::<PackedScene>("res://player.tscn");
         let mut player = scene.instantiate().unwrap().cast::<Player>();
         player.bind_mut().set_player_info(&self.player_respawn_info);
-        self.base_mut().add_child(player);
+        self.base_mut().add_child(&player);
     }
 }
