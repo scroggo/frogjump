@@ -9,4 +9,4 @@ crate-type = ["cdylib"]  # Compile this crate to a dynamic C library.
 [dependencies.godot]
 git = "https://github.com/godot-rust/gdext"
 branch = "master"
-features = ["experimental-wasm", "lazy-function-tables", "register-docs"]
+features = ["experimental-wasm", "lazy-function-tables", "register-docs", "api-4-3"]
