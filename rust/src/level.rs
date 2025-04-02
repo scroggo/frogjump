@@ -69,12 +69,7 @@ impl ITileMapLayer for Level {
                         self.base().get_tree().unwrap().reload_current_scene();
                     }
                     Key::ENTER => {
-                        if let Some(scene) = &self.next_level {
-                            self.base()
-                                .get_tree()
-                                .unwrap()
-                                .change_scene_to_packed(scene);
-                        }
+                        self.load_next_if_any();
                     }
                     _ => (),
                 }
@@ -112,5 +107,14 @@ impl Level {
         let mut player = scene.instantiate().unwrap().cast::<Player>();
         player.bind_mut().set_player_info(&self.player_respawn_info);
         self.base_mut().add_child(player);
+    }
+
+    fn load_next_if_any(&self) {
+        if let Some(scene) = &self.next_level {
+            self.base()
+                .get_tree()
+                .unwrap()
+                .change_scene_to_packed(scene);
+        }
     }
 }
