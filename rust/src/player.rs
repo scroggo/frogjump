@@ -147,6 +147,16 @@ impl ICharacterBody2D for Player {
         if self.on_surface {
             self.sprite().set_frame(0);
         }
+
+        // The intended goal of smoothing is to handle cases when the player
+        // warps, as in `test_position_smoothing.tscn`. With smoothing, the
+        // camera avoids its own warp.
+        // I worried this would look bad with normal movement, but it looks
+        // fine to me. If players disagree, we could turn it on prior to warping
+        // and turn it off after.
+        if let Some(mut camera) = self.base().try_get_node_as::<Camera2D>("Camera2D") {
+            camera.set_position_smoothing_enabled(true);
+        }
     }
 
     fn physics_process(&mut self, delta: f64) {

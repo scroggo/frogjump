@@ -31,4 +31,5 @@ the tests.
 - `test_corner_seam_left`
 - `test_corner_seam_up`
 - `test_corner`
+- `test_position_smoothing`
 - `test_alligator`
