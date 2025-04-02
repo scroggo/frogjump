@@ -6,21 +6,23 @@ use godot::classes::{
 use godot::global::Key;
 use godot::prelude::*;
 
+/// Code for playing a level.
 #[derive(GodotClass)]
 #[class(base=TileMapLayer)]
 struct Level {
     player_respawn_info: PlayerInfo,
 
-    // Setting this to true recreates some accidental behavior that was fun and
-    // might be interesting to use later.
+    /// Spawn a frog each time "jump" is pressed. Setting this to true recreates
+    /// some accidental behavior that was fun.
     #[export]
     spawn_many_frogs: bool,
 
-    // Enable some testing-only features.
-    // TODO: Should this just depend on Debug vs Release?
+    /// Enable some testing-only features like ESCAPE to restart and ENTER to
+    /// start the next level.
     #[export]
     is_test_level: bool,
 
+    /// Level to switch to after completing this one.
     #[export]
     next_level: Option<Gd<PackedScene>>,
     base: Base<TileMapLayer>,
