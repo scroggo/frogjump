@@ -1,7 +1,7 @@
 use crate::player::Player;
 use crate::player::PlayerInfo;
 use godot::classes::{
-    ITileMapLayer, InputEvent, InputEventKey, InputEventScreenTouch, TileMapLayer,
+    ITileMapLayer, InputEvent, InputEventKey, InputEventScreenTouch, Label, TileMapLayer,
 };
 use godot::global::Key;
 use godot::prelude::*;
@@ -25,6 +25,7 @@ struct Level {
     /// Level to switch to after completing this one.
     #[export]
     next_level: Option<Gd<PackedScene>>,
+    won: bool,
     base: Base<TileMapLayer>,
 }
 
@@ -36,16 +37,25 @@ impl ITileMapLayer for Level {
             spawn_many_frogs: false,
             is_test_level: false,
             next_level: None,
+            won: false,
             base,
         }
     }
 
     fn ready(&mut self) {
+        let mut scene_tree = self.base_mut().get_tree().unwrap();
         let on_player_eaten = self.base().callable("on_player_eaten");
-        self.base_mut().get_tree().unwrap().call_group(
+        scene_tree.call_group(
             "predators",
             "connect",
             &["player_eaten".to_variant(), on_player_eaten.to_variant()],
+        );
+
+        let on_prey_eaten = self.base().callable("on_prey_eaten");
+        scene_tree.call_group(
+            "prey",
+            "connect",
+            &["eaten".to_variant(), on_prey_eaten.to_variant()],
         );
 
         if let Some(player) = self.player() {
@@ -58,10 +68,14 @@ impl ITileMapLayer for Level {
             if key_event.is_echo() || !key_event.is_pressed() {
                 return;
             }
-            if key_event.get_keycode() == Key::SPACE
-                && (self.player().is_none() || self.spawn_many_frogs)
-            {
-                self.respawn();
+            if key_event.get_keycode() == Key::SPACE {
+                if self.won {
+                    self.load_next_if_any();
+                    return;
+                }
+                if self.player().is_none() || self.spawn_many_frogs {
+                    self.respawn();
+                }
             }
             if self.is_test_level {
                 match key_event.get_keycode() {
@@ -77,8 +91,14 @@ impl ITileMapLayer for Level {
             return;
         }
         if let Some(touch_event) = event.try_cast::<InputEventScreenTouch>().ok() {
-            if touch_event.is_pressed() && (self.player().is_none() || self.spawn_many_frogs) {
-                self.respawn();
+            if touch_event.is_pressed() {
+                if self.won {
+                    self.load_next_if_any();
+                    return;
+                }
+                if self.player().is_none() || self.spawn_many_frogs {
+                    self.respawn();
+                }
             }
             return;
         }
@@ -95,6 +115,23 @@ impl Level {
             player.queue_free();
         } else {
             godot_error!("player_eaten signal called on node not in tree?");
+        }
+    }
+
+    #[func]
+    fn on_prey_eaten(&mut self) {
+        let base_mut = self.base_mut();
+        if let Some(mut scene_tree) = base_mut.get_tree() {
+            // When the last prey is eaten, it is queued for removal, but the
+            // signal should call this method before the prey is removed.
+            let prey_remaining = scene_tree.get_nodes_in_group("prey").len();
+            if prey_remaining <= 1 {
+                if let Some(mut win_message) = base_mut.try_get_node_as::<Label>("WinMessage") {
+                    win_message.show();
+                    drop(base_mut);
+                    self.won = true;
+                }
+            }
         }
     }
 

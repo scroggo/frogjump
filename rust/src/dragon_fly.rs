@@ -20,10 +20,14 @@ impl IArea2D for DragonFly {
 
 #[godot_api]
 impl DragonFly {
+    #[signal]
+    fn eaten();
+
     #[func]
     fn on_body_entered(&mut self, body: Gd<Node2D>) {
         if body.is_in_group("player") {
             self.base_mut().queue_free();
+            self.base_mut().emit_signal("eaten", &[]);
         }
     }
 }
