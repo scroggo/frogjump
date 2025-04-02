@@ -111,6 +111,13 @@ impl Level {
     fn on_player_eaten(&mut self, mut player: Gd<Node2D>) {
         godot_print!("on_player_eaten! eating {}", player.get_name());
         if let Some(mut parent) = player.get_parent() {
+            if let Some(mut camera) = player.try_get_node_as::<Camera2D>("Camera2D") {
+                // Reparent the camera so it can stay in place when the player
+                // is removed.
+                player.remove_child(camera.clone());
+                camera.set_position(player.get_position());
+                self.base_mut().add_child(camera);
+            }
             parent.remove_child(player.clone());
             player.queue_free();
         } else {
@@ -127,6 +134,15 @@ impl Level {
             let prey_remaining = scene_tree.get_nodes_in_group("prey").len();
             if prey_remaining <= 1 {
                 if let Some(mut win_message) = base_mut.try_get_node_as::<Label>("WinMessage") {
+                    // Show the "WinMessage" in front of the camera, centered.
+                    if let Some(camera) = win_message
+                        .get_viewport()
+                        .and_then(|viewport| viewport.get_camera_2d())
+                    {
+                        let position =
+                            camera.get_screen_center_position() - win_message.get_size() / 2.0;
+                        win_message.set_global_position(position);
+                    }
                     win_message.show();
                     drop(base_mut);
                     self.won = true;
@@ -143,6 +159,14 @@ impl Level {
         let scene = load::<PackedScene>("res://player.tscn");
         let mut player = scene.instantiate().unwrap().cast::<Player>();
         player.bind_mut().set_player_info(&self.player_respawn_info);
+
+        // When the player dies, we reparent the camera to the level. Restore it
+        // on the new player.
+        if let Some(mut camera) = self.base().try_get_node_as::<Camera2D>("Camera2D") {
+            self.base_mut().remove_child(camera.clone());
+            camera.set_position(Vector2::ZERO);
+            player.add_child(camera);
+        }
         self.base_mut().add_child(player);
     }
 

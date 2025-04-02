@@ -1,0 +1,334 @@
+[gd_scene load_steps=18 format=4 uid="uid://0vd2xqapkgo7"]
+
+[ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="1_grbn2"]
+[ext_resource type="PackedScene" uid="uid://cmmu3yov25w21" path="res://levels/tutorial.tscn" id="1_yrpmx"]
+[ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_hfxtq"]
+[ext_resource type="PackedScene" uid="uid://bfdp35wgoi0sy" path="res://alligator.tscn" id="3_7m8wg"]
+[ext_resource type="PackedScene" uid="uid://b5dlmv4suu55n" path="res://dragon_fly.tscn" id="4_mrbn8"]
+
+[sub_resource type="Animation" id="Animation_uvrq3"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(352, 993)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_cvai6"]
+resource_name = "fly"
+length = 5.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2.5, 5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(352, 993), Vector2(590, 993), Vector2(352, 993)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2.5, 5),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [Vector2(1, 1), Vector2(-1, 1), Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_m57sk"]
+_data = {
+"RESET": SubResource("Animation_uvrq3"),
+"fly": SubResource("Animation_cvai6")
+}
+
+[sub_resource type="Animation" id="Animation_qlbpo"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(82, 765)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_gi0rp"]
+resource_name = "fly"
+length = 4.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(82, 765), Vector2(195, 765)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Vector2(1, 1), Vector2(-1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_25yv5"]
+_data = {
+"RESET": SubResource("Animation_qlbpo"),
+"fly": SubResource("Animation_gi0rp")
+}
+
+[sub_resource type="Animation" id="Animation_4n0iq"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1107, 930)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_jdkam"]
+resource_name = "fly"
+length = 3.5
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(1107, 930), Vector2(1257, 930)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Vector2(1, 1), Vector2(-1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_vb0f1"]
+_data = {
+"RESET": SubResource("Animation_4n0iq"),
+"fly": SubResource("Animation_jdkam")
+}
+
+[sub_resource type="Animation" id="Animation_5k2sa"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(653, 763)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_h4lry"]
+resource_name = "fly"
+length = 2.5
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1.23333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(653, 763), Vector2(806, 763)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1.23333),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [Vector2(1, 1), Vector2(-1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_eetae"]
+_data = {
+"RESET": SubResource("Animation_5k2sa"),
+"fly": SubResource("Animation_h4lry")
+}
+
+[node name="Level" type="Level"]
+is_test_level = true
+next_level = ExtResource("1_yrpmx")
+tile_map_data = PackedByteArray("AAAAAAEAAQAEAAIAAAAAAAIAAQAEAAIAAAAAAAMAAQAEAAIAAAAAAAQAAQAEAAIAAAAAAAUAAQAEAAIAAAAAAAYAAQAEAAIAAAAAAAcAAQAEAAIAAAAAAAgAAQAEAAIAAAAAAAkAAQAEAAIAAAAAAAoAAQAEAAIAAAAAAAsAAQAEAAIAAAAAAAwAAQAEAAIAAAAAAA0AAQAEAAIAAAAAAA4AAQAEAAIAAAAAAA8AAQAEAAIAAAAAABAAAQAEAAIAAAAAABEAAQAEAAIAAAAAAAAAAQAEAAIAAAAYAAAAAQAEAAEAAAAYAAEAAQAEAAIAAAAYAAIAAQAEAAIAAAAYAAMAAQAEAAIAAAAYAAQAAQAEAAIAAAAYAAUAAQAEAAIAAAAYAAYAAQAEAAIAAAAYAAcAAQAEAAIAAAAYAAgAAQAEAAIAAAAYAAkAAQAEAAIAAAAYAAoAAQAEAAIAAAAYAAsAAQAEAAIAAAAYAAwAAQAEAAIAAAAYAA0AAQAEAAIAAAAYAA4AAQAEAAIAAAAYAA8AAQAEAAIAAAAYABAAAQAEAAIAAAAYABEAAQAEAAIAAAAAABIAAQAEAAMAAAABABIAAQADAAMAAAACABIAAQADAAMAAAADABIAAQADAAMAAAAEABIAAQADAAMAAAAFABIAAQADAAMAAAAGABIAAQADAAMAAAAHABIAAQADAAMAAAAIABIAAQADAAMAAAAJABIAAQADAAMAAAAKABIAAQADAAMAAAALABIAAQADAAMAAAAMABIAAQABAAMAAAANABIAAQAAAAEAAAAOABIAAQACAAMAAAAPABIAAQADAAMAAAAQABIAAQADAAMAAAARABIAAQADAAMAAAASABIAAQADAAMAAAATABIAAQADAAMAAAAUABIAAQADAAMAAAAVABIAAQADAAMAAAAWABIAAQADAAMAAAAXABIAAQADAAMAAAAYABIAAQAFAAMAAAAXAAAAAQADAAEAAAAWAAAAAQADAAEAAAAVAAAAAQADAAEAAAAUAAAAAQADAAEAAAATAAAAAQADAAEAAAASAAAAAQADAAEAAAARAAAAAQADAAEAAAAQAAAAAQADAAEAAAAPAAAAAQADAAEAAAAOAAAAAQADAAEAAAANAAAAAQADAAEAAAAMAAAAAQADAAEAAAALAAAAAQADAAEAAAAKAAAAAQADAAEAAAAJAAAAAQADAAEAAAAIAAAAAQADAAEAAAAHAAAAAQADAAEAAAAGAAAAAQADAAEAAAAFAAAAAQADAAEAAAAEAAAAAQADAAEAAAADAAAAAQADAAEAAAACAAAAAQADAAEAAAABAAAAAQADAAEAAAABAAIAAQABAAYAAAACAAIAAQACAAYAAAADAAIAAQACAAYAAAAEAAIAAQADAAYAAAA=")
+tile_set = ExtResource("1_grbn2")
+
+[node name="WinMessage" type="Label" parent="."]
+visible = false
+z_index = 3
+offset_left = 214.0
+offset_top = 893.0
+offset_right = 545.0
+offset_bottom = 981.0
+theme_override_font_sizes/font_size = 64
+text = "You won!"
+uppercase = true
+
+[node name="BackgroundTiles" type="TileMapLayer" parent="."]
+z_index = -1
+tile_map_data = PackedByteArray("AAAAAAAAAQADAAEAAAA=")
+tile_set = ExtResource("1_grbn2")
+
+[node name="ForegroundTiles" type="TileMapLayer" parent="."]
+z_index = 2
+tile_map_data = PackedByteArray("AAAAAAAAAQAAAAYAAAABAAAAAQAAAAYAAAACAAAAAQAAAAYAAAADAAAAAQAAAAYAAAAEAAAAAQAAAAYAAAAFAAAAAQAAAAYAAAAGAAAAAQAAAAYAAAAHAAAAAQAAAAYAAAAIAAAAAQAAAAYAAAAJAAAAAQAAAAYAAAAKAAAAAQAAAAYAAAALAAAAAQAAAAYAAAAMAAAAAQAAAAYAAAANAAAAAQAAAAYAAAAPAAAAAQAAAAYAAAAQAAAAAQAAAAYAAAARAAAAAQAAAAYAAAASAAAAAQAAAAYAAAATAAAAAQAAAAYAAAAUAAAAAQAAAAYAAAAVAAAAAQAAAAYAAAAWAAAAAQAAAAYAAAAXAAAAAQAAAAYAAAAYAAAAAQAAAAYAAAAOAAAAAQAAAAYAAAAEABAAAQABAAYAAAAFABAAAQACAAYAAAAGABAAAQACAAYAAAAHABAAAQACAAYAAAAJABAAAQACAAYAAAAKABAAAQADAAYAAAAIABAAAQACAAYAAAARAA8AAQACAAYAAAASAA8AAQACAAYAAAATAA8AAQACAAYAAAAQAA8AAQABAAYAAAAUAA8AAQADAAYAAAAKAA0AAQACAAYAAAALAA0AAQACAAYAAAAMAA0AAQACAAYAAAAJAA0AAQABAAYAAAANAA0AAQADAAYAAAAAAAwAAQAEAAEAAAABAAwAAQACAAIAAAACAAwAAQACAAIAAAADAAwAAQADAAIAAAA=")
+tile_set = ExtResource("1_grbn2")
+
+[node name="Player" parent="." instance=ExtResource("2_hfxtq")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(222, 1109)
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+limit_left = 0
+limit_top = 0
+limit_right = 1600
+limit_bottom = 1215
+
+[node name="Alligator" parent="." instance=ExtResource("3_7m8wg")]
+position = Vector2(866, 1171)
+
+[node name="Flies" type="Node2D" parent="."]
+
+[node name="DragonFly" parent="Flies" instance=ExtResource("4_mrbn8")]
+position = Vector2(352, 993)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Flies/DragonFly"]
+libraries = {
+"": SubResource("AnimationLibrary_m57sk")
+}
+autoplay = "fly"
+
+[node name="DragonFly2" parent="Flies" instance=ExtResource("4_mrbn8")]
+position = Vector2(82, 765)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Flies/DragonFly2"]
+libraries = {
+"": SubResource("AnimationLibrary_25yv5")
+}
+autoplay = "fly"
+
+[node name="DragonFly3" parent="Flies" instance=ExtResource("4_mrbn8")]
+position = Vector2(1107, 930)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Flies/DragonFly3"]
+libraries = {
+"": SubResource("AnimationLibrary_vb0f1")
+}
+autoplay = "fly"
+
+[node name="DragonFly4" parent="Flies" instance=ExtResource("4_mrbn8")]
+position = Vector2(653, 763)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Flies/DragonFly4"]
+libraries = {
+"": SubResource("AnimationLibrary_eetae")
+}
+autoplay = "fly"
