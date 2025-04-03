@@ -27,7 +27,7 @@ impl TouchJumpHandler {
 }
 
 impl JumpDetector for TouchJumpHandler {
-    fn is_jump_pressed(&self) -> bool {
+    fn is_jump_pressed(&mut self) -> bool {
         self.touch_is_pressed
             .load(std::sync::atomic::Ordering::SeqCst)
     }

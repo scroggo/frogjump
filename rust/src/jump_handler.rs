@@ -2,20 +2,41 @@ use crate::jump_meter::JumpMeter;
 use godot::prelude::*;
 
 pub trait JumpDetector {
-    fn is_jump_pressed(&self) -> bool;
+    fn is_jump_pressed(&mut self) -> bool;
+
+    // Call early to determine whether jump is already held when gameplay starts
+    // and prevent filling the jump meter until the next press.
+    fn check_for_early_jump(&mut self) {}
 }
 
-struct JumpKeyDetector;
+struct JumpKeyDetector {
+    wait_for_next_press: bool,
+}
 
 impl JumpDetector for JumpKeyDetector {
-    fn is_jump_pressed(&self) -> bool {
-        Input::singleton().is_action_pressed("jump")
+    fn is_jump_pressed(&mut self) -> bool {
+        let jump_pressed = Input::singleton().is_action_pressed("jump");
+        if self.wait_for_next_press {
+            if !jump_pressed {
+                self.wait_for_next_press = false;
+            }
+            return false;
+        }
+        jump_pressed
+    }
+
+    fn check_for_early_jump(&mut self) {
+        if self.is_jump_pressed() {
+            self.wait_for_next_press = true;
+        }
     }
 }
 
 impl JumpKeyDetector {
     fn new() -> Self {
-        Self
+        Self {
+            wait_for_next_press: false,
+        }
     }
 }
 
@@ -54,6 +75,7 @@ impl INode for JumpHandler {
 
     fn ready(&mut self) {
         self.jump_meter().hide();
+        self.jump_detector.check_for_early_jump();
     }
 }
 

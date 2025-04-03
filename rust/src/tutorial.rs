@@ -22,7 +22,7 @@ impl TutorialJumpDetector {
 }
 
 impl JumpDetector for TutorialJumpDetector {
-    fn is_jump_pressed(&self) -> bool {
+    fn is_jump_pressed(&mut self) -> bool {
         self.pressed.load(Ordering::SeqCst)
     }
 }
@@ -111,18 +111,18 @@ impl INode2D for Tutorial {
     }
 
     fn unhandled_input(&mut self, event: Gd<InputEvent>) {
+        if event.is_action_pressed("jump") {
+            self.load_level();
+            return;
+        }
         if let Some(touch_event) = event.try_cast::<InputEventScreenTouch>().ok() {
-            if !touch_event.is_pressed() {
+            if touch_event.is_pressed() {
                 self.load_level();
             }
         }
     }
 
     fn physics_process(&mut self, delta: f64) {
-        if Input::singleton().is_action_pressed("jump") {
-            self.load_level();
-            return;
-        }
         self.curr_time_ms += delta * 1000.0;
         if self.curr_time_ms < self.next_step_time_ms {
             return;
