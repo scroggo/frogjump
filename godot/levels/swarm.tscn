@@ -87,25 +87,25 @@ position = Vector2(452, 309)
 
 [node name="Flies" type="Node2D" parent="."]
 
-[node name="DragonFly" parent="Flies" instance=ExtResource("3_iv3sb")]
+[node name="Fly" parent="Flies" instance=ExtResource("3_iv3sb")]
 position = Vector2(615, 485)
 
-[node name="DragonFly2" parent="Flies" instance=ExtResource("3_iv3sb")]
+[node name="Fly2" parent="Flies" instance=ExtResource("3_iv3sb")]
 position = Vector2(615, 433)
 
-[node name="DragonFly3" parent="Flies" instance=ExtResource("3_iv3sb")]
+[node name="Fly3" parent="Flies" instance=ExtResource("3_iv3sb")]
 position = Vector2(611, 379)
 
-[node name="DragonFly4" parent="Flies" instance=ExtResource("3_iv3sb")]
+[node name="Fly4" parent="Flies" instance=ExtResource("3_iv3sb")]
 position = Vector2(615, 334)
 
-[node name="DragonFly5" parent="Flies" instance=ExtResource("3_iv3sb")]
+[node name="Fly5" parent="Flies" instance=ExtResource("3_iv3sb")]
 position = Vector2(608, 282)
 
-[node name="DragonFly6" parent="Flies" instance=ExtResource("3_iv3sb")]
+[node name="Fly6" parent="Flies" instance=ExtResource("3_iv3sb")]
 position = Vector2(621, 246)
 
-[node name="DragonFly7" parent="Flies" instance=ExtResource("3_iv3sb")]
+[node name="Fly7" parent="Flies" instance=ExtResource("3_iv3sb")]
 position = Vector2(621, 208)
 
 [node name="ForegroundTiles" type="TileMapLayer" parent="."]

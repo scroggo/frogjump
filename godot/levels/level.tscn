@@ -140,21 +140,21 @@ direction = "Right"
 target_velocity = Vector2(200, 200)
 position = Vector2(12, 502)
 
-[node name="DragonFly" parent="." instance=ExtResource("3_tpcs8")]
+[node name="Fly" parent="." instance=ExtResource("3_tpcs8")]
 position = Vector2(364, 236)
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="DragonFly"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Fly"]
 libraries = {
 "": SubResource("AnimationLibrary_q876y")
 }
 autoplay = "fly"
 speed_scale = 0.5
 
-[node name="DragonFly2" parent="." instance=ExtResource("3_tpcs8")]
+[node name="Fly2" parent="." instance=ExtResource("3_tpcs8")]
 position = Vector2(616, 476)
 scale = Vector2(-1, 1)
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="DragonFly2"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Fly2"]
 libraries = {
 "": SubResource("AnimationLibrary_knuxp")
 }
