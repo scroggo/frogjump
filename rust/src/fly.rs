@@ -3,12 +3,12 @@ use godot::prelude::*;
 
 #[derive(GodotClass)]
 #[class(base=Area2D)]
-struct DragonFly {
+struct Fly {
     base: Base<Area2D>,
 }
 
 #[godot_api]
-impl IArea2D for DragonFly {
+impl IArea2D for Fly {
     fn init(base: Base<Area2D>) -> Self {
         Self { base }
     }
@@ -19,7 +19,7 @@ impl IArea2D for DragonFly {
 }
 
 #[godot_api]
-impl DragonFly {
+impl Fly {
     #[signal]
     fn eaten();
 

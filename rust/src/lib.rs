@@ -2,7 +2,7 @@ use godot::prelude::*;
 
 mod alligator;
 mod arrow;
-mod dragon_fly;
+mod fly;
 mod jump_handler;
 mod jump_meter;
 mod landing_surface;

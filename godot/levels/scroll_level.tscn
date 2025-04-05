@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://cmmu3yov25w21" path="res://levels/tutorial.tscn" id="1_yrpmx"]
 [ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_hfxtq"]
 [ext_resource type="PackedScene" uid="uid://bfdp35wgoi0sy" path="res://alligator.tscn" id="3_7m8wg"]
-[ext_resource type="PackedScene" uid="uid://b5dlmv4suu55n" path="res://dragon_fly.tscn" id="4_mrbn8"]
+[ext_resource type="PackedScene" uid="uid://b5dlmv4suu55n" path="res://fly.tscn" id="4_mrbn8"]
 
 [sub_resource type="Animation" id="Animation_uvrq3"]
 length = 0.001
