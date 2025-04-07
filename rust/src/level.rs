@@ -144,9 +144,12 @@ impl Level {
                         win_message.set_global_position(position);
                     }
                     win_message.show();
-                    drop(base_mut);
-                    self.won = true;
+                } else {
+                    godot_error!("Missing \"WinMessage\"");
+                    godot_print!("Level complete!");
                 }
+                drop(base_mut);
+                self.won = true;
             }
         }
     }
