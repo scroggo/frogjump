@@ -3,6 +3,11 @@ use crate::player::PlayerInfo;
 use godot::classes::{ITileMapLayer, InputEvent, TileMapLayer};
 use godot::prelude::*;
 
+enum State {
+    Playing,
+    Won,
+}
+
 /// Code for playing a level.
 #[derive(GodotClass)]
 #[class(base=TileMapLayer)]
@@ -22,10 +27,10 @@ struct Level {
     /// Level to switch to after completing this one.
     #[export]
     next_level: Option<Gd<PackedScene>>,
-    won: bool,
     /// Message to show upon completing the level.
     #[export]
     win_message: Option<Gd<PackedScene>>,
+    state: State,
     base: Base<TileMapLayer>,
 }
 
@@ -37,8 +42,8 @@ impl ITileMapLayer for Level {
             spawn_many_frogs: false,
             is_test_level: false,
             next_level: None,
-            won: false,
             win_message: None,
+            state: State::Playing,
             base,
         }
     }
@@ -66,10 +71,15 @@ impl ITileMapLayer for Level {
 
     fn unhandled_input(&mut self, event: Gd<InputEvent>) {
         if event.is_action_pressed("jump") {
-            if self.won {
-                self.load_next_if_any();
-            } else if self.player().is_none() || self.spawn_many_frogs {
-                self.respawn();
+            match self.state {
+                State::Playing => {
+                    if self.player().is_none() || self.spawn_many_frogs {
+                        self.respawn();
+                    }
+                }
+                State::Won => {
+                    self.load_next_if_any();
+                }
             }
         } else if event.is_action_pressed("RELOAD") {
             self.base().get_tree().unwrap().reload_current_scene();
@@ -106,7 +116,7 @@ impl Level {
             // signal should call this method before the prey is removed.
             let prey_remaining = scene_tree.get_nodes_in_group("prey").len();
             if prey_remaining <= 1 {
-                self.won = true;
+                self.state = State::Won;
                 if let Some(win_message) = &self.win_message {
                     if let Some(scene) = win_message.instantiate() {
                         self.base_mut().add_child(scene);
