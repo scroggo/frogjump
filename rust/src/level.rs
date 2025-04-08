@@ -6,6 +6,7 @@ use godot::prelude::*;
 enum State {
     Playing,
     Won,
+    BonusFound,
 }
 
 /// Code for playing a level.
@@ -30,6 +31,9 @@ struct Level {
     /// Message to show upon completing the level.
     #[export]
     win_message: Option<Gd<PackedScene>>,
+    /// Level to switch to upon triggering the bonus condition.
+    #[export]
+    bonus_level: Option<Gd<PackedScene>>,
     state: State,
     base: Base<TileMapLayer>,
 }
@@ -43,6 +47,7 @@ impl ITileMapLayer for Level {
             is_test_level: false,
             next_level: None,
             win_message: None,
+            bonus_level: None,
             state: State::Playing,
             base,
         }
@@ -64,6 +69,15 @@ impl ITileMapLayer for Level {
             &["eaten".to_variant(), on_prey_eaten.to_variant()],
         );
 
+        if self.bonus_level.is_some() {
+            let on_bonus_found = self.base().callable("on_bonus_found");
+            scene_tree.call_group(
+                "bonus_prey",
+                "connect",
+                &["eaten".to_variant(), on_bonus_found.to_variant()],
+            );
+        }
+
         if let Some(player) = self.player() {
             self.player_respawn_info = player.bind().get_player_info();
         }
@@ -79,6 +93,18 @@ impl ITileMapLayer for Level {
                 }
                 State::Won => {
                     self.load_next_if_any();
+                }
+                State::BonusFound => {
+                    if let Some(bonus_level) = &self.bonus_level {
+                        self.base()
+                            .get_tree()
+                            .unwrap()
+                            .change_scene_to_packed(bonus_level);
+                    } else {
+                        // This should not happen. We should only reach this state
+                        // if there is a bonus level to go to.
+                        godot_error!("Missing bonus level!");
+                    }
                 }
             }
         } else if event.is_action_pressed("RELOAD") {
@@ -124,6 +150,12 @@ impl Level {
                 }
             }
         }
+    }
+
+    #[func]
+    fn on_bonus_found(&mut self) {
+        self.state = State::BonusFound;
+        // TODO: Show a bonus message
     }
 
     fn player(&self) -> Option<Gd<Player>> {
