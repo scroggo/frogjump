@@ -1,7 +1,7 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
-use godot::classes::{AnimatedSprite2D, InputEvent, InputEventScreenTouch, Label, Os};
+use godot::classes::{AnimatedSprite2D, InputEvent, Label, Os};
 use godot::prelude::*;
 
 use crate::jump_handler::{JumpDetector, JumpHandler};
@@ -113,12 +113,6 @@ impl INode2D for Tutorial {
     fn unhandled_input(&mut self, event: Gd<InputEvent>) {
         if event.is_action_pressed("jump") {
             self.load_level();
-            return;
-        }
-        if let Some(touch_event) = event.try_cast::<InputEventScreenTouch>().ok() {
-            if touch_event.is_pressed() {
-                self.load_level();
-            }
         }
     }
 

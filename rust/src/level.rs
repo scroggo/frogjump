@@ -1,9 +1,6 @@
 use crate::player::Player;
 use crate::player::PlayerInfo;
-use godot::classes::{
-    ITileMapLayer, InputEvent, InputEventKey, InputEventScreenTouch, Label, TileMapLayer,
-};
-use godot::global::Key;
+use godot::classes::{ITileMapLayer, InputEvent, Label, TileMapLayer};
 use godot::prelude::*;
 
 /// Code for playing a level.
@@ -64,43 +61,16 @@ impl ITileMapLayer for Level {
     }
 
     fn unhandled_input(&mut self, event: Gd<InputEvent>) {
-        if let Some(key_event) = event.clone().try_cast::<InputEventKey>().ok() {
-            if key_event.is_echo() || !key_event.is_pressed() {
-                return;
+        if event.is_action_pressed("jump") {
+            if self.won {
+                self.load_next_if_any();
+            } else if self.player().is_none() || self.spawn_many_frogs {
+                self.respawn();
             }
-            if key_event.get_keycode() == Key::SPACE {
-                if self.won {
-                    self.load_next_if_any();
-                    return;
-                }
-                if self.player().is_none() || self.spawn_many_frogs {
-                    self.respawn();
-                }
-            }
-            if self.is_test_level {
-                match key_event.get_keycode() {
-                    Key::ESCAPE => {
-                        self.base().get_tree().unwrap().reload_current_scene();
-                    }
-                    Key::ENTER => {
-                        self.load_next_if_any();
-                    }
-                    _ => (),
-                }
-            }
-            return;
-        }
-        if let Some(touch_event) = event.try_cast::<InputEventScreenTouch>().ok() {
-            if touch_event.is_pressed() {
-                if self.won {
-                    self.load_next_if_any();
-                    return;
-                }
-                if self.player().is_none() || self.spawn_many_frogs {
-                    self.respawn();
-                }
-            }
-            return;
+        } else if event.is_action_pressed("RELOAD") {
+            self.base().get_tree().unwrap().reload_current_scene();
+        } else if event.is_action_pressed("NEXT") {
+            self.load_next_if_any();
         }
     }
 }
