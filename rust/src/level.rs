@@ -1,6 +1,6 @@
 use crate::player::Player;
 use crate::player::PlayerInfo;
-use godot::classes::{ITileMapLayer, InputEvent, Label, TileMapLayer};
+use godot::classes::{ITileMapLayer, InputEvent, TileMapLayer};
 use godot::prelude::*;
 
 /// Code for playing a level.
@@ -23,6 +23,9 @@ struct Level {
     #[export]
     next_level: Option<Gd<PackedScene>>,
     won: bool,
+    /// Message to show upon completing the level.
+    #[export]
+    win_message: Option<Gd<PackedScene>>,
     base: Base<TileMapLayer>,
 }
 
@@ -35,6 +38,7 @@ impl ITileMapLayer for Level {
             is_test_level: false,
             next_level: None,
             won: false,
+            win_message: None,
             base,
         }
     }
@@ -102,22 +106,12 @@ impl Level {
             // signal should call this method before the prey is removed.
             let prey_remaining = scene_tree.get_nodes_in_group("prey").len();
             if prey_remaining <= 1 {
-                if let Some(mut win_message) = self.base().try_get_node_as::<Label>("WinMessage") {
-                    // Show the "WinMessage" in front of the camera, centered.
-                    if let Some(camera) = win_message
-                        .get_viewport()
-                        .and_then(|viewport| viewport.get_camera_2d())
-                    {
-                        let position =
-                            camera.get_screen_center_position() - win_message.get_size() / 2.0;
-                        win_message.set_global_position(position);
-                    }
-                    win_message.show();
-                } else {
-                    godot_error!("Missing \"WinMessage\"");
-                    godot_print!("Level complete!");
-                }
                 self.won = true;
+                if let Some(win_message) = &self.win_message {
+                    if let Some(scene) = win_message.instantiate() {
+                        self.base_mut().add_child(scene);
+                    }
+                }
             }
         }
     }

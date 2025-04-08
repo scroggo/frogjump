@@ -1,8 +1,9 @@
-[gd_scene load_steps=12 format=4 uid="uid://uc47w4l8k0ip"]
+[gd_scene load_steps=13 format=4 uid="uid://uc47w4l8k0ip"]
 
 [ext_resource type="PackedScene" uid="uid://0vd2xqapkgo7" path="res://levels/scroll_level.tscn" id="1_nrmls"]
 [ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="1_rft7n"]
 [ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_rhfln"]
+[ext_resource type="PackedScene" uid="uid://dccj27vvop44m" path="res://messages/finish_level.tscn" id="2_sptr0"]
 [ext_resource type="PackedScene" uid="uid://b5dlmv4suu55n" path="res://fly.tscn" id="3_tpcs8"]
 [ext_resource type="PackedScene" uid="uid://bu5oairemc8af" path="res://toucan.tscn" id="4_untj2"]
 
@@ -131,6 +132,7 @@ _data = {
 [node name="TileMapLayer" type="Level"]
 is_test_level = true
 next_level = ExtResource("1_nrmls")
+win_message = ExtResource("2_sptr0")
 position = Vector2(56, -32)
 tile_map_data = PackedByteArray("AAAAAAgAAQABAAMAAAABAAgAAQABAAAAAAACAAgAAQADAAAAAAADAAgAAQABAAAAAAAEAAgAAQAAAAAAAAAFAAgAAQACAAMAAAAKAAcAAQAEAAIAAAAKAAgAAQAEAAMAAAAHAAgAAQAEAAMAAAAIAAgAAQADAAMAAAAJAAgAAQADAAMAAAD//wgAAQAEAAMAAAD//wcAAQAEAAIAAAD//wYAAQAEAAIAAAD//wUAAQAEAAIAAAD//wQAAQAEAAIAAAD//wMAAQAEAAIAAAD//wIAAQAEAAEAAAD//wEAAQAEAAIAAAD//wAAAQAEAAEAAAAHAAcAAQAEAAIAAAAGAAQAAQADAAEAAAAHAAQAAQAEAAEAAAAHAAUAAQAEAAIAAAAHAAYAAQAEAAIAAAAIAAQAAQADAAIAAAAGAAgAAQADAAMAAAAFAAQAAQACAAEAAAAHAAMAAQABAAIAAAAKAAYAAQAEAAIAAAAKAAUAAQAEAAIAAAAKAAQAAQAEAAIAAAAKAAMAAQAEAAIAAAAKAAIAAQAEAAIAAAAKAAEAAQAEAAIAAAAAAAAAAQACAAIAAAABAAAAAQACAAIAAAACAAAAAQACAAIAAAADAAAAAQACAAIAAAAEAAAAAQACAAIAAAAFAAAAAQACAAIAAAAGAAAAAQACAAIAAAAHAAAAAQACAAIAAAAIAAAAAQACAAIAAAAJAAAAAQACAAIAAAAKAAAAAQACAAIAAAAAAAIAAQADAAIAAAABAAEAAQAAAAIAAAABAAIAAQAAAAIAAAABAAMAAQAAAAMAAAA=")
 tile_set = ExtResource("1_rft7n")
@@ -174,21 +176,3 @@ tile_set = ExtResource("1_rft7n")
 
 [node name="Toucan" parent="." instance=ExtResource("4_untj2")]
 position = Vector2(25, 151)
-
-[node name="WinMessage" type="Label" parent="."]
-visible = false
-offset_left = 139.0
-offset_top = 277.0
-offset_right = 479.0
-offset_bottom = 365.0
-theme_override_font_sizes/font_size = 64
-text = "Good job!"
-uppercase = true
-
-[node name="Label" type="Label" parent="WinMessage"]
-layout_mode = 0
-offset_left = 85.0
-offset_top = 95.0
-offset_right = 261.0
-offset_bottom = 118.0
-text = "Jump to play next level"
