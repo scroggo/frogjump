@@ -97,13 +97,12 @@ impl Level {
 
     #[func]
     fn on_prey_eaten(&mut self) {
-        let base_mut = self.base_mut();
-        if let Some(mut scene_tree) = base_mut.get_tree() {
+        if let Some(mut scene_tree) = self.base().get_tree() {
             // When the last prey is eaten, it is queued for removal, but the
             // signal should call this method before the prey is removed.
             let prey_remaining = scene_tree.get_nodes_in_group("prey").len();
             if prey_remaining <= 1 {
-                if let Some(mut win_message) = base_mut.try_get_node_as::<Label>("WinMessage") {
+                if let Some(mut win_message) = self.base().try_get_node_as::<Label>("WinMessage") {
                     // Show the "WinMessage" in front of the camera, centered.
                     if let Some(camera) = win_message
                         .get_viewport()
@@ -118,7 +117,6 @@ impl Level {
                     godot_error!("Missing \"WinMessage\"");
                     godot_print!("Level complete!");
                 }
-                drop(base_mut);
                 self.won = true;
             }
         }
