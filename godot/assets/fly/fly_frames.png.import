@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bvmtsib004kf2"
-path="res://.godot/imported/fly_frames.png-710f3eec84f1e884e5b63daff2b9c761.ctex"
+path="res://.godot/imported/fly_frames.png-fda97ab6ec1378cf5640d97fbfbc786c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/fly_frames.png"
-dest_files=["res://.godot/imported/fly_frames.png-710f3eec84f1e884e5b63daff2b9c761.ctex"]
+source_file="res://assets/fly/fly_frames.png"
+dest_files=["res://.godot/imported/fly_frames.png-fda97ab6ec1378cf5640d97fbfbc786c.ctex"]
 
 [params]
 
