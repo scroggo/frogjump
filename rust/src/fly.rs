@@ -1,4 +1,5 @@
-use godot::classes::{Area2D, IArea2D};
+use godot::classes::{AnimatedSprite2D, Area2D, IArea2D};
+use godot::global::{randf, randi_range};
 use godot::prelude::*;
 
 #[derive(GodotClass)]
@@ -15,6 +16,16 @@ impl IArea2D for Fly {
     fn ready(&mut self) {
         let body_entered = self.base().callable("on_body_entered");
         self.base_mut().connect("body_entered", &body_entered);
+
+        let mut sprite = self
+            .base()
+            .get_node_as::<AnimatedSprite2D>("AnimatedSprite2D");
+        let frame_count = sprite
+            .get_sprite_frames()
+            .and_then(|frames| Some(frames.get_frame_count("default")))
+            .unwrap();
+        let frame = randi_range(0, (frame_count - 1).into()) as i32;
+        sprite.set_frame_and_progress(frame, randf() as f32);
     }
 }
 
