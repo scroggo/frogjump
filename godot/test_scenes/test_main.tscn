@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://px73cs1b8khw"]
+[gd_scene load_steps=32 format=3 uid="uid://px73cs1b8khw"]
 
 [ext_resource type="PackedScene" uid="uid://bwik4gw6hlc4b" path="res://test_scenes/test_bed.tscn" id="1_a5sya"]
 [ext_resource type="PackedScene" uid="uid://b3ee51f4ruqgc" path="res://test_scenes/test_warp.tscn" id="2_h4ik3"]
@@ -27,10 +27,11 @@
 [ext_resource type="PackedScene" uid="uid://dxjub4imi5ouo" path="res://test_scenes/test_respawn.tscn" id="25_wwf0t"]
 [ext_resource type="PackedScene" uid="uid://bo3t0joauu8lt" path="res://test_scenes/test_alligator.tscn" id="26_qsvyh"]
 [ext_resource type="PackedScene" uid="uid://cbu3sg80ou7oo" path="res://test_scenes/test_next_level.tscn" id="27_njcf5"]
+[ext_resource type="PackedScene" uid="uid://r02plnxt8eng" path="res://test_scenes/test_shimmy_bug.tscn" id="27_w87uc"]
 [ext_resource type="PackedScene" uid="uid://c7jdsy0471udo" path="res://test_scenes/test_bonus.tscn" id="28_afpkg"]
 [ext_resource type="PackedScene" uid="uid://dwau5gxr3rklb" path="res://test_scenes/test_final_level.tscn" id="29_rgox6"]
 [ext_resource type="PackedScene" uid="uid://ofmm8n88jj4f" path="res://levels/swarm.tscn" id="30_qpwnj"]
 
 [node name="Main" type="Main"]
-scenes = Array[PackedScene]([ExtResource("1_a5sya"), ExtResource("2_h4ik3"), ExtResource("3_ijbts"), ExtResource("4_q3a58"), ExtResource("5_umbxu"), ExtResource("6_34omk"), ExtResource("7_hlstg"), ExtResource("8_h2m7g"), ExtResource("9_0ejmk"), ExtResource("10_vv6ng"), ExtResource("11_ctaog"), ExtResource("12_iskjd"), ExtResource("13_ffipn"), ExtResource("14_vw22k"), ExtResource("15_1gwhc"), ExtResource("16_prdv3"), ExtResource("17_g17pa"), ExtResource("18_bps8e"), ExtResource("19_ijdaj"), ExtResource("20_d02ur"), ExtResource("21_6v6og"), ExtResource("22_fbqwc"), ExtResource("23_qin2j"), ExtResource("24_lud4n"), ExtResource("25_wwf0t"), ExtResource("26_qsvyh"), ExtResource("27_njcf5"), ExtResource("28_afpkg"), ExtResource("29_rgox6")])
+scenes = Array[PackedScene]([ExtResource("1_a5sya"), ExtResource("2_h4ik3"), ExtResource("3_ijbts"), ExtResource("4_q3a58"), ExtResource("5_umbxu"), ExtResource("6_34omk"), ExtResource("7_hlstg"), ExtResource("8_h2m7g"), ExtResource("9_0ejmk"), ExtResource("10_vv6ng"), ExtResource("11_ctaog"), ExtResource("12_iskjd"), ExtResource("13_ffipn"), ExtResource("14_vw22k"), ExtResource("15_1gwhc"), ExtResource("16_prdv3"), ExtResource("17_g17pa"), ExtResource("18_bps8e"), ExtResource("19_ijdaj"), ExtResource("20_d02ur"), ExtResource("21_6v6og"), ExtResource("22_fbqwc"), ExtResource("23_qin2j"), ExtResource("24_lud4n"), ExtResource("25_wwf0t"), ExtResource("26_qsvyh"), ExtResource("27_w87uc"), ExtResource("27_njcf5"), ExtResource("28_afpkg"), ExtResource("29_rgox6")])
 bonus_level = ExtResource("30_qpwnj")
