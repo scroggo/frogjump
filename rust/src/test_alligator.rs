@@ -49,7 +49,7 @@ impl TestAlligator {
         let scene = load::<PackedScene>("res://test_scenes/fake_player.tscn");
         let mut fake_player = scene.instantiate().unwrap().cast::<CharacterBody2D>();
         fake_player.set_name(name);
-        self.base_mut().add_child(fake_player.clone());
+        self.base_mut().add_child(&fake_player);
         fake_player
     }
 
@@ -72,7 +72,7 @@ impl TestAlligator {
     #[func]
     fn on_player_eaten(&mut self, mut player: Gd<Node2D>) {
         if let Some(mut parent) = player.get_parent() {
-            parent.remove_child(player.clone());
+            parent.remove_child(&player);
         } else {
             godot_error!("Attempting to eat player not in tree?");
         }

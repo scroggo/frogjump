@@ -123,7 +123,7 @@ impl INode2D for Alligator {
 #[godot_api]
 impl Alligator {
     #[signal]
-    fn player_eaten(mut player: Gd<Node2D>);
+    fn player_eaten(player: Gd<Node2D>);
 
     fn upper_jaw(&self) -> Gd<AnimatedSprite2D> {
         self.base()

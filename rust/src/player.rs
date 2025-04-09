@@ -6,8 +6,8 @@ use crate::jump_handler::JumpHandler;
 use crate::landing_surface::LandingSurface;
 use crate::math;
 use godot::classes::{
-    AnimatedSprite2D, CharacterBody2D, CollisionShape2D, Engine, Geometry2D, ICharacterBody2D,
-    KinematicCollision2D, Os, TileMapLayer, Timer,
+    AnimatedSprite2D, Camera2D, CharacterBody2D, CollisionShape2D, Engine, Geometry2D,
+    ICharacterBody2D, KinematicCollision2D, Os, TileMapLayer, Timer,
 };
 use godot::global::{cos, randf_range};
 use godot::prelude::*;

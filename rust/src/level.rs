@@ -1,6 +1,6 @@
 use crate::player::Player;
 use crate::player::PlayerInfo;
-use godot::classes::{ITileMapLayer, InputEvent, TileMapLayer};
+use godot::classes::{Camera2D, ITileMapLayer, InputEvent, TileMapLayer};
 use godot::prelude::*;
 
 enum State {
@@ -120,11 +120,11 @@ impl Level {
             if let Some(mut camera) = player.try_get_node_as::<Camera2D>("Camera2D") {
                 // Reparent the camera so it can stay in place when the player
                 // is removed.
-                player.remove_child(camera.clone());
+                player.remove_child(&camera);
                 camera.set_position(player.get_position());
-                self.base_mut().add_child(camera);
+                self.base_mut().add_child(&camera);
             }
-            parent.remove_child(player.clone());
+            parent.remove_child(&player);
             player.queue_free();
         } else {
             godot_error!("player_eaten signal called on node not in tree?");
@@ -146,7 +146,7 @@ impl Level {
                 };
                 let packed_scene = load::<PackedScene>(scene_name);
                 let scene = packed_scene.instantiate_as::<Node>();
-                self.base_mut().add_child(scene);
+                self.base_mut().add_child(&scene);
             }
         }
     }
@@ -156,7 +156,7 @@ impl Level {
         self.state = State::BonusFound;
         let scene = load::<PackedScene>("res://messages/bonus.tscn");
         let bonus_message = scene.instantiate_as::<Node>();
-        self.base_mut().add_child(bonus_message);
+        self.base_mut().add_child(&bonus_message);
     }
 
     fn player(&self) -> Option<Gd<Player>> {
@@ -171,11 +171,11 @@ impl Level {
         // When the player dies, we reparent the camera to the level. Restore it
         // on the new player.
         if let Some(mut camera) = self.base().try_get_node_as::<Camera2D>("Camera2D") {
-            self.base_mut().remove_child(camera.clone());
+            self.base_mut().remove_child(&camera);
             camera.set_position(Vector2::ZERO);
-            player.add_child(camera);
+            player.add_child(&camera);
         }
-        self.base_mut().add_child(player);
+        self.base_mut().add_child(&player);
     }
 
     fn load_next(&self) {

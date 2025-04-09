@@ -1,4 +1,5 @@
 use crate::jump_meter::JumpMeter;
+use godot::classes::Input;
 use godot::prelude::*;
 
 pub trait JumpDetector {
