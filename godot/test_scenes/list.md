@@ -32,4 +32,5 @@ the tests.
 - `test_corner_seam_up`
 - `test_corner`
 - `test_position_smoothing`
+- `test_respawn`
 - `test_alligator`
