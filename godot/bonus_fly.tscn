@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://blurmw8e3mvt2"]
+[gd_scene load_steps=7 format=3 uid="uid://c8xsrfma6jwh7"]
 
 [ext_resource type="Texture2D" uid="uid://7dt57iy5jdfe" path="res://assets/fly/fly_gold_0.png" id="1_r2o22"]
 [ext_resource type="Texture2D" uid="uid://deui203x2oh7r" path="res://assets/fly/fly_gold_1.png" id="2_rxial"]
