@@ -28,9 +28,6 @@ struct Level {
     /// Level to switch to after completing this one.
     #[export]
     next_level: Option<Gd<PackedScene>>,
-    /// Message to show upon completing the level.
-    #[export]
-    win_message: Option<Gd<PackedScene>>,
     /// Level to switch to upon triggering the bonus condition.
     #[export]
     bonus_level: Option<Gd<PackedScene>>,
@@ -46,7 +43,6 @@ impl ITileMapLayer for Level {
             spawn_many_frogs: false,
             is_test_level: false,
             next_level: None,
-            win_message: None,
             bonus_level: None,
             state: State::Playing,
             base,
@@ -92,7 +88,7 @@ impl ITileMapLayer for Level {
                     }
                 }
                 State::Won => {
-                    self.load_next_if_any();
+                    self.load_next();
                 }
                 State::BonusFound => {
                     if let Some(bonus_level) = &self.bonus_level {
@@ -110,7 +106,7 @@ impl ITileMapLayer for Level {
         } else if event.is_action_pressed("RELOAD") {
             self.base().get_tree().unwrap().reload_current_scene();
         } else if event.is_action_pressed("NEXT") {
-            self.load_next_if_any();
+            self.load_next();
         }
     }
 }
@@ -143,11 +139,14 @@ impl Level {
             let prey_remaining = scene_tree.get_nodes_in_group("prey").len();
             if prey_remaining <= 1 {
                 self.state = State::Won;
-                if let Some(win_message) = &self.win_message {
-                    if let Some(scene) = win_message.instantiate() {
-                        self.base_mut().add_child(scene);
-                    }
-                }
+                let scene_name = if self.next_level.is_some() {
+                    "res://messages/finish_level.tscn"
+                } else {
+                    "res://messages/finish_final_level.tscn"
+                };
+                let packed_scene = load::<PackedScene>(scene_name);
+                let scene = packed_scene.instantiate_as::<Node>();
+                self.base_mut().add_child(scene);
             }
         }
     }
@@ -179,12 +178,12 @@ impl Level {
         self.base_mut().add_child(player);
     }
 
-    fn load_next_if_any(&self) {
+    fn load_next(&self) {
+        let mut scene_tree = self.base().get_tree().unwrap();
         if let Some(scene) = &self.next_level {
-            self.base()
-                .get_tree()
-                .unwrap()
-                .change_scene_to_packed(scene);
+            scene_tree.change_scene_to_packed(scene);
+        } else {
+            scene_tree.change_scene_to_file("res://levels/tutorial.tscn");
         }
     }
 }
