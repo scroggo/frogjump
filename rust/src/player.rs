@@ -6,7 +6,7 @@ use crate::jump_handler::JumpHandler;
 use crate::landing_surface::LandingSurface;
 use crate::math;
 use godot::classes::{
-    AnimatedSprite2D, CharacterBody2D, CollisionShape2D, Geometry2D, ICharacterBody2D,
+    AnimatedSprite2D, CharacterBody2D, CollisionShape2D, Engine, Geometry2D, ICharacterBody2D,
     KinematicCollision2D, Os, TileMapLayer, Timer,
 };
 use godot::global::{cos, randf_range};
@@ -53,7 +53,7 @@ pub struct PlayerInfo {
 const WIDTH_MODIFIER: f32 = 0.7;
 
 #[derive(GodotClass)]
-#[class(base=CharacterBody2D)]
+#[class(base=CharacterBody2D, tool)]
 pub struct Player {
     #[export]
     direction: Direction,
@@ -92,6 +92,20 @@ impl ICharacterBody2D for Player {
     }
 
     fn ready(&mut self) {
+        // In some scenes, the player is rotated such that they are on a wall,
+        // but still facing right. In those cases, no need to flip the sprite.
+        // This check is overly broad; if the rotation was small, we may still
+        // want to flip in theory, but this catches the existing cases.
+        let flip_h =
+            self.direction == Direction::Right && self.base().get_rotation_degrees() == 0.0;
+        self.sprite().set_flip_h(flip_h);
+
+        let frame = if self.on_surface { 0 } else { 3 };
+        self.sprite().set_frame(frame);
+
+        if Engine::singleton().is_editor_hint() {
+            return;
+        }
         let os = Os::singleton();
         if os.has_feature("debug") {
             godot_print!("Running a debug build.");
@@ -103,17 +117,6 @@ impl ICharacterBody2D for Player {
         let mut blink_timer = self.blink_timer();
         blink_timer.connect("timeout", &blink);
         self.start_blink_timer();
-
-        // In some scenes, the player is rotated such that they are on a wall,
-        // but still facing right. In those cases, no need to flip the sprite.
-        // This check is overly broad; if the rotation was small, we may still
-        // want to flip in theory, but this catches the existing cases.
-        if self.direction == Direction::Right && self.base().get_rotation_degrees() == 0.0 {
-            self.sprite().set_flip_h(true);
-        }
-        if self.on_surface {
-            self.sprite().set_frame(0);
-        }
 
         // The intended goal of smoothing is to handle cases when the player
         // warps, as in `test_position_smoothing.tscn`. With smoothing, the
@@ -127,6 +130,9 @@ impl ICharacterBody2D for Player {
     }
 
     fn physics_process(&mut self, delta: f64) {
+        if Engine::singleton().is_editor_hint() {
+            return;
+        }
         let old_position = self.base().get_position();
         if self.shimmy_dest.is_some() {
             let shimmy_dest = self.shimmy_dest.unwrap();
