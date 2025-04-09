@@ -155,7 +155,9 @@ impl Level {
     #[func]
     fn on_bonus_found(&mut self) {
         self.state = State::BonusFound;
-        // TODO: Show a bonus message
+        let scene = load::<PackedScene>("res://messages/bonus.tscn");
+        let bonus_message = scene.instantiate_as::<Node>();
+        self.base_mut().add_child(bonus_message);
     }
 
     fn player(&self) -> Option<Gd<Player>> {
