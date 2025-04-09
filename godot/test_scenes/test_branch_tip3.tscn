@@ -19,10 +19,7 @@ position = Vector2(67, 397)
 offset_right = 40.0
 offset_bottom = 23.0
 text = "Full strength jump. Not enough space to land on the edge, but the player hits a corner, which
-(currently) follows a different code path.
-
-TODO: The bottom surface is computed as not being long enough, but I suspect we're not
-checking for adjacent tiles in the corner case."
+(currently) follows a different code path."
 
 [node name="SceneName" type="Label" parent="."]
 offset_left = 1.0
