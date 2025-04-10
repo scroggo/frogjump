@@ -1,13 +1,13 @@
 [gd_scene load_steps=5 format=3 uid="uid://dxjub4imi5ouo"]
 
-[ext_resource type="PackedScene" uid="uid://bo3t0joauu8lt" path="res://test_scenes/test_alligator.tscn" id="1_2y3ob"]
+[ext_resource type="PackedScene" uid="uid://cbu3sg80ou7oo" path="res://test_scenes/test_next_level.tscn" id="1_qbflc"]
 [ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="1_yhgph"]
 [ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_kib8r"]
 [ext_resource type="PackedScene" uid="uid://bfdp35wgoi0sy" path="res://alligator.tscn" id="3_vcrr0"]
 
 [node name="Level" type="Level"]
 is_test_level = true
-next_level = ExtResource("1_2y3ob")
+next_level = ExtResource("1_qbflc")
 tile_map_data = PackedByteArray(0, 0, 0, 0, 7, 0, 1, 0, 5, 0, 4, 0, 0, 0, 1, 0, 7, 0, 1, 0, 5, 0, 4, 0, 0, 0, 2, 0, 7, 0, 1, 0, 5, 0, 4, 0, 0, 0)
 tile_set = ExtResource("1_yhgph")
 

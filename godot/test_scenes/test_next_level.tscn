@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://cbu3sg80ou7oo"]
+
+[ext_resource type="PackedScene" uid="uid://bo3t0joauu8lt" path="res://test_scenes/test_alligator.tscn" id="1_j1mlt"]
+[ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="2_ooo0n"]
+[ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="3_rh3dp"]
+[ext_resource type="PackedScene" uid="uid://b5dlmv4suu55n" path="res://fly.tscn" id="4_axnae"]
+
+[node name="Level" type="Level"]
+is_test_level = true
+next_level = ExtResource("1_j1mlt")
+tile_map_data = PackedByteArray(0, 0, 0, 0, 7, 0, 1, 0, 3, 0, 3, 0, 0, 0, 1, 0, 7, 0, 1, 0, 3, 0, 3, 0, 0, 0, 2, 0, 7, 0, 1, 0, 3, 0, 3, 0, 0, 0)
+tile_set = ExtResource("2_ooo0n")
+
+[node name="Player" parent="." instance=ExtResource("3_rh3dp")]
+direction = "Right"
+target_velocity = Vector2(200, 200)
+position = Vector2(21, 319)
+
+[node name="Fly" parent="." instance=ExtResource("4_axnae")]
+position = Vector2(78, 391)
+
+[node name="SceneName" type="Label" parent="."]
+offset_left = -1.0
+offset_top = 516.0
+offset_right = 113.0
+offset_bottom = 539.0
+text = "test_next_level"
+
+[node name="Label" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Verify that when the player collects the last fly, they can no longer jump, and there is a delay
+before \"jump\" moves to the next scene."

@@ -33,4 +33,5 @@ the tests.
 - `test_corner`
 - `test_position_smoothing`
 - `test_respawn`
+- `test_next_level`
 - `test_alligator`

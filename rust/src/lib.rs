@@ -8,6 +8,7 @@ mod jump_meter;
 mod landing_surface;
 mod level;
 mod math;
+mod message_screen;
 mod player;
 mod test_alligator;
 mod toucan;

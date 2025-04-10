@@ -1,8 +1,10 @@
+use crate::message_screen::MessageScreen;
 use crate::player::Player;
 use crate::player::PlayerInfo;
 use godot::classes::{Camera2D, ITileMapLayer, InputEvent, TileMapLayer};
 use godot::prelude::*;
 
+#[derive(PartialEq)]
 enum State {
     Playing,
     Won,
@@ -81,26 +83,9 @@ impl ITileMapLayer for Level {
 
     fn unhandled_input(&mut self, event: Gd<InputEvent>) {
         if event.is_action_pressed("jump") {
-            match self.state {
-                State::Playing => {
-                    if self.player().is_none() || self.spawn_many_frogs {
-                        self.respawn();
-                    }
-                }
-                State::Won => {
-                    self.load_next();
-                }
-                State::BonusFound => {
-                    if let Some(bonus_level) = &self.bonus_level {
-                        self.base()
-                            .get_tree()
-                            .unwrap()
-                            .change_scene_to_packed(bonus_level);
-                    } else {
-                        // This should not happen. We should only reach this state
-                        // if there is a bonus level to go to.
-                        godot_error!("Missing bonus level!");
-                    }
+            if self.state == State::Playing {
+                if self.player().is_none() || self.spawn_many_frogs {
+                    self.respawn();
                 }
             }
         } else if event.is_action_pressed("RELOAD") {
@@ -145,8 +130,8 @@ impl Level {
                     "res://messages/finish_final_level.tscn"
                 };
                 let packed_scene = load::<PackedScene>(scene_name);
-                let scene = packed_scene.instantiate_as::<Node>();
-                self.base_mut().add_child(&scene);
+                let message_screen = packed_scene.instantiate_as::<MessageScreen>();
+                self.show_message_screen(message_screen);
             }
         }
     }
@@ -155,8 +140,30 @@ impl Level {
     fn on_bonus_found(&mut self) {
         self.state = State::BonusFound;
         let scene = load::<PackedScene>("res://messages/bonus.tscn");
-        let bonus_message = scene.instantiate_as::<Node>();
-        self.base_mut().add_child(&bonus_message);
+        let bonus_message = scene.instantiate_as::<MessageScreen>();
+        self.show_message_screen(bonus_message);
+    }
+
+    #[func]
+    fn on_message_screen_jump_pressed(&self) {
+        match self.state {
+            State::Playing => (),
+            State::Won => {
+                self.load_next();
+            }
+            State::BonusFound => {
+                if let Some(bonus_level) = &self.bonus_level {
+                    self.base()
+                        .get_tree()
+                        .unwrap()
+                        .change_scene_to_packed(bonus_level);
+                } else {
+                    // This should not happen. We should only reach this state
+                    // if there is a bonus level to go to.
+                    godot_error!("Missing bonus level!");
+                }
+            }
+        }
     }
 
     fn player(&self) -> Option<Gd<Player>> {
@@ -185,5 +192,20 @@ impl Level {
         } else {
             scene_tree.change_scene_to_file("res://levels/tutorial.tscn");
         }
+    }
+
+    fn show_message_screen(&mut self, mut message_screen: Gd<MessageScreen>) {
+        let cb = self.base().callable("on_message_screen_jump_pressed");
+        message_screen.connect("jump_pressed", &cb);
+        let mut scene_tree = self.base().get_tree().unwrap();
+
+        // FIXME: Can this be `call_group`? The following line does not work:
+        //scene_tree.call_group("player", "disable_jumping", &[]);
+        let players = scene_tree.get_nodes_in_group("player");
+        for player in players.iter_shared() {
+            player.cast::<Player>().bind_mut().disable_jumping();
+        }
+
+        self.base_mut().add_child(&message_screen);
     }
 }

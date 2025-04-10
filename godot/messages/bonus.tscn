@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bwu4nj0yui6j5"]
 
-[node name="CanvasLayer" type="CanvasLayer"]
+[node name="MessageScreen" type="MessageScreen"]
 
 [node name="WinMessage" type="Label" parent="."]
 anchors_preset = 8
@@ -18,3 +18,18 @@ theme_override_font_sizes/font_size = 64
 text = "bonus!"
 horizontal_alignment = 1
 uppercase = true
+
+[node name="JumpHint" type="Label" parent="."]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -94.0
+offset_top = 46.0
+offset_right = 95.0
+offset_bottom = 69.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Jump to play bonus level"

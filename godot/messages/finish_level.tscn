@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dccj27vvop44m"]
 
-[node name="CanvasLayer" type="CanvasLayer"]
+[node name="MessageScreen" type="MessageScreen"]
 
 [node name="WinMessage" type="Label" parent="."]
 anchors_preset = 8
@@ -18,8 +18,8 @@ theme_override_font_sizes/font_size = 64
 text = "Good job!"
 uppercase = true
 
-[node name="Label" type="Label" parent="WinMessage"]
-layout_mode = 1
+[node name="JumpHint" type="Label" parent="."]
+visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5

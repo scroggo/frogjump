@@ -59,6 +59,7 @@ pub struct JumpHandler {
     #[export(range = (0.0, 1.0))]
     max_jump_strength_for_testing: f32,
     jump_detector: Box<dyn JumpDetector>,
+    disabled: bool,
     base: Base<Node>,
 }
 
@@ -70,6 +71,7 @@ impl INode for JumpHandler {
             max_time_ms: 400.0,
             max_jump_strength_for_testing: 1.0,
             jump_detector: Box::new(JumpKeyDetector::new()),
+            disabled: false,
             base,
         }
     }
@@ -86,6 +88,12 @@ impl JumpHandler {
     /// `float` is between `0` and `1` and `1` is a max strength jump.
     /// `delta`: number of seconds since the last frame update.
     pub fn handle_input(&mut self, delta: f64) -> Option<f32> {
+        if self.disabled {
+            // In case a fly is eaten by the player while the jump meter is
+            // already showing.
+            self.jump_meter().hide();
+            return None;
+        }
         if self.length_of_jump_press_ms.is_none() {
             if self.jump_detector.is_jump_pressed() {
                 self.length_of_jump_press_ms = Some(0.0);
@@ -122,5 +130,11 @@ impl JumpHandler {
 
     pub fn replace_jump_detector(&mut self, detector: Box<dyn JumpDetector>) {
         self.jump_detector = detector;
+    }
+
+    // No current need for a reenable, since this is used when the scene is
+    // over.
+    pub fn disable(&mut self) {
+        self.disabled = true;
     }
 }

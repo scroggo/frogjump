@@ -404,6 +404,12 @@ impl Player {
         self.base().get_node_as::<JumpHandler>("JumpHandler")
     }
 
+    // Prevent future "jump" actions from working. Used when a level is over,
+    // and a new level creates new players, so there is no need to reenable.
+    pub fn disable_jumping(&self) {
+        self.jump_handler().bind_mut().disable();
+    }
+
     pub fn get_player_info(&self) -> PlayerInfo {
         PlayerInfo {
             pos: self.base().get_position(),
