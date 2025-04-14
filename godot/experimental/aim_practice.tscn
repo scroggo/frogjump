@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=4 uid="uid://l0ti0b70b0s6"]
+
+[ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="1_h5ebh"]
+[ext_resource type="PackedScene" uid="uid://cf12e8c7rqpmr" path="res://experimental/target.tscn" id="2_5wakn"]
+[ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="3_eqgva"]
+
+[node name="Level" type="Level"]
+tile_map_data = PackedByteArray("AAABAAUAAQABAAYAAAACAAUAAQACAAYAAAADAAUAAQADAAYAAAAAAAYAAQAAAAEAAAABAAYAAQAAAAEAAAACAAYAAQAAAAEAAAADAAYAAQAAAAEAAAAEAAYAAQAAAAEAAAAFAAYAAQAAAAEAAAAGAAYAAQAAAAEAAAAHAAYAAQAAAAEAAAAIAAYAAQAAAAEAAAAJAAYAAQAAAAEAAAAKAAYAAQAAAAEAAAALAAYAAQAAAAEAAAAAAAcAAQAEAAUAAAABAAcAAQAEAAUAAAACAAcAAQAEAAUAAAADAAcAAQAEAAUAAAAEAAcAAQAEAAUAAAAFAAcAAQAEAAUAAAAGAAcAAQAEAAUAAAAHAAcAAQAEAAUAAAAIAAcAAQAEAAUAAAAJAAcAAQAEAAUAAAAKAAcAAQAEAAUAAAALAAcAAQAEAAUAAAAAAAgAAQAEAAUAAAABAAgAAQAEAAUAAAACAAgAAQAEAAUAAAADAAgAAQAEAAUAAAAEAAgAAQAEAAUAAAAFAAgAAQAEAAUAAAAGAAgAAQAEAAUAAAAHAAgAAQAEAAUAAAAIAAgAAQAEAAUAAAAJAAgAAQAEAAUAAAAKAAgAAQAEAAUAAAALAAgAAQAEAAUAAAA=")
+tile_set = ExtResource("1_h5ebh")
+
+[node name="Target" parent="." instance=ExtResource("2_5wakn")]
+position = Vector2(546, 220)
+collision_layer = 4
+
+[node name="Player" parent="." instance=ExtResource("3_eqgva")]
+direction = "Right"
+on_surface = true
+position = Vector2(172, 325)
