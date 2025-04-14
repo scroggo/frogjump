@@ -9,7 +9,7 @@ use godot::classes::{
     AnimatedSprite2D, Camera2D, CharacterBody2D, CollisionShape2D, Engine, Geometry2D,
     ICharacterBody2D, KinematicCollision2D, Os, TileMapLayer, Timer,
 };
-use godot::global::{cos, randf_range};
+use godot::global::{cos, randf, randf_range};
 use godot::prelude::*;
 
 // TODO: Move to its own module?
@@ -113,10 +113,10 @@ impl ICharacterBody2D for Player {
         if os.has_feature("release") {
             godot_print!("Running a release build.");
         }
-        let blink = self.base().callable("on_blink_timeout");
-        let mut blink_timer = self.blink_timer();
-        blink_timer.connect("timeout", &blink);
-        self.start_blink_timer();
+        let on_idle_timeout = self.base().callable("on_idle_timeout");
+        let mut idle_timer = self.idle_timer();
+        idle_timer.connect("timeout", &on_idle_timeout);
+        self.start_idle_timer();
 
         // The intended goal of smoothing is to handle cases when the player
         // warps, as in `test_position_smoothing.tscn`. With smoothing, the
@@ -377,22 +377,23 @@ impl Player {
         Vector2::new(0.0, jump_strength).rotated(jump_angle)
     }
 
-    fn blink_timer(&self) -> Gd<Timer> {
-        self.base().get_node_as::<Timer>("BlinkTimer")
+    fn idle_timer(&self) -> Gd<Timer> {
+        self.base().get_node_as::<Timer>("IdleTimer")
     }
 
-    fn start_blink_timer(&self) {
+    fn start_idle_timer(&self) {
         let wait_time = randf_range(3.0, 7.0);
-        self.blink_timer().start_ex().time_sec(wait_time).done();
+        self.idle_timer().start_ex().time_sec(wait_time).done();
     }
 
     #[func]
-    fn on_blink_timeout(&self) {
+    fn on_idle_timeout(&self) {
         let mut sprite = self.sprite();
         if self.on_surface && !sprite.is_playing() {
-            sprite.play_ex().name("blink").done();
+            let anim = if randf() > 0.25 { "blink" } else { "ribbit" };
+            sprite.play_ex().name(anim).done();
         }
-        self.start_blink_timer();
+        self.start_idle_timer();
     }
 
     fn sprite(&self) -> Gd<AnimatedSprite2D> {

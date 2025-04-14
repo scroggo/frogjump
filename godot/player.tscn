@@ -1,10 +1,14 @@
-[gd_scene load_steps=15 format=3 uid="uid://b4enkwafkexva"]
+[gd_scene load_steps=19 format=3 uid="uid://b4enkwafkexva"]
 
 [ext_resource type="Texture2D" uid="uid://b6b03vkf4ja8w" path="res://assets/player/frog_ezgif/blink000.png" id="1_7cxyk"]
 [ext_resource type="Texture2D" uid="uid://btwjll3ip1yjw" path="res://assets/player/frog_spritesheet.webp" id="1_sjfq4"]
 [ext_resource type="Texture2D" uid="uid://bvfav3u0f7op8" path="res://assets/player/frog_ezgif/blink001.png" id="2_nysx1"]
 [ext_resource type="Texture2D" uid="uid://cqfx32cjw01ll" path="res://assets/player/frog_ezgif/blink002.png" id="3_bvmeo"]
 [ext_resource type="Texture2D" uid="uid://df8s7ac1hbymo" path="res://assets/player/frog_ezgif/blink003.png" id="4_cbath"]
+[ext_resource type="Texture2D" uid="uid://c66ytcj8qqrap" path="res://assets/player/ribbit/ribbit_0.png" id="6_n2xkv"]
+[ext_resource type="Texture2D" uid="uid://bxpu3poscnubo" path="res://assets/player/ribbit/ribbit_1.png" id="7_mxn7x"]
+[ext_resource type="Texture2D" uid="uid://3x8io7fgdjxo" path="res://assets/player/ribbit/ribbit_2.png" id="8_hhc3c"]
+[ext_resource type="Texture2D" uid="uid://47k6y2trqa5e" path="res://assets/player/ribbit/ribbit_3.png" id="9_jvqxp"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kj3ho"]
 size = Vector2(38, 25)
@@ -110,6 +114,32 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("6_n2xkv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_mxn7x")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_hhc3c")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_jvqxp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_hhc3c")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_mxn7x")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_n2xkv")
+}],
+"loop": false,
+"name": &"ribbit",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_f5nur")
 }, {
 "duration": 1.0,
@@ -143,7 +173,7 @@ sprite_frames = SubResource("SpriteFrames_wluyo")
 animation = &"jump"
 frame = 3
 
-[node name="BlinkTimer" type="Timer" parent="."]
+[node name="IdleTimer" type="Timer" parent="."]
 
 [node name="JumpHandler" type="JumpHandler" parent="."]
 
