@@ -1,29 +1,29 @@
 [gd_scene load_steps=9 format=3 uid="uid://d3swuv15ybug6"]
 
-[ext_resource type="Texture2D" uid="uid://cghoh7lpr38d2" path="res://assets/tutorial/button/pushthebutton.svg" id="1_vxpss"]
+[ext_resource type="Texture2D" uid="uid://cghoh7lpr38d2" path="res://assets/ui/button/pushthebutton.svg" id="1_22txb"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_kd5q7"]
-atlas = ExtResource("1_vxpss")
+atlas = ExtResource("1_22txb")
 region = Rect2(0, 0, 36, 28)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wy4g7"]
-atlas = ExtResource("1_vxpss")
+atlas = ExtResource("1_22txb")
 region = Rect2(0, 0, 36, 28)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bulgo"]
-atlas = ExtResource("1_vxpss")
+atlas = ExtResource("1_22txb")
 region = Rect2(36, 0, 36, 28)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7mmli"]
-atlas = ExtResource("1_vxpss")
+atlas = ExtResource("1_22txb")
 region = Rect2(72, 0, 36, 28)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fjjp4"]
-atlas = ExtResource("1_vxpss")
+atlas = ExtResource("1_22txb")
 region = Rect2(108, 0, 36, 28)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6cep3"]
-atlas = ExtResource("1_vxpss")
+atlas = ExtResource("1_22txb")
 region = Rect2(144, 0, 36, 28)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_yankm"]
