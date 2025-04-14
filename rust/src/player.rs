@@ -39,7 +39,7 @@ impl Not for Direction {
 }
 
 // Useful info for spawning a new Player.
-#[derive(Default, Clone, Copy)]
+#[derive(Clone, Copy)]
 pub struct PlayerInfo {
     // Position local to the parent.
     pos: Vector2,

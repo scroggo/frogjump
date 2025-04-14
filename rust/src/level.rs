@@ -15,7 +15,7 @@ enum State {
 #[derive(GodotClass)]
 #[class(base=TileMapLayer)]
 struct Level {
-    player_respawn_info: PlayerInfo,
+    player_respawn_info: Option<PlayerInfo>,
 
     /// Spawn a frog each time "jump" is pressed. Setting this to true recreates
     /// some accidental behavior that was fun.
@@ -41,7 +41,7 @@ struct Level {
 impl ITileMapLayer for Level {
     fn init(base: Base<TileMapLayer>) -> Self {
         Self {
-            player_respawn_info: PlayerInfo::default(),
+            player_respawn_info: None,
             spawn_many_frogs: false,
             is_test_level: false,
             next_level: None,
@@ -77,7 +77,7 @@ impl ITileMapLayer for Level {
         }
 
         if let Some(player) = self.player() {
-            self.player_respawn_info = player.bind().get_player_info();
+            self.player_respawn_info = Some(player.bind().get_player_info());
         }
     }
 
@@ -171,18 +171,20 @@ impl Level {
     }
 
     fn respawn(&mut self) {
-        let scene = load::<PackedScene>("res://player.tscn");
-        let mut player = scene.instantiate().unwrap().cast::<Player>();
-        player.bind_mut().set_player_info(&self.player_respawn_info);
+        if let Some(respawn_info) = &self.player_respawn_info {
+            let scene = load::<PackedScene>("res://player.tscn");
+            let mut player = scene.instantiate().unwrap().cast::<Player>();
+            player.bind_mut().set_player_info(respawn_info);
 
-        // When the player dies, we reparent the camera to the level. Restore it
-        // on the new player.
-        if let Some(mut camera) = self.base().try_get_node_as::<Camera2D>("Camera2D") {
-            self.base_mut().remove_child(&camera);
-            camera.set_position(Vector2::ZERO);
-            player.add_child(&camera);
+            // When the player dies, we reparent the camera to the level. Restore it
+            // on the new player.
+            if let Some(mut camera) = self.base().try_get_node_as::<Camera2D>("Camera2D") {
+                self.base_mut().remove_child(&camera);
+                camera.set_position(Vector2::ZERO);
+                player.add_child(&camera);
+            }
+            self.base_mut().add_child(&player);
         }
-        self.base_mut().add_child(&player);
     }
 
     fn load_next(&self) {
