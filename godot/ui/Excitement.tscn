@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://cbnwbenlpx81i"]
+
+[ext_resource type="Texture2D" uid="uid://b662b8xjl8qmk" path="res://assets/ui/excitement_0.png" id="1_y3u27"]
+[ext_resource type="Texture2D" uid="uid://drtad5jtivjm0" path="res://assets/ui/excitement_1.png" id="2_kpc23"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1wrb8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_y3u27")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_kpc23")
+}],
+"loop": true,
+"name": &"default",
+"speed": 6.0
+}]
+
+[node name="Excitement" type="AnimatedSprite2D"]
+position = Vector2(360, 270)
+sprite_frames = SubResource("SpriteFrames_1wrb8")
+autoplay = "default"
+frame_progress = 0.394384

@@ -1,23 +1,15 @@
-[gd_scene format=3 uid="uid://f8ji6ff0m1oh"]
+[gd_scene load_steps=3 format=3 uid="uid://f8ji6ff0m1oh"]
+
+[ext_resource type="PackedScene" uid="uid://cbnwbenlpx81i" path="res://ui/Excitement.tscn" id="1_oky8o"]
+[ext_resource type="Texture2D" uid="uid://cv4mj6et4r74n" path="res://assets/ui/You win.png" id="2_3h5ls"]
 
 [node name="MessageScreen" type="MessageScreen"]
 
-[node name="WinMessage" type="Label" parent="."]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -170.0
-offset_top = -44.0
-offset_right = 170.0
-offset_bottom = 44.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 64
-text = "you win!"
-horizontal_alignment = 1
-uppercase = true
+[node name="Excitement" parent="." instance=ExtResource("1_oky8o")]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(360, 270)
+texture = ExtResource("2_3h5ls")
 
 [node name="JumpHint" type="Label" parent="."]
 visible = false
@@ -26,10 +18,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -59.0
-offset_top = 43.0
-offset_right = 59.0
-offset_bottom = 66.0
+offset_left = -82.0
+offset_top = 110.0
+offset_right = 83.0
+offset_bottom = 133.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "Jump to restart game"
