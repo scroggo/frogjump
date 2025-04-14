@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://bo3t0joauu8lt"]
+[gd_scene load_steps=4 format=3 uid="uid://bo3t0joauu8lt"]
 
 [ext_resource type="PackedScene" uid="uid://bfdp35wgoi0sy" path="res://alligator.tscn" id="1_uw0tf"]
 [ext_resource type="PackedScene" uid="uid://cylwq8peencac" path="res://test_scenes/fake_player.tscn" id="2_vccn1"]
+[ext_resource type="PackedScene" uid="uid://cbu3sg80ou7oo" path="res://test_scenes/test_next_level.tscn" id="3_tah6c"]
 
 [node name="Node2D" type="TestAlligator"]
 
@@ -16,9 +17,7 @@ position = Vector2(109, 288)
 offset_right = 40.0
 offset_bottom = 23.0
 text = "Unlike other test scenes, this one uses touch/mouse click to reposition the player and test
-the alligator's detection of the player.
-
-This is the final test scene, and ENTER is not supported."
+the alligator's detection of the player."
 
 [node name="SceneName" type="Label" parent="."]
 offset_left = 3.0
@@ -26,3 +25,6 @@ offset_top = 506.0
 offset_right = 104.0
 offset_bottom = 529.0
 text = "test_alligator"
+
+[node name="Level" type="Level" parent="."]
+next_level = ExtResource("3_tah6c")
