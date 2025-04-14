@@ -53,7 +53,7 @@ pub struct PlayerInfo {
 const WIDTH_MODIFIER: f32 = 0.7;
 
 #[derive(GodotClass)]
-#[class(base=CharacterBody2D, tool)]
+#[class(base=CharacterBody2D)]
 pub struct Player {
     #[export]
     direction: Direction,
