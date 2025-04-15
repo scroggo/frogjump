@@ -47,7 +47,7 @@ process_mode = 3
 [node name="Player" parent="." instance=ExtResource("2_r38lq")]
 direction = "Right"
 on_surface = true
-position = Vector2(31, 318)
+position = Vector2(31, 326)
 
 [node name="ShortPress" type="Label" parent="."]
 visible = false
