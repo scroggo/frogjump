@@ -53,7 +53,7 @@ pub struct PlayerInfo {
 const WIDTH_MODIFIER: f32 = 0.7;
 
 #[derive(GodotClass)]
-#[class(base=CharacterBody2D)]
+#[class(base=CharacterBody2D, tool)]
 pub struct Player {
     #[export]
     direction: Direction,
@@ -92,16 +92,18 @@ impl ICharacterBody2D for Player {
     }
 
     fn ready(&mut self) {
-        // In some scenes, the player is rotated such that they are on a wall,
-        // but still facing right. In those cases, no need to flip the sprite.
-        // This check is overly broad; if the rotation was small, we may still
-        // want to flip in theory, but this catches the existing cases.
-        let flip_h =
-            self.direction == Direction::Right && self.base().get_rotation_degrees() == 0.0;
-        self.sprite().set_flip_h(flip_h);
+        if let Some(mut sprite) = self.try_sprite() {
+            // In some scenes, the player is rotated such that they are on a wall,
+            // but still facing right. In those cases, no need to flip the sprite.
+            // This check is overly broad; if the rotation was small, we may still
+            // want to flip in theory, but this catches the existing cases.
+            let flip_h =
+                self.direction == Direction::Right && self.base().get_rotation_degrees() == 0.0;
+            sprite.set_flip_h(flip_h);
 
-        let frame = if self.on_surface { 0 } else { 3 };
-        self.sprite().set_frame(frame);
+            let frame = if self.on_surface { 0 } else { 3 };
+            sprite.set_frame(frame);
+        }
 
         if Engine::singleton().is_editor_hint() {
             return;
@@ -396,9 +398,17 @@ impl Player {
         self.start_idle_timer();
     }
 
+    // Return the sprite representing the player.
     fn sprite(&self) -> Gd<AnimatedSprite2D> {
+        self.try_sprite()
+            .expect("`Player` should have an `AnimatedSprite2D`")
+    }
+
+    // Like `sprite()` for cases when the sprite may not be available, as when
+    // running inside the editor.
+    fn try_sprite(&self) -> Option<Gd<AnimatedSprite2D>> {
         self.base()
-            .get_node_as::<AnimatedSprite2D>("AnimatedSprite2D")
+            .try_get_node_as::<AnimatedSprite2D>("AnimatedSprite2D")
     }
 
     fn jump_handler(&self) -> Gd<JumpHandler> {
