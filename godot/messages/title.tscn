@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://kdkvbhvh2uhi"]
+
+[ext_resource type="Texture2D" uid="uid://c0whkxy4xed6o" path="res://assets/ui/title.png" id="1_gqxfq"]
+[ext_resource type="PackedScene" uid="uid://5bb0he316v18" path="res://ui/button_hint.tscn" id="2_d6rvg"]
+
+[node name="MessageScreen" type="MessageScreen"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(360, 270)
+texture = ExtResource("1_gqxfq")
+
+[node name="Label" type="Label" parent="."]
+offset_left = 447.0
+offset_top = 405.0
+offset_right = 605.0
+offset_bottom = 428.0
+theme_override_colors/font_color = Color(0, 0, 1, 1)
+text = "by Leon Scroggins III"
+
+[node name="JumpHint" parent="." instance=ExtResource("2_d6rvg")]
+autoplay = true
+visible = false
+offset_left = 525.0
+offset_top = 459.0
+offset_right = 525.0
+offset_bottom = 459.0

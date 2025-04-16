@@ -1,4 +1,4 @@
-use godot::classes::{CanvasLayer, ICanvasLayer, InputEvent, Label, Timer};
+use godot::classes::{CanvasLayer, Control, ICanvasLayer, InputEvent, Timer};
 use godot::prelude::*;
 
 /// Message screen to show when finishing a level
@@ -43,8 +43,8 @@ impl MessageScreen {
     #[signal]
     fn jump_pressed();
 
-    fn jump_hint(&self) -> Option<Gd<Label>> {
-        self.base().try_get_node_as::<Label>("JumpHint")
+    fn jump_hint(&self) -> Option<Gd<Control>> {
+        self.base().try_get_node_as::<Control>("JumpHint")
     }
 
     #[func]
