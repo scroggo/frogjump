@@ -61,6 +61,8 @@ position = Vector2(568, 128)
 [node name="Flies" type="Node2D" parent="."]
 
 [node name="Fly" parent="Flies" instance=ExtResource("6_dxwdu")]
+self_directed = true
+movement_speed = 100.0
 position = Vector2(40, 1644)
 
 [node name="Fly2" parent="Flies" instance=ExtResource("6_dxwdu")]
