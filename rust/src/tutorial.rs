@@ -1,6 +1,7 @@
-use godot::classes::{AnimatedSprite2D, Input, InputEvent, Label, Os};
+use godot::classes::{Input, InputEvent, Label};
 use godot::prelude::*;
 
+use crate::button_hint::ButtonHint;
 use crate::player::Player;
 
 /// Stages of the tutorial, using numbers to help keep them straight. Each step
@@ -42,7 +43,6 @@ struct Tutorial {
     next_step_time_ms: f64,
     next_step: NextStep,
     player_start_position: Vector2,
-    on_mobile: bool,
     base: Base<Node2D>,
 }
 
@@ -62,7 +62,6 @@ impl INode2D for Tutorial {
             next_step_time_ms: f64::default(),
             next_step: NextStep::OneStartJump,
             player_start_position: Vector2::default(),
-            on_mobile: is_mobile(),
             base,
         }
     }
@@ -70,14 +69,6 @@ impl INode2D for Tutorial {
     fn ready(&mut self) {
         self.player_start_position = self.player().get_position();
         self.next_step_time_ms = self.one_start_jump_ms as f64;
-
-        if self.on_mobile {
-            self.button().hide();
-            self.tap().show();
-        } else {
-            self.button().show();
-            self.tap().hide();
-        }
     }
 
     fn unhandled_input(&mut self, event: Gd<InputEvent>) {
@@ -137,35 +128,16 @@ impl INode2D for Tutorial {
 
 impl Tutorial {
     fn set_pressed(&mut self, pressed: bool) {
-        let custom_speed = match pressed {
-            true => {
-                Input::singleton().action_press("jump");
-                1.0
-            }
-            false => {
-                Input::singleton().action_release("jump");
-                -1.0
-            }
-        };
-        let mut sprite = if self.on_mobile {
-            self.tap()
+        if pressed {
+            Input::singleton().action_press("jump");
         } else {
-            self.button()
-        };
-        sprite
-            .play_ex()
-            .name("press")
-            .custom_speed(custom_speed)
-            .from_end(!pressed)
-            .done();
+            Input::singleton().action_release("jump");
+        }
+        self.button_hint().bind_mut().set_pressed(pressed);
     }
 
-    fn button(&self) -> Gd<AnimatedSprite2D> {
-        self.base().get_node_as::<AnimatedSprite2D>("HUD/Button")
-    }
-
-    fn tap(&self) -> Gd<AnimatedSprite2D> {
-        self.base().get_node_as::<AnimatedSprite2D>("HUD/Tap")
+    fn button_hint(&self) -> Gd<ButtonHint> {
+        self.base().get_node_as::<ButtonHint>("HUD/ButtonHint")
     }
 
     fn short_press_label(&self) -> Gd<Label> {
@@ -185,9 +157,4 @@ impl Tutorial {
             tree.change_scene_to_file("res://levels/level.tscn");
         }
     }
-}
-
-fn is_mobile() -> bool {
-    let os = Os::singleton();
-    os.has_feature("web_android") || os.has_feature("web_ios")
 }

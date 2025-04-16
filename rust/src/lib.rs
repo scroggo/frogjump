@@ -2,6 +2,7 @@ use godot::prelude::*;
 
 mod alligator;
 mod arrow;
+mod button_hint;
 mod fly;
 mod jump_handler;
 mod jump_meter;

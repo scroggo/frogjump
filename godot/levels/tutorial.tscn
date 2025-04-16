@@ -1,44 +1,12 @@
-[gd_scene load_steps=11 format=4 uid="uid://cmmu3yov25w21"]
+[gd_scene load_steps=6 format=4 uid="uid://cmmu3yov25w21"]
 
 [ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_r38lq"]
-[ext_resource type="PackedScene" uid="uid://d3swuv15ybug6" path="res://ui/button.tscn" id="3_h7hon"]
 [ext_resource type="PackedScene" uid="uid://dkphkh1yr7xd4" path="res://ui/arrow.tscn" id="4_03uty"]
+[ext_resource type="PackedScene" uid="uid://5bb0he316v18" path="res://ui/button_hint.tscn" id="4_6vrt3"]
 [ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="4_u76qf"]
-[ext_resource type="Texture2D" uid="uid://c7q7biuxxcdsp" path="res://assets/tutorial/tap/frame_0.png" id="5_xh18n"]
-[ext_resource type="Texture2D" uid="uid://pqhip4a8qp10" path="res://assets/tutorial/tap/frame_1.png" id="6_3hxar"]
-[ext_resource type="Texture2D" uid="uid://btlvkeat165qo" path="res://assets/tutorial/tap/frame_2.png" id="7_8210y"]
-[ext_resource type="Texture2D" uid="uid://bxpmin1l2btfe" path="res://assets/tutorial/tap/frame_3.png" id="8_kbx3x"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_ph6mm"]
 font_size = 48
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_0yut0"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("5_xh18n")
-}],
-"loop": false,
-"name": &"default",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("5_xh18n")
-}, {
-"duration": 1.0,
-"texture": ExtResource("6_3hxar")
-}, {
-"duration": 1.0,
-"texture": ExtResource("7_8210y")
-}, {
-"duration": 1.0,
-"texture": ExtResource("8_kbx3x")
-}],
-"loop": false,
-"name": &"press",
-"speed": 20.0
-}]
 
 [node name="Tutorial" type="Tutorial"]
 three_show_arrow_ms = 1500.0
@@ -106,10 +74,8 @@ label_settings = SubResource("LabelSettings_ph6mm")
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Button" parent="HUD" instance=ExtResource("3_h7hon")]
-position = Vector2(360, 137)
-
-[node name="Tap" type="AnimatedSprite2D" parent="HUD"]
-position = Vector2(360, 137)
-sprite_frames = SubResource("SpriteFrames_0yut0")
-animation = &"press"
+[node name="ButtonHint" parent="HUD" instance=ExtResource("4_6vrt3")]
+offset_left = 352.0
+offset_top = 141.0
+offset_right = 352.0
+offset_bottom = 141.0

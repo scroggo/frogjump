@@ -1,0 +1,43 @@
+[gd_scene load_steps=7 format=3 uid="uid://5bb0he316v18"]
+
+[ext_resource type="PackedScene" uid="uid://d3swuv15ybug6" path="res://ui/button.tscn" id="1_qp3kn"]
+[ext_resource type="Texture2D" uid="uid://c7q7biuxxcdsp" path="res://assets/tutorial/tap/frame_0.png" id="2_1iey7"]
+[ext_resource type="Texture2D" uid="uid://pqhip4a8qp10" path="res://assets/tutorial/tap/frame_1.png" id="3_amq2k"]
+[ext_resource type="Texture2D" uid="uid://btlvkeat165qo" path="res://assets/tutorial/tap/frame_2.png" id="4_ik2hi"]
+[ext_resource type="Texture2D" uid="uid://bxpmin1l2btfe" path="res://assets/tutorial/tap/frame_3.png" id="5_a8cdb"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0yut0"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_1iey7")
+}],
+"loop": false,
+"name": &"default",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_1iey7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_amq2k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_ik2hi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_a8cdb")
+}],
+"loop": false,
+"name": &"press",
+"speed": 20.0
+}]
+
+[node name="ButtonHint" type="ButtonHint"]
+
+[node name="Button" parent="." instance=ExtResource("1_qp3kn")]
+
+[node name="Tap" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_0yut0")
+animation = &"press"
