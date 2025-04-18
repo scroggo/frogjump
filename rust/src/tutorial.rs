@@ -2,7 +2,7 @@ use godot::classes::{Input, InputEvent, Label};
 use godot::prelude::*;
 
 use crate::button_hint::ButtonHint;
-use crate::player::Player;
+use crate::player::{Player, PlayerInfo};
 
 /// Stages of the tutorial, using numbers to help keep them straight. Each step
 /// has a corresponding member variable that specifies how long after the
@@ -42,7 +42,7 @@ struct Tutorial {
     curr_time_ms: f64,
     next_step_time_ms: f64,
     next_step: NextStep,
-    player_start_position: Vector2,
+    player_start_info: Option<PlayerInfo>,
     base: Base<Node2D>,
 }
 
@@ -61,13 +61,13 @@ impl INode2D for Tutorial {
             curr_time_ms: 0.0,
             next_step_time_ms: f64::default(),
             next_step: NextStep::OneStartJump,
-            player_start_position: Vector2::default(),
+            player_start_info: None,
             base,
         }
     }
 
     fn ready(&mut self) {
-        self.player_start_position = self.player().get_position();
+        self.player_start_info = Some(self.player().bind().get_player_info());
         self.next_step_time_ms = self.one_start_jump_ms as f64;
     }
 
@@ -100,7 +100,7 @@ impl INode2D for Tutorial {
             }
             NextStep::FourReset => {
                 self.short_press_label().hide();
-                self.player().set_position(self.player_start_position);
+                self.reset_player();
                 self.next_step = NextStep::FiveStartJump;
                 self.next_step_time_ms += self.five_start_jump_ms as f64;
             }
@@ -120,7 +120,11 @@ impl INode2D for Tutorial {
                 self.next_step_time_ms += self.eight_reload_ms as f64;
             }
             NextStep::EightReload => {
-                self.base().get_tree().unwrap().reload_current_scene();
+                self.long_press_label().hide();
+                self.next_step = NextStep::OneStartJump;
+                self.next_step_time_ms = self.one_start_jump_ms as f64;
+                self.reset_player();
+                self.curr_time_ms = 0.0;
             }
         }
     }
@@ -156,5 +160,13 @@ impl Tutorial {
         if let Some(mut tree) = self.base().get_tree() {
             tree.change_scene_to_file("res://levels/level.tscn");
         }
+    }
+
+    fn reset_player(&self) {
+        self.player().bind_mut().set_player_info(
+            &self
+                .player_start_info
+                .expect("`ready` should have instantiated `playerStartInfo`"),
+        );
     }
 }
