@@ -31,9 +31,15 @@ impl ICanvasLayer for MessageScreen {
         timer.start_ex().time_sec(self.delay as f64).done();
     }
 
-    fn unhandled_input(&mut self, event: Gd<InputEvent>) {
-        if !self.ignore_jump && event.is_action_pressed("jump") {
-            self.base_mut().emit_signal("jump_pressed", &[]);
+    fn input(&mut self, event: Gd<InputEvent>) {
+        if event.is_action_pressed("jump") {
+            if self.ignore_jump {
+                // Consume input so `Main` does not receive it.
+                self.base()
+                    .get_viewport()
+                    .expect("Should have a viewport to handle an event!")
+                    .set_input_as_handled();
+            }
         }
     }
 }

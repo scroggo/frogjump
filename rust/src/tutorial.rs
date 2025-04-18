@@ -1,4 +1,4 @@
-use godot::classes::{Input, InputEvent, Label};
+use godot::classes::{Input, Label};
 use godot::prelude::*;
 
 use crate::button_hint::ButtonHint;
@@ -69,12 +69,6 @@ impl INode2D for Tutorial {
     fn ready(&mut self) {
         self.player_start_info = Some(self.player().bind().get_player_info());
         self.next_step_time_ms = self.one_start_jump_ms as f64;
-    }
-
-    fn unhandled_input(&mut self, event: Gd<InputEvent>) {
-        if event.is_action_pressed("jump") {
-            self.load_level();
-        }
     }
 
     fn physics_process(&mut self, delta: f64) {
@@ -154,12 +148,6 @@ impl Tutorial {
 
     fn player(&self) -> Gd<Player> {
         self.base().get_node_as::<Player>("Player")
-    }
-
-    fn load_level(&self) {
-        if let Some(mut tree) = self.base().get_tree() {
-            tree.change_scene_to_file("res://levels/level.tscn");
-        }
     }
 
     fn reset_player(&self) {

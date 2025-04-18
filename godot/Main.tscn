@@ -1,0 +1,8 @@
+[gd_scene load_steps=4 format=3 uid="uid://iymui8q28vis"]
+
+[ext_resource type="PackedScene" uid="uid://kdkvbhvh2uhi" path="res://messages/title.tscn" id="1_u7f6n"]
+[ext_resource type="PackedScene" uid="uid://cmmu3yov25w21" path="res://levels/tutorial.tscn" id="2_mivb8"]
+[ext_resource type="PackedScene" uid="uid://uc47w4l8k0ip" path="res://levels/level.tscn" id="3_ubhda"]
+
+[node name="Main" type="Main"]
+scenes = Array[PackedScene]([ExtResource("1_u7f6n"), ExtResource("2_mivb8"), ExtResource("3_ubhda")])

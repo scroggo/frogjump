@@ -7,7 +7,7 @@ use crate::landing_surface::LandingSurface;
 use crate::math;
 use godot::classes::{
     AnimatedSprite2D, Camera2D, CharacterBody2D, CollisionShape2D, Engine, Geometry2D,
-    ICharacterBody2D, KinematicCollision2D, Os, TileMapLayer, Timer,
+    ICharacterBody2D, InputEvent, KinematicCollision2D, Os, TileMapLayer, Timer,
 };
 use godot::global::{cos, randf, randf_range};
 use godot::prelude::*;
@@ -72,6 +72,9 @@ pub struct Player {
     // If the player lands on a corner, they will "shimmy" until they're fully on
     // the surface
     shimmy_dest: Option<Vector2>,
+    // When `true`, set "jump" pressed actions as handled, so `unhandled_input`
+    // callbacks do not see it.
+    consume_input: bool,
     base: Base<CharacterBody2D>,
 }
 
@@ -87,6 +90,7 @@ impl ICharacterBody2D for Player {
             on_ceiling: false,
             shimmy_speed: 75.0,
             shimmy_dest: None,
+            consume_input: false,
             base,
         }
     }
@@ -361,6 +365,15 @@ impl ICharacterBody2D for Player {
             }
         }
     }
+
+    fn input(&mut self, event: Gd<InputEvent>) {
+        if self.consume_input && event.is_action_pressed("jump") {
+            self.base()
+                .get_viewport()
+                .expect("Should have a viewport to receive input")
+                .set_input_as_handled();
+        }
+    }
 }
 
 #[godot_api]
@@ -377,6 +390,13 @@ impl Player {
             Direction::Right => -JUMP_ANGLE,
         } * ceiling_multiplier;
         Vector2::new(0.0, jump_strength).rotated(jump_angle)
+    }
+
+    // Whether to consume `InputEvent`s. Note that this is different from
+    // `disable_jumping`.
+    #[func]
+    pub fn consume_input(&mut self, accept: bool) {
+        self.consume_input = accept;
     }
 
     fn idle_timer(&self) -> Gd<Timer> {

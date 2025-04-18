@@ -53,6 +53,8 @@ impl ITileMapLayer for Level {
 
     fn ready(&mut self) {
         let mut scene_tree = self.base_mut().get_tree().unwrap();
+        scene_tree.call_group("player", "consume_input", &[true.to_variant()]);
+
         let on_player_eaten = self.base().callable("on_player_eaten");
         scene_tree.call_group(
             "predators",
@@ -201,6 +203,7 @@ impl Level {
         message_screen.connect("jump_pressed", &cb);
         let mut scene_tree = self.base().get_tree().unwrap();
         scene_tree.call_group("player", "disable_jumping", &[]);
+        scene_tree.call_group("player", "consume_input", &[false.to_variant()]);
         self.base_mut().add_child(&message_screen);
     }
 }
