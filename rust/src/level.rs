@@ -200,14 +200,7 @@ impl Level {
         let cb = self.base().callable("on_message_screen_jump_pressed");
         message_screen.connect("jump_pressed", &cb);
         let mut scene_tree = self.base().get_tree().unwrap();
-
-        // FIXME: Can this be `call_group`? The following line does not work:
-        //scene_tree.call_group("player", "disable_jumping", &[]);
-        let players = scene_tree.get_nodes_in_group("player");
-        for player in players.iter_shared() {
-            player.cast::<Player>().bind_mut().disable_jumping();
-        }
-
+        scene_tree.call_group("player", "disable_jumping", &[]);
         self.base_mut().add_child(&message_screen);
     }
 }

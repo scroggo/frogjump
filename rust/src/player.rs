@@ -417,6 +417,7 @@ impl Player {
 
     // Prevent future "jump" actions from working. Used when a level is over,
     // and a new level creates new players, so there is no need to reenable.
+    #[func]
     pub fn disable_jumping(&self) {
         self.jump_handler().bind_mut().disable();
     }
