@@ -17,11 +17,6 @@ enum State {
 struct Level {
     player_respawn_info: Option<PlayerInfo>,
 
-    /// Spawn a frog each time "jump" is pressed. Setting this to true recreates
-    /// some accidental behavior that was fun.
-    #[export]
-    spawn_many_frogs: bool,
-
     /// Enable some testing-only features like ESCAPE to restart and ENTER to
     /// start the next level.
     #[export]
@@ -42,7 +37,6 @@ impl ITileMapLayer for Level {
     fn init(base: Base<TileMapLayer>) -> Self {
         Self {
             player_respawn_info: None,
-            spawn_many_frogs: false,
             is_test_level: false,
             next_level: None,
             bonus_level: None,
@@ -86,7 +80,7 @@ impl ITileMapLayer for Level {
     fn unhandled_input(&mut self, event: Gd<InputEvent>) {
         if event.is_action_pressed("jump") {
             if self.state == State::Playing {
-                if self.player().is_none() || self.spawn_many_frogs {
+                if self.player().is_none() {
                     self.respawn();
                 }
             }
