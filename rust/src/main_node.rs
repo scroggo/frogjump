@@ -9,7 +9,9 @@ struct Main {
     /// List of levels and other scenes (e.g. title screen) to play, in order.
     #[export]
     scenes: Array<Gd<PackedScene>>,
-    scene_index: usize,
+    /// Zero-based index of the scene to start on. Useful for testing.
+    #[export]
+    scene_index: i32,
     play_bonus_next: bool,
     /// Bonus level to play when finding the bonus fly.
     #[export]
@@ -62,7 +64,7 @@ impl INode for Main {
 #[godot_api]
 impl Main {
     fn load_scene(&mut self) {
-        if let Some(packed_scene) = self.scenes.get(self.scene_index) {
+        if let Some(packed_scene) = self.scenes.get(self.scene_index as usize) {
             godot_print!("Loading scene: {}", self.scene_index);
             self.load_packed_scene(packed_scene);
         } else {
@@ -97,7 +99,7 @@ impl Main {
 
     fn load_next_scene(&mut self) {
         self.scene_index += 1;
-        if self.scene_index >= self.scenes.len() {
+        if self.scene_index as usize >= self.scenes.len() {
             self.scene_index = 0;
         }
         self.load_scene();
@@ -105,7 +107,7 @@ impl Main {
 
     #[func]
     fn on_level_complete(&mut self) {
-        let scene_name = if self.scene_index < self.scenes.len() - 1 {
+        let scene_name = if (self.scene_index as usize) < self.scenes.len() - 1 {
             "res://messages/finish_level.tscn"
         } else {
             "res://messages/finish_final_level.tscn"
