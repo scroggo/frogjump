@@ -1,4 +1,3 @@
-use crate::message_screen::MessageScreen;
 use crate::player::Player;
 use crate::player::PlayerInfo;
 use godot::classes::{Camera2D, ITileMapLayer, InputEvent, TileMapLayer};
@@ -14,14 +13,8 @@ enum State {
 /// Code for playing a level.
 #[derive(GodotClass)]
 #[class(base=TileMapLayer)]
-struct Level {
+pub struct Level {
     player_respawn_info: Option<PlayerInfo>,
-    /// Level to switch to after completing this one.
-    #[export]
-    next_level: Option<Gd<PackedScene>>,
-    /// Level to switch to upon triggering the bonus condition.
-    #[export]
-    bonus_level: Option<Gd<PackedScene>>,
     state: State,
     base: Base<TileMapLayer>,
 }
@@ -31,8 +24,6 @@ impl ITileMapLayer for Level {
     fn init(base: Base<TileMapLayer>) -> Self {
         Self {
             player_respawn_info: None,
-            next_level: None,
-            bonus_level: None,
             state: State::Playing,
             base,
         }
@@ -56,37 +47,37 @@ impl ITileMapLayer for Level {
             &["eaten".to_variant(), on_prey_eaten.to_variant()],
         );
 
-        if self.bonus_level.is_some() {
-            let on_bonus_found = self.base().callable("on_bonus_found");
-            scene_tree.call_group(
-                "bonus_prey",
-                "connect",
-                &["eaten".to_variant(), on_bonus_found.to_variant()],
-            );
-        }
+        let on_bonus_found = self.base().callable("on_bonus_found");
+        scene_tree.call_group(
+            "bonus_prey",
+            "connect",
+            &["eaten".to_variant(), on_bonus_found.to_variant()],
+        );
 
         if let Some(player) = self.player() {
             self.player_respawn_info = Some(player.bind().get_player_info());
         }
     }
 
-    fn unhandled_input(&mut self, event: Gd<InputEvent>) {
+    fn input(&mut self, event: Gd<InputEvent>) {
         if event.is_action_pressed("jump") {
             if self.state == State::Playing {
                 if self.player().is_none() {
                     self.respawn();
+                    self.base().get_viewport().unwrap().set_input_as_handled();
                 }
             }
-        } else if event.is_action_pressed("RELOAD") {
-            self.base().get_tree().unwrap().reload_current_scene();
-        } else if event.is_action_pressed("NEXT") {
-            self.load_next();
         }
     }
 }
 
 #[godot_api]
 impl Level {
+    #[signal]
+    pub fn complete_level();
+    #[signal]
+    pub fn find_bonus();
+
     #[func]
     fn on_player_eaten(&mut self, mut player: Gd<Node2D>) {
         godot_print!("on_player_eaten! eating {}", player.get_name());
@@ -113,14 +104,8 @@ impl Level {
             let prey_remaining = scene_tree.get_nodes_in_group("prey").len();
             if prey_remaining <= 1 {
                 self.state = State::Won;
-                let scene_name = if self.next_level.is_some() {
-                    "res://messages/finish_level.tscn"
-                } else {
-                    "res://messages/finish_final_level.tscn"
-                };
-                let packed_scene = load::<PackedScene>(scene_name);
-                let message_screen = packed_scene.instantiate_as::<MessageScreen>();
-                self.show_message_screen(message_screen);
+                self.disable_jumping();
+                self.signals().complete_level().emit();
             }
         }
     }
@@ -128,31 +113,8 @@ impl Level {
     #[func]
     fn on_bonus_found(&mut self) {
         self.state = State::BonusFound;
-        let scene = load::<PackedScene>("res://messages/bonus.tscn");
-        let bonus_message = scene.instantiate_as::<MessageScreen>();
-        self.show_message_screen(bonus_message);
-    }
-
-    #[func]
-    fn on_message_screen_jump_pressed(&self) {
-        match self.state {
-            State::Playing => (),
-            State::Won => {
-                self.load_next();
-            }
-            State::BonusFound => {
-                if let Some(bonus_level) = &self.bonus_level {
-                    self.base()
-                        .get_tree()
-                        .unwrap()
-                        .change_scene_to_packed(bonus_level);
-                } else {
-                    // This should not happen. We should only reach this state
-                    // if there is a bonus level to go to.
-                    godot_error!("Missing bonus level!");
-                }
-            }
-        }
+        self.disable_jumping();
+        self.signals().find_bonus().emit();
     }
 
     fn player(&self) -> Option<Gd<Player>> {
@@ -164,6 +126,7 @@ impl Level {
             let scene = load::<PackedScene>("res://player.tscn");
             let mut player = scene.instantiate().unwrap().cast::<Player>();
             player.bind_mut().set_player_info(respawn_info);
+            player.bind_mut().consume_input(true);
 
             // When the player dies, we reparent the camera to the level. Restore it
             // on the new player.
@@ -176,21 +139,9 @@ impl Level {
         }
     }
 
-    fn load_next(&self) {
-        let mut scene_tree = self.base().get_tree().unwrap();
-        if let Some(scene) = &self.next_level {
-            scene_tree.change_scene_to_packed(scene);
-        } else {
-            scene_tree.change_scene_to_file("res://levels/tutorial.tscn");
-        }
-    }
-
-    fn show_message_screen(&mut self, mut message_screen: Gd<MessageScreen>) {
-        let cb = self.base().callable("on_message_screen_jump_pressed");
-        message_screen.connect("jump_pressed", &cb);
+    fn disable_jumping(&self) {
         let mut scene_tree = self.base().get_tree().unwrap();
         scene_tree.call_group("player", "disable_jumping", &[]);
         scene_tree.call_group("player", "consume_input", &[false.to_variant()]);
-        self.base_mut().add_child(&message_screen);
     }
 }

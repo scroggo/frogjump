@@ -1,12 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://c7jdsy0471udo"]
+[gd_scene load_steps=4 format=3 uid="uid://c7jdsy0471udo"]
 
-[ext_resource type="PackedScene" uid="uid://dwau5gxr3rklb" path="res://test_scenes/test_final_level.tscn" id="1_xkuyc"]
 [ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="2_ooo0n"]
 [ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="3_rh3dp"]
 [ext_resource type="PackedScene" uid="uid://c8xsrfma6jwh7" path="res://bonus_fly.tscn" id="4_sov12"]
 
 [node name="Level" type="Level"]
-bonus_level = ExtResource("1_xkuyc")
 tile_map_data = PackedByteArray(0, 0, 0, 0, 7, 0, 1, 0, 3, 0, 3, 0, 0, 0, 1, 0, 7, 0, 1, 0, 3, 0, 3, 0, 0, 0, 2, 0, 7, 0, 1, 0, 3, 0, 3, 0, 0, 0)
 tile_set = ExtResource("2_ooo0n")
 

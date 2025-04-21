@@ -1,11 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://csur4kgipmt0a"]
+[gd_scene load_steps=3 format=3 uid="uid://csur4kgipmt0a"]
 
 [ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="1_rft7n"]
-[ext_resource type="PackedScene" uid="uid://bqukr241q732m" path="res://test_scenes/test_tree_top2.tscn" id="1_shxhc"]
 [ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_rhfln"]
 
 [node name="TileMapLayer" type="Level"]
-next_level = ExtResource("1_shxhc")
 position = Vector2(56, -32)
 tile_map_data = PackedByteArray(0, 0, 7, 0, 3, 0, 1, 0, 1, 0, 2, 0, 0, 0, 10, 0, 4, 0, 1, 0, 4, 0, 2, 0, 0, 0, 10, 0, 3, 0, 1, 0, 4, 0, 2, 0, 0, 0)
 tile_set = ExtResource("1_rft7n")

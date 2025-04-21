@@ -1,11 +1,9 @@
-[gd_scene load_steps=4 format=4 uid="uid://unrh2iervmn6"]
+[gd_scene load_steps=3 format=4 uid="uid://unrh2iervmn6"]
 
-[ext_resource type="PackedScene" uid="uid://cruyeitihm8ss" path="res://test_scenes/test_corner_angle.tscn" id="1_oo26i"]
 [ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="1_rft7n"]
 [ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_rhfln"]
 
 [node name="TileMapLayer" type="Level"]
-next_level = ExtResource("1_oo26i")
 position = Vector2(56, -32)
 tile_map_data = PackedByteArray("AAD//wYAAQAEAAIAAAAGAAQAAQADAAEAAAAHAAQAAQAEAAEAAAAHAAUAAQAEAAIAAAAHAAYAAQAEAAIAAAAIAAQAAQADAAIAAAAFAAQAAQACAAEAAAAHAAMAAQABAAIAAAA=")
 tile_set = ExtResource("1_rft7n")

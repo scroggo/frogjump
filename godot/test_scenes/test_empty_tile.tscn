@@ -1,11 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://da5nyh0vwfsvh"]
+[gd_scene load_steps=3 format=3 uid="uid://da5nyh0vwfsvh"]
 
-[ext_resource type="PackedScene" uid="uid://unrh2iervmn6" path="res://test_scenes/test_nook.tscn" id="1_6e2tv"]
 [ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="2_djca1"]
 [ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="3_5tghj"]
 
 [node name="TileMapLayer" type="Level"]
-next_level = ExtResource("1_6e2tv")
 tile_map_data = PackedByteArray(0, 0, 4, 0, 3, 0, 1, 0, 4, 0, 2, 0, 0, 0, 6, 0, 5, 0, 1, 0, 3, 0, 3, 0, 0, 0)
 tile_set = ExtResource("2_djca1")
 

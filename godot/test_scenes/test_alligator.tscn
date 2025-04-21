@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://bo3t0joauu8lt"]
+[gd_scene load_steps=3 format=3 uid="uid://bo3t0joauu8lt"]
 
 [ext_resource type="PackedScene" uid="uid://bfdp35wgoi0sy" path="res://alligator.tscn" id="1_uw0tf"]
 [ext_resource type="PackedScene" uid="uid://cylwq8peencac" path="res://test_scenes/fake_player.tscn" id="2_vccn1"]
-[ext_resource type="PackedScene" uid="uid://cbu3sg80ou7oo" path="res://test_scenes/test_next_level.tscn" id="3_tah6c"]
 
 [node name="Node2D" type="TestAlligator"]
 
@@ -27,4 +26,3 @@ offset_bottom = 529.0
 text = "test_alligator"
 
 [node name="Level" type="Level" parent="."]
-next_level = ExtResource("3_tah6c")
