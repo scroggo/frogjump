@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://bfdp35wgoi0sy" path="res://alligator.tscn" id="3_vcrr0"]
 
 [node name="Level" type="Level"]
-is_test_level = true
 next_level = ExtResource("1_d0kph")
 tile_map_data = PackedByteArray(0, 0, 0, 0, 7, 0, 1, 0, 5, 0, 4, 0, 0, 0, 1, 0, 7, 0, 1, 0, 5, 0, 4, 0, 0, 0, 2, 0, 7, 0, 1, 0, 5, 0, 4, 0, 0, 0)
 tile_set = ExtResource("1_yhgph")

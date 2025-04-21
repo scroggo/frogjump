@@ -5,7 +5,6 @@
 [ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_rhfln"]
 
 [node name="TileMapLayer" type="Level"]
-is_test_level = true
 next_level = ExtResource("1_b6g7p")
 position = Vector2(56, -32)
 tile_map_data = PackedByteArray(0, 0, 5, 0, 8, 0, 1, 0, 2, 0, 3, 0, 0, 0, 7, 0, 8, 0, 1, 0, 4, 0, 3, 0, 0, 0, 7, 0, 7, 0, 1, 0, 4, 0, 2, 0, 0, 0, 6, 0, 8, 0, 1, 0, 3, 0, 3, 0, 0, 0)

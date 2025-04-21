@@ -16,12 +16,6 @@ enum State {
 #[class(base=TileMapLayer)]
 struct Level {
     player_respawn_info: Option<PlayerInfo>,
-
-    /// Enable some testing-only features like ESCAPE to restart and ENTER to
-    /// start the next level.
-    #[export]
-    is_test_level: bool,
-
     /// Level to switch to after completing this one.
     #[export]
     next_level: Option<Gd<PackedScene>>,
@@ -37,7 +31,6 @@ impl ITileMapLayer for Level {
     fn init(base: Base<TileMapLayer>) -> Self {
         Self {
             player_respawn_info: None,
-            is_test_level: false,
             next_level: None,
             bonus_level: None,
             state: State::Playing,
