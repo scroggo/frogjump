@@ -8,7 +8,7 @@
 [node name="Excitement" parent="." instance=ExtResource("1_oky8o")]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(360, 270)
+position = Vector2(379, 270)
 texture = ExtResource("2_3h5ls")
 
 [node name="JumpHint" type="Label" parent="."]

@@ -9,7 +9,7 @@
 frame_progress = 0.866868
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(360, 270)
+position = Vector2(366, 270)
 texture = ExtResource("1_y7ivl")
 
 [node name="JumpHint" type="Label" parent="."]
