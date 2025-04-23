@@ -1,6 +1,6 @@
 use crate::level::Level;
 use crate::message_screen::MessageScreen;
-use godot::classes::InputEvent;
+use godot::classes::{AudioStreamPlayer, InputEvent};
 use godot::prelude::*;
 
 #[derive(GodotClass)]
@@ -67,6 +67,24 @@ impl Main {
         if let Some(packed_scene) = self.scenes.get(self.scene_index as usize) {
             godot_print!("Loading scene: {}", self.scene_index);
             self.load_packed_scene(packed_scene);
+
+            // Play background sounds.
+            // FIXME: This should perhaps be generalized/editable from the
+            // editor, since we already have two `Main` nodes (one for the
+            // game and one for testing), but I am not sure how best to do so.
+            if let Some(mut audio_stream_player) = self
+                .base()
+                .try_get_node_as::<AudioStreamPlayer>("AudioStreamPlayer")
+            {
+                // Start playing from the first playable level.
+                if self.scene_index >= 2 {
+                    if !audio_stream_player.is_playing() {
+                        audio_stream_player.play();
+                    }
+                } else {
+                    audio_stream_player.stop();
+                }
+            }
         } else {
             godot_error!("Failed to load scene {}", self.scene_index);
         }
