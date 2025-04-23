@@ -128,6 +128,10 @@ impl JumpHandler {
         self.base().get_node_as::<JumpMeter>("../JumpMeter")
     }
 
+    pub fn replace_jump_detector(&mut self, detector: Box<dyn JumpDetector>) {
+        self.jump_detector = detector;
+    }
+
     // No current need for a reenable, since this is used when the scene is
     // over.
     pub fn disable(&mut self) {

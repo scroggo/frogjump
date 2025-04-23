@@ -1,8 +1,32 @@
-use godot::classes::{Input, Label};
+use godot::classes::Label;
 use godot::prelude::*;
 
 use crate::button_hint::ButtonHint;
+use crate::jump_handler::{JumpDetector, JumpHandler};
 use crate::player::{Player, PlayerInfo};
+
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
+
+/// `JumpDetector` that allows specifying whether the jump button is pressed in
+/// a script.
+struct TutorialJumpDetector {
+    pressed: Arc<AtomicBool>,
+}
+
+impl TutorialJumpDetector {
+    fn new(atomic_bool: &Arc<AtomicBool>) -> Self {
+        TutorialJumpDetector {
+            pressed: atomic_bool.clone(),
+        }
+    }
+}
+
+impl JumpDetector for TutorialJumpDetector {
+    fn is_jump_pressed(&mut self) -> bool {
+        self.pressed.load(Ordering::SeqCst)
+    }
+}
 
 /// Stages of the tutorial, using numbers to help keep them straight. Each step
 /// has a corresponding member variable that specifies how long after the
@@ -41,6 +65,9 @@ struct Tutorial {
     eight_reload_ms: f32,
     curr_time_ms: f64,
     next_step_time_ms: f64,
+
+    // Whether the tutorial is pretending that the jump button is pressed.
+    pressed: Arc<AtomicBool>,
     next_step: NextStep,
     player_start_info: Option<PlayerInfo>,
     base: Base<Node2D>,
@@ -60,6 +87,7 @@ impl INode2D for Tutorial {
             eight_reload_ms: 1000.0,
             curr_time_ms: 0.0,
             next_step_time_ms: f64::default(),
+            pressed: Arc::new(AtomicBool::new(false)),
             next_step: NextStep::OneStartJump,
             player_start_info: None,
             base,
@@ -69,6 +97,9 @@ impl INode2D for Tutorial {
     fn ready(&mut self) {
         self.player_start_info = Some(self.player().bind().get_player_info());
         self.next_step_time_ms = self.one_start_jump_ms as f64;
+        let detector: Box<dyn JumpDetector> = Box::new(TutorialJumpDetector::new(&self.pressed));
+        let mut jump_handler = self.base().get_node_as::<JumpHandler>("Player/JumpHandler");
+        jump_handler.bind_mut().replace_jump_detector(detector);
     }
 
     fn physics_process(&mut self, delta: f64) {
@@ -126,11 +157,7 @@ impl INode2D for Tutorial {
 
 impl Tutorial {
     fn set_pressed(&mut self, pressed: bool) {
-        if pressed {
-            Input::singleton().action_press("jump");
-        } else {
-            Input::singleton().action_release("jump");
-        }
+        self.pressed.store(pressed, Ordering::SeqCst);
         self.button_hint().bind_mut().set_pressed(pressed);
     }
 
