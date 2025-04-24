@@ -4,6 +4,7 @@ use std::ops::Not;
 
 use crate::jump_handler::JumpHandler;
 use crate::landing_surface::LandingSurface;
+use crate::log;
 use crate::math;
 use godot::classes::{
     AnimatedSprite2D, Camera2D, CharacterBody2D, CollisionShape2D, Engine, Geometry2D,
@@ -75,6 +76,8 @@ pub struct Player {
     // When `true`, set "jump" pressed actions as handled, so `unhandled_input`
     // callbacks do not see it.
     consume_input: bool,
+    #[export]
+    debug_collisions: bool,
     base: Base<CharacterBody2D>,
 }
 
@@ -91,6 +94,7 @@ impl ICharacterBody2D for Player {
             shimmy_speed: 75.0,
             shimmy_dest: None,
             consume_input: false,
+            debug_collisions: false,
             base,
         }
     }
@@ -172,13 +176,14 @@ impl ICharacterBody2D for Player {
         let collision_opt = self.base_mut().move_and_collide(motion);
         if let Some(collision) = collision_opt {
             let new_position = self.base().get_position();
-            godot_print!(
+            log!(
+                self.debug_collisions,
                 "moved from {old_position} to {new_position}; diff: {}",
                 new_position - old_position
             );
-            print_collision(&collision);
+            print_collision(self.debug_collisions, &collision);
             if let Some(collider) = collision.get_collider() {
-                godot_print!("Collided with {:?}", collider);
+                log!(self.debug_collisions, "Collided with {:?}", collider);
 
                 if collision.get_depth() > 0.0 {
                     // The player is penetrating the wall. Move back along the
@@ -195,10 +200,12 @@ impl ICharacterBody2D for Player {
                 }
                 let mut landing_surface: Option<LandingSurface> = None;
                 let collision_position = collision.get_position();
-                if let Some(points) = get_collider_points(collider, &collision_position) {
-                    godot_print!("Returned points: {points}");
+                if let Some(points) =
+                    get_collider_points(collider, &collision_position, self.debug_collisions)
+                {
+                    log!(self.debug_collisions, "Returned points: {points}");
                     if let Some(index) = points.find(collision_position, None) {
-                        godot_print!("hit a corner!");
+                        log!(self.debug_collisions, "hit a corner!");
 
                         landing_surface = self.pick_side_to_land_on_from_corner(
                             &points,
@@ -215,7 +222,10 @@ impl ICharacterBody2D for Player {
                         );
                     }
                 }
-                godot_print!("Landing surface: {landing_surface:?}");
+                log!(
+                    self.debug_collisions,
+                    "Landing surface: {landing_surface:?}"
+                );
                 self.on_surface = true;
 
                 // Reverse the jump animation to land.
@@ -271,7 +281,10 @@ impl ICharacterBody2D for Player {
                         if let Some(surface_direction) = (surface.b - surface.a).try_normalized() {
                             let motion = (self.width() / 2.0) * surface_direction * WIDTH_MODIFIER;
                             if self.would_collide(motion) {
-                                godot_print!("Shimmying (corner) would cause collisions!");
+                                log!(
+                                    self.debug_collisions,
+                                    "Shimmying (corner) would cause collisions!"
+                                );
                             } else {
                                 self.shimmy_dest = Some(new_player_position + motion);
                                 self.sprite().play_ex().name("shimmy").done();
@@ -299,12 +312,15 @@ impl ICharacterBody2D for Player {
                         // Shimmy onto the surface, if needed.
                         if !self.can_land_on_surface(&surface) {
                             // TODO: Shimmy around a corner?
-                            godot_print!("Don't fit on surface!");
+                            log!(self.debug_collisions, "Don't fit on surface!");
                         } else {
                             if let Some(shimmy_dest) = self.find_shimmy_dest(&surface) {
                                 let motion = shimmy_dest - self.base().get_position();
                                 if self.would_collide(motion) {
-                                    godot_print!("Shimmying would cause collisions!");
+                                    log!(
+                                        self.debug_collisions,
+                                        "Shimmying would cause collisions!"
+                                    );
                                 } else {
                                     self.shimmy_dest = Some(shimmy_dest);
                                     self.sprite().play_ex().name("shimmy").done();
@@ -590,9 +606,12 @@ impl Player {
             position: bb.position + motion,
             size: bb.size,
         };
-        godot_print!("would_collide? test for collisions with motion {motion}");
-        godot_print!("\tcurrent position: {bb}");
-        godot_print!("\tafter movement:   {bb2}");
+        let debug_collisions = self.debug_collisions;
+        if debug_collisions {
+            godot_print!("would_collide? test for collisions with motion {motion}");
+            godot_print!("\tcurrent position: {bb}");
+            godot_print!("\tafter movement:   {bb2}");
+        }
 
         if let Some(collision) = self
             .base_mut()
@@ -600,11 +619,11 @@ impl Player {
             .test_only(true)
             .done()
         {
-            godot_print!("\tYes!");
-            print_collision(&collision);
+            log!(debug_collisions, "\tYes!");
+            print_collision(debug_collisions, &collision);
             return true;
         }
-        godot_print!("\tNo");
+        log!(debug_collisions, "\tNo");
         false
     }
 
@@ -695,7 +714,10 @@ fn prior_point(points: &PackedVector2Array, i: usize) -> usize {
     }
 }
 
-fn print_collision(collision: &Gd<KinematicCollision2D>) {
+fn print_collision(debug_collisions: bool, collision: &Gd<KinematicCollision2D>) {
+    if !debug_collisions {
+        return;
+    }
     godot_print!("collision {:?}", collision);
     godot_print!("\tangle: {}", collision.get_angle());
     godot_print!("\tnormal: {}", collision.get_normal());
@@ -712,6 +734,7 @@ fn print_collision(collision: &Gd<KinematicCollision2D>) {
 fn get_collider_points(
     collider: Gd<Object>,
     collision_position: &Vector2,
+    debug_collisions: bool,
 ) -> Option<PackedVector2Array> {
     // As of this writing, the player only detects collisions with the environment, i.e.
     // walls/ceilings/trees the player can land on. So this should always be a
@@ -723,8 +746,9 @@ fn get_collider_points(
             &tile_map_layer,
             map_coordinates,
             Some(local_collision),
+            debug_collisions,
         ) {
-            smooth_polygon(&mut points);
+            smooth_polygon(&mut points, debug_collisions);
             return Some(points);
         }
     } else {
@@ -738,6 +762,7 @@ fn get_collider_points_from_tile_map_layer(
     tile_map_layer: &Gd<TileMapLayer>,
     map_coordinates: Vector2i,
     local_collision: Option<Vector2>,
+    debug_collisions: bool,
 ) -> Option<PackedVector2Array> {
     let local_tile_center = tile_map_layer.map_to_local(map_coordinates);
     let mut points_so_far: Option<PackedVector2Array> = None;
@@ -781,11 +806,11 @@ fn get_collider_points_from_tile_map_layer(
                     }
                 }
             }
-            godot_print!("\t\t\tpolygon 0: {points}");
+            log!(debug_collisions, "\t\t\tpolygon 0: {points}");
             for point in points.as_mut_slice() {
                 let local_point = local_tile_center + *point;
                 *point = tile_map_layer.to_global(local_point);
-                godot_print!("\t\t\t\tglobal: {}", *point);
+                log!(debug_collisions, "\t\t\t\tglobal: {}", *point);
             }
             points_so_far = Some(points);
         }
@@ -819,9 +844,12 @@ fn get_collider_points_from_tile_map_layer(
 
         for offset in directions_to_add {
             let next_map_coord = map_coordinates + offset;
-            if let Some(next_points) =
-                get_collider_points_from_tile_map_layer(tile_map_layer, next_map_coord, None)
-            {
+            if let Some(next_points) = get_collider_points_from_tile_map_layer(
+                tile_map_layer,
+                next_map_coord,
+                None,
+                debug_collisions,
+            ) {
                 if points_so_far.is_none() {
                     // This can only be reached if the collision is directly on
                     // the edge. We wouldn't want to check tiles adjacent to the
@@ -835,10 +863,11 @@ fn get_collider_points_from_tile_map_layer(
                 let points = points_so_far.unwrap();
                 let polygon_array = Geometry2D::singleton().merge_polygons(&next_points, &points);
                 if polygon_array.len() == 1 {
-                    godot_print!("have a new merged polygon!");
+                    log!(debug_collisions, "have a new merged polygon!");
                     points_so_far = Some(polygon_array.at(0));
                 } else {
-                    godot_print!(
+                    log!(
+                        debug_collisions,
                         "Merge resulted in {} polygons: {polygon_array}",
                         polygon_array.len()
                     );
@@ -859,7 +888,7 @@ fn get_collider_points_from_tile_map_layer(
 // In addition, even if they line up perfectly, due to tiling, there will be
 // intermediate points.
 // Note: Not exhaustive for all hypothetical polygons.
-fn smooth_polygon(polygon: &mut PackedVector2Array) {
+fn smooth_polygon(polygon: &mut PackedVector2Array, debug_collisions: bool) {
     let remove_points = |polygon: &mut PackedVector2Array, stack: &mut Vec<usize>| {
         // Remove in reverse order so the indices are still correct.
         // `0` can be at the end; ensure it is moved to the front.
@@ -877,7 +906,7 @@ fn smooth_polygon(polygon: &mut PackedVector2Array) {
         let a = polygon[i];
         let b = polygon[i2];
         if a.distance_squared_to(b) < 1.0 {
-            godot_print!("Removing {b}!");
+            log!(debug_collisions, "Removing {b}!");
             stack.push(i2);
         }
     }
@@ -892,7 +921,11 @@ fn smooth_polygon(polygon: &mut PackedVector2Array) {
             let i3 = next_point(&polygon, i2);
             if let Some(surface_bc) = LandingSurface::find_surface(polygon, i2, i3) {
                 if math::same_normals_approx(surface_ab.normal, surface_bc.normal) {
-                    godot_print!("Removing {} due to same normals!", polygon[i2]);
+                    log!(
+                        debug_collisions,
+                        "Removing {} due to same normals!",
+                        polygon[i2]
+                    );
                     stack.push(i2);
                 }
             }

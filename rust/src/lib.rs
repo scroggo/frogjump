@@ -8,6 +8,7 @@ mod jump_handler;
 mod jump_meter;
 mod landing_surface;
 mod level;
+mod log;
 mod main_node;
 mod math;
 mod message_screen;
