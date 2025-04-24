@@ -1,4 +1,4 @@
-use crate::player::Direction;
+use crate::direction::Direction;
 use godot::classes::{AnimatedSprite2D, Node2D, Timer};
 use godot::global::randf_range;
 use godot::prelude::*;

@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use std::f32::consts::PI;
-use std::ops::Not;
 
+use crate::direction::Direction;
 use crate::jump_handler::JumpHandler;
 use crate::landing_surface::LandingSurface;
 use crate::log;
@@ -12,32 +12,6 @@ use godot::classes::{
 };
 use godot::global::{cos, randf, randf_range};
 use godot::prelude::*;
-
-// TODO: Move to its own module?
-#[derive(PartialEq, GodotConvert, Var, Export, Clone, Copy)]
-#[godot(via=GString)]
-pub enum Direction {
-    Left,
-    Right,
-}
-
-impl Default for Direction {
-    fn default() -> Self {
-        // Platformers traditionally play to the right.
-        Self::Right
-    }
-}
-
-impl Not for Direction {
-    fn not(self) -> Self::Output {
-        match self {
-            Direction::Left => Direction::Right,
-            Direction::Right => Direction::Left,
-        }
-    }
-
-    type Output = Self;
-}
 
 // Useful info for spawning a new Player.
 #[derive(Clone, Copy)]
