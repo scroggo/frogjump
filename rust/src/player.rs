@@ -8,7 +8,7 @@ use crate::log;
 use crate::math;
 use godot::classes::{
     AnimatedSprite2D, Camera2D, CharacterBody2D, CollisionShape2D, Engine, Geometry2D,
-    ICharacterBody2D, InputEvent, KinematicCollision2D, Os, TileMapLayer, Timer,
+    ICharacterBody2D, InputEvent, KinematicCollision2D, TileMapLayer, Timer,
 };
 use godot::global::{cos, randf, randf_range};
 use godot::prelude::*;
@@ -116,13 +116,7 @@ impl ICharacterBody2D for Player {
         if Engine::singleton().is_editor_hint() {
             return;
         }
-        let os = Os::singleton();
-        if os.has_feature("debug") {
-            godot_print!("Running a debug build.");
-        }
-        if os.has_feature("release") {
-            godot_print!("Running a release build.");
-        }
+
         let on_idle_timeout = self.base().callable("on_idle_timeout");
         let mut idle_timer = self.idle_timer();
         idle_timer.connect("timeout", &on_idle_timeout);
