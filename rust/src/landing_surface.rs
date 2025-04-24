@@ -40,8 +40,6 @@ impl LandingSurface {
         // https://github.com/godotengine/godot/issues/82305. So far it seems to
         // work in my test cases.
         if Geometry2D::singleton().is_point_in_polygon(test_point, polygon) {
-            godot_print!("Correcting normal!");
-
             // Check the other direction, too. If that point is *also* in the
             // polygon, we'll need to revisit this.
             let test_point2 = test_point + -2.0 * self.normal;
