@@ -47,8 +47,8 @@ impl IArea2D for Fly {
     }
 
     fn ready(&mut self) {
-        let body_entered = self.base().callable("on_body_entered");
-        self.base_mut().connect("body_entered", &body_entered);
+        let gd = Gd::from_instance_id(self.base().instance_id());
+        self.base_mut().signals().body_entered().connect_obj(&gd, Self::on_body_entered);
 
         let mut sprite = self
             .base()
