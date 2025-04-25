@@ -56,13 +56,11 @@ tile_map_data = PackedByteArray("AAD//wAAAQAAAAYAAAAAAAAAAQAAAAYAAAABAAAAAQAAAAY
 tile_set = ExtResource("1_dil84")
 
 [node name="BonusFly" parent="." instance=ExtResource("4_rnrnt")]
-position = Vector2(568, 128)
+position = Vector2(607, 136)
 
 [node name="Flies" type="Node2D" parent="."]
 
 [node name="Fly" parent="Flies" instance=ExtResource("6_dxwdu")]
-self_directed = true
-movement_speed = 100.0
 position = Vector2(40, 1644)
 
 [node name="Fly2" parent="Flies" instance=ExtResource("6_dxwdu")]
@@ -81,7 +79,12 @@ position = Vector2(312, 979)
 position = Vector2(75, 710)
 
 [node name="Fly7" parent="Flies" instance=ExtResource("6_dxwdu")]
-position = Vector2(62, 366)
+position = Vector2(38, 478)
+
+[node name="RayCast2D" parent="Flies/Fly7" index="2"]
+target_position = Vector2(0, 313)
 
 [node name="Fly8" parent="Flies" instance=ExtResource("6_dxwdu")]
 position = Vector2(75, 161)
+
+[editable path="Flies/Fly7"]

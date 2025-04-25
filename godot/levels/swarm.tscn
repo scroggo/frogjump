@@ -100,68 +100,92 @@ position = Vector2(448, 325)
 [node name="Flies" type="Node2D" parent="."]
 
 [node name="Fly" parent="Flies" instance=ExtResource("3_iv3sb")]
+self_directed = false
 position = Vector2(227, 237)
 
 [node name="Fly2" parent="Flies" instance=ExtResource("3_iv3sb")]
+self_directed = false
 position = Vector2(181, 341)
 
 [node name="Fly3" parent="Flies" instance=ExtResource("3_iv3sb")]
+self_directed = false
 position = Vector2(172, 236)
 
 [node name="Fly4" parent="Flies" instance=ExtResource("3_iv3sb")]
+self_directed = false
 position = Vector2(223, 174)
 
 [node name="Fly5" parent="Flies" instance=ExtResource("3_iv3sb")]
+self_directed = false
 position = Vector2(161, 163)
 
-[node name="Fly6" parent="Flies" instance=ExtResource("3_iv3sb")]
-position = Vector2(621, 246)
-
 [node name="Fly7" parent="Flies" instance=ExtResource("3_iv3sb")]
+self_directed = false
 position = Vector2(159, 100)
 
 [node name="Fly8" parent="Flies" instance=ExtResource("3_iv3sb")]
+self_directed = false
 position = Vector2(230, 100)
 
 [node name="Fly9" parent="Flies" instance=ExtResource("3_iv3sb")]
+self_directed = false
 position = Vector2(200, 430)
 
 [node name="Fly10" parent="Flies" instance=ExtResource("3_iv3sb")]
+self_directed = false
 position = Vector2(281, 429)
 
 [node name="Fly11" parent="Flies" instance=ExtResource("3_iv3sb")]
+self_directed = false
+direction = "Left"
 position = Vector2(472, 95)
 scale = Vector2(-1, 1)
 
 [node name="Fly12" parent="Flies" instance=ExtResource("3_iv3sb")]
+self_directed = false
+direction = "Left"
 position = Vector2(539, 94)
 scale = Vector2(-1, 1)
 
 [node name="Fly13" parent="Flies" instance=ExtResource("3_iv3sb")]
+self_directed = false
+direction = "Left"
 position = Vector2(462, 177)
 scale = Vector2(-1, 1)
 
 [node name="Fly14" parent="Flies" instance=ExtResource("3_iv3sb")]
+self_directed = false
+direction = "Left"
 position = Vector2(533, 178)
 scale = Vector2(-1, 1)
 
 [node name="Fly15" parent="Flies" instance=ExtResource("3_iv3sb")]
+self_directed = false
+direction = "Left"
 position = Vector2(467, 243)
 scale = Vector2(-1, 1)
 
 [node name="Fly16" parent="Flies" instance=ExtResource("3_iv3sb")]
+self_directed = false
+direction = "Left"
 position = Vector2(524, 240)
 scale = Vector2(-1, 1)
 
 [node name="Fly17" parent="Flies" instance=ExtResource("3_iv3sb")]
+self_directed = false
+direction = "Left"
 position = Vector2(531, 327)
 scale = Vector2(-1, 1)
 
 [node name="Fly18" parent="Flies" instance=ExtResource("3_iv3sb")]
+self_directed = false
+direction = "Left"
 position = Vector2(534, 420)
 scale = Vector2(-1, 1)
 
 [node name="Fly19" parent="Flies" instance=ExtResource("3_iv3sb")]
+self_directed = false
+direction = "Left"
 position = Vector2(453, 427)
 scale = Vector2(-1, 1)
 

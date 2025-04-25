@@ -1,131 +1,9 @@
-[gd_scene load_steps=11 format=4 uid="uid://uc47w4l8k0ip"]
+[gd_scene load_steps=5 format=4 uid="uid://uc47w4l8k0ip"]
 
 [ext_resource type="TileSet" uid="uid://ccqb3mdn882a7" path="res://tile_set.tres" id="1_rft7n"]
 [ext_resource type="PackedScene" uid="uid://b4enkwafkexva" path="res://player.tscn" id="2_rhfln"]
 [ext_resource type="PackedScene" uid="uid://b5dlmv4suu55n" path="res://fly.tscn" id="3_tpcs8"]
 [ext_resource type="PackedScene" uid="uid://bu5oairemc8af" path="res://toucan.tscn" id="4_untj2"]
-
-[sub_resource type="Animation" id="Animation_nen27"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(364, 236)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:scale")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(1, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_p0wp5"]
-resource_name = "fly"
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.466667, 0.5, 0.966667),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(364, 236), Vector2(428, 236), Vector2(428, 236), Vector2(364, 236)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:scale")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.5, 0.966667),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
-"values": [Vector2(1, 1), Vector2(-1, 1), Vector2(-1, 1)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_q876y"]
-_data = {
-"RESET": SubResource("Animation_nen27"),
-"fly": SubResource("Animation_p0wp5")
-}
-
-[sub_resource type="Animation" id="Animation_uu0iy"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(616, 476)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:scale")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-1, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_cwqvc"]
-resource_name = "fly"
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:position")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.466667, 0.566667, 0.966667),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(616, 476), Vector2(522, 476), Vector2(522, 476), Vector2(616, 476)]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:scale")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.466667, 0.566667, 0.966667, 1),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 1,
-"values": [Vector2(-1, 1), Vector2(-1, 1), Vector2(1, 1), Vector2(1, 1), Vector2(-1, 1)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_knuxp"]
-_data = {
-"RESET": SubResource("Animation_uu0iy"),
-"fly": SubResource("Animation_cwqvc")
-}
 
 [node name="TileMapLayer" type="Level"]
 position = Vector2(56, -32)
@@ -140,23 +18,8 @@ position = Vector2(12, 502)
 [node name="Fly" parent="." instance=ExtResource("3_tpcs8")]
 position = Vector2(364, 236)
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Fly"]
-libraries = {
-"": SubResource("AnimationLibrary_q876y")
-}
-autoplay = "fly"
-speed_scale = 0.5
-
 [node name="Fly2" parent="." instance=ExtResource("3_tpcs8")]
 position = Vector2(616, 476)
-scale = Vector2(-1, 1)
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Fly2"]
-libraries = {
-"": SubResource("AnimationLibrary_knuxp")
-}
-autoplay = "fly"
-speed_scale = 0.33
 
 [node name="BackgoundTiles" type="TileMapLayer" parent="."]
 z_index = -1
