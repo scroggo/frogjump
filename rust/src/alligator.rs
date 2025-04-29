@@ -6,13 +6,39 @@ use godot::classes::{AnimatedSprite2D, Area2D, Node2D, Timer};
 use godot::global::{absf, clampf, maxf, randf, randf_range};
 use godot::prelude::*;
 
+// Sub-state of `State::OpeningJaw`
+#[derive(PartialEq, Clone)]
+enum OpenSubState {
+    SwitchToClose,   // After a single `physics_process`, switch to `ClosingJaw`.
+    BrandNew,        // Just assigned to this state. Have not seen a `physics_process`.
+    ProcessedAFrame, // At least one physics frame has been processed in this state.
+}
+
+impl Display for OpenSubState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let s = match self {
+            OpenSubState::SwitchToClose => "SwitchToClose",
+            OpenSubState::BrandNew => "BrandNew",
+            OpenSubState::ProcessedAFrame => "ProcessedAFrame",
+        };
+        write!(f, "{}", s)
+    }
+}
+
 #[derive(PartialEq, Clone)]
 enum State {
     Idle,
     // If the player is in the focus area 2d, track them.
-    Focus { player: Gd<Node2D> },
-    OpeningJaw { player: Gd<Node2D> },
-    ClosingJaw { player: Gd<Node2D> },
+    Focus {
+        player: Gd<Node2D>,
+    },
+    OpeningJaw {
+        player: Gd<Node2D>,
+        sub_state: OpenSubState,
+    },
+    ClosingJaw {
+        player: Gd<Node2D>,
+    },
 }
 
 impl Display for State {
@@ -20,7 +46,12 @@ impl Display for State {
         let s = match self {
             State::Idle => "Idle",
             State::Focus { player: _ } => "Focus",
-            State::OpeningJaw { player: _ } => "Opening Jaw",
+            State::OpeningJaw {
+                player: _,
+                sub_state,
+            } => {
+                return write!(f, "Opening Jaw [{}]", sub_state);
+            }
             State::ClosingJaw { player: _ } => "Closing Jaw",
         };
         write!(f, "{}", s)
@@ -86,7 +117,7 @@ impl INode2D for Alligator {
             State::Focus { player } => {
                 self.face_player(player);
             }
-            State::OpeningJaw { player } => {
+            State::OpeningJaw { player, sub_state } => {
                 // Calculate how wide the jaw should be open based on distance
                 // to the player. Based on trial and error, I want the jaw to
                 // be open 60 degrees when the player is at distance 0, and
@@ -100,6 +131,19 @@ impl INode2D for Alligator {
                 // want to face the player because my test scene lets me warp
                 // the player.
                 //self.face_player(player);
+
+                match sub_state {
+                    OpenSubState::SwitchToClose => {
+                        self.state = State::ClosingJaw { player };
+                    }
+                    OpenSubState::BrandNew => {
+                        self.state = State::OpeningJaw {
+                            player,
+                            sub_state: OpenSubState::ProcessedAFrame,
+                        };
+                    }
+                    OpenSubState::ProcessedAFrame => (),
+                }
             }
             State::ClosingJaw { player } => {
                 let mut jaw = self.upper_jaw();
@@ -182,12 +226,21 @@ impl Alligator {
 
     #[func]
     fn on_player_entered_focus_area(&mut self, body: Gd<Node2D>) {
-        // Assume that `body` is the player, since the mask is set to only scan
-        // for the player's layer.
-        self.state = State::Focus {
-            player: body.clone(),
-        };
-        self.animate("default", true);
+        // Avoid overriding more advanced states, as the signals may come in
+        // different orders.
+        if self.state == State::Idle {
+            self.state = State::Focus {
+                // Assume that `body` is the player, since the mask is set to only scan
+                // for the player's layer.
+                player: body.clone(),
+            };
+            self.animate("default", true);
+        }
+        log!(
+            self.debug_area2ds,
+            "Player entered focus area! State {}",
+            self.state
+        );
     }
 
     #[func]
@@ -208,10 +261,25 @@ impl Alligator {
 
     #[func]
     fn on_player_entered_open_jaw_area(&mut self, body: Gd<Node2D>) {
+        if self.eat_area2d().overlaps_body(&body) {
+            // Based on trial-and-error with Godot 4.3, this means the "eat"
+            // callback was called first. Skip this one.
+            log!(
+                self.debug_area2ds,
+                "Player entered open and eat! Skipping open cb"
+            );
+            return;
+        }
         self.state = State::OpeningJaw {
             player: body.clone(),
+            sub_state: OpenSubState::BrandNew,
         };
         self.animate("flash_eyes", true);
+        log!(
+            self.debug_area2ds,
+            "Player entered open jaw area. State: {}",
+            self.state
+        );
     }
 
     #[func]
@@ -223,7 +291,10 @@ impl Alligator {
         // in the `test_alligator.tscn`, when the (fake) player can actually
         // warp. (Maybe this is totally irrelevant during gameplay?)
         match self.state.clone() {
-            State::OpeningJaw { player } => {
+            State::OpeningJaw {
+                player,
+                sub_state: _,
+            } => {
                 self.state = if self.focus_area2d().overlaps_body(&player) {
                     State::Focus { player }
                 } else {
@@ -231,6 +302,11 @@ impl Alligator {
                 };
                 self.animate("default", true);
                 self.close_jaw();
+                log!(
+                    self.debug_area2ds,
+                    "Player exited open jaw area. State: {}",
+                    self.state
+                );
             }
             _ => (),
         }
@@ -247,10 +323,49 @@ impl Alligator {
 
     #[func]
     fn on_player_entered_eat_area(&mut self, body: Gd<Node2D>) {
-        self.state = State::ClosingJaw {
-            player: body.clone(),
+        match self.state.clone() {
+            State::Idle => {
+                self.open_then_close_jaw(body);
+            }
+            State::Focus { player: _ } => {
+                self.open_then_close_jaw(body);
+            }
+            State::OpeningJaw {
+                player: _,
+                sub_state,
+            } => {
+                match sub_state {
+                    OpenSubState::SwitchToClose => {
+                        // This should not happen. Even if it did, this would
+                        // just process an extra frame before closing, which is
+                        // fine.
+                    }
+                    OpenSubState::BrandNew => {
+                        self.open_then_close_jaw(body);
+                    }
+                    OpenSubState::ProcessedAFrame => {
+                        self.state = State::ClosingJaw {
+                            player: body.clone(),
+                        };
+                    }
+                }
+            }
+            State::ClosingJaw { player: _ } => {
+                // This might be a different player. Only eat one at a time.
+            }
+        }
+        log!(
+            self.debug_area2ds,
+            "Player entered EAT area. State: {}",
+            self.state
+        );
+    }
+
+    fn open_then_close_jaw(&mut self, player: Gd<Node2D>) {
+        self.state = State::OpeningJaw {
+            player,
+            sub_state: OpenSubState::SwitchToClose,
         };
-        log!(self.debug_area2ds, "Player entered (new) EAT area");
     }
 
     #[func]
@@ -259,7 +374,10 @@ impl Alligator {
         match self.state.clone() {
             State::ClosingJaw { player } => {
                 self.state = if self.open_jaw_area2d().overlaps_body(&player) {
-                    State::OpeningJaw { player }
+                    State::OpeningJaw {
+                        player,
+                        sub_state: OpenSubState::ProcessedAFrame,
+                    }
                 } else if self.focus_area2d().overlaps_body(&player) {
                     self.animate("default", true);
                     self.close_jaw();
@@ -269,6 +387,11 @@ impl Alligator {
                     self.close_jaw();
                     State::Idle
                 };
+                log!(
+                    self.debug_area2ds,
+                    "Player exited eat area. State {}",
+                    self.state
+                );
             }
             _ => (),
         }
