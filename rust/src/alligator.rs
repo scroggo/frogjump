@@ -186,6 +186,8 @@ impl Alligator {
     #[func]
     fn on_player_exited_focus_area(&mut self, _body: Gd<Node2D>) {
         self.state = State::Idle;
+        self.close_jaw();
+        self.animate("default", true);
         godot_print!("Player exited focus area! Now in state {}", self.state);
     }
 
