@@ -1,5 +1,7 @@
 use std::fmt::Display;
 
+use crate::log;
+
 use godot::classes::{AnimatedSprite2D, Area2D, Node2D, Timer};
 use godot::global::{absf, clampf, maxf, randf, randf_range};
 use godot::prelude::*;
@@ -32,6 +34,10 @@ pub struct Alligator {
     state: State,
     #[export]
     jaw_close_speed: f32,
+    /// Set to true to enable logs tracking the player entering and exiting
+    /// `Area2D`s used by `Alligator`.
+    #[export]
+    debug_area2ds: bool,
     base: Base<Node2D>,
 }
 
@@ -41,6 +47,7 @@ impl INode2D for Alligator {
         Self {
             state: State::Idle,
             jaw_close_speed: 512.0,
+            debug_area2ds: false,
             base,
         }
     }
@@ -188,7 +195,11 @@ impl Alligator {
         self.state = State::Idle;
         self.close_jaw();
         self.animate("default", true);
-        godot_print!("Player exited focus area! Now in state {}", self.state);
+        log!(
+            self.debug_area2ds,
+            "Player exited focus area! Now in state {}",
+            self.state
+        );
     }
 
     fn open_jaw_area2d(&self) -> Gd<Area2D> {
@@ -223,7 +234,11 @@ impl Alligator {
             }
             _ => (),
         }
-        godot_print!("Player exited OPEN JAW area! Now in state: {}", self.state);
+        log!(
+            self.debug_area2ds,
+            "Player exited OPEN JAW area! Now in state: {}",
+            self.state
+        );
     }
 
     fn eat_area2d(&self) -> Gd<Area2D> {
@@ -235,7 +250,7 @@ impl Alligator {
         self.state = State::ClosingJaw {
             player: body.clone(),
         };
-        godot_print!("Player entered (new) EAT area");
+        log!(self.debug_area2ds, "Player entered (new) EAT area");
     }
 
     #[func]
@@ -257,7 +272,11 @@ impl Alligator {
             }
             _ => (),
         }
-        godot_print!("Player exited (new) EAT area! Now in state: {}", self.state);
+        log!(
+            self.debug_area2ds,
+            "Player exited (new) EAT area! Now in state: {}",
+            self.state
+        );
     }
 
     fn close_jaw(&self) {
