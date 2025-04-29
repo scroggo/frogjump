@@ -28,4 +28,5 @@ text = "Similar to \"test_next_level\". This version shows \"BONUS\", and \"jump
 Avoid pressing ENTER, which leaves the test scenes."
 
 [node name="BonusFly" parent="." instance=ExtResource("4_sov12")]
+self_directed = false
 position = Vector2(101, 392)
