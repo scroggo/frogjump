@@ -21,12 +21,16 @@ offset_bottom = 539.0
 text = "test_bonus"
 
 [node name="Label" type="Label" parent="."]
-offset_right = 40.0
+offset_left = 1.0
+offset_right = 728.0
 offset_bottom = 23.0
-text = "Similar to \"test_next_level\". This version shows \"BONUS\", and \"jump\" moves to the next scene.
+text = "Similar to \"test_next_level\". This version shows \"BONUS\", and \"jump\" moves to the next
+scene.
 
-Avoid pressing ENTER, which leaves the test scenes."
+Note that ENTER does not work in this scene."
 
 [node name="BonusFly" parent="." instance=ExtResource("4_sov12")]
 self_directed = false
 position = Vector2(101, 392)
+
+[node name="StealEnter" type="StealEnter" parent="."]

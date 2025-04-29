@@ -14,6 +14,7 @@ mod main_node;
 mod math;
 mod message_screen;
 mod player;
+mod steal_enter;
 mod test_alligator;
 mod toucan;
 mod tutorial;
