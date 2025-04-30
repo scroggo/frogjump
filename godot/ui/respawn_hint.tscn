@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3 uid="uid://rb5ybcsa3ngk"]
+
+[ext_resource type="PackedScene" uid="uid://5bb0he316v18" path="res://ui/button_hint.tscn" id="1_br7di"]
+
+[node name="RespawnHint" type="CanvasLayer"]
+
+[node name="ButtonHint" parent="." instance=ExtResource("1_br7di")]
+autoplay = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -114.5
+offset_top = -64.5
+offset_right = 114.5
+offset_bottom = -25.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 28
+text = "Jump to respawn"

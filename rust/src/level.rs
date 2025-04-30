@@ -1,11 +1,12 @@
 use crate::player::Player;
 use crate::player::PlayerInfo;
-use godot::classes::{Camera2D, ITileMapLayer, InputEvent, TileMapLayer};
+use godot::classes::{Camera2D, ITileMapLayer, InputEvent, TileMapLayer, Timer};
 use godot::prelude::*;
 
 #[derive(PartialEq)]
 enum State {
     Playing,
+    JumpToRespawn,
     Won,
     BonusFound,
 }
@@ -61,11 +62,10 @@ impl ITileMapLayer for Level {
 
     fn input(&mut self, event: Gd<InputEvent>) {
         if event.is_action_pressed("jump") {
-            if self.state == State::Playing {
-                if self.player().is_none() {
-                    self.respawn();
-                    self.base().get_viewport().unwrap().set_input_as_handled();
-                }
+            if self.state == State::JumpToRespawn {
+                self.respawn();
+                self.state = State::Playing;
+                self.base().get_viewport().unwrap().set_input_as_handled();
             }
         }
     }
@@ -93,6 +93,17 @@ impl Level {
             player.queue_free();
         } else {
             godot_error!("player_eaten signal called on node not in tree?");
+        }
+        if let Some(mut scene_tree) = self.base().get_tree() {
+            // Support multiple players with different names.
+            let players_remaining = scene_tree.get_nodes_in_group("player").len();
+            if players_remaining == 0 && self.state == State::Playing {
+                self.state = State::JumpToRespawn;
+                self.respawn_hint_delay_timer()
+                    .start_ex()
+                    .time_sec(1.0)
+                    .done();
+            }
         }
     }
 
@@ -137,6 +148,51 @@ impl Level {
             }
             self.base_mut().add_child(&player);
         }
+        if let Some(mut respawn_hint) = self.respawn_hint(false) {
+            self.base_mut().remove_child(&respawn_hint);
+            respawn_hint.queue_free();
+        }
+    }
+
+    fn respawn_hint_delay_timer(&mut self) -> Gd<Timer> {
+        let name = "RespawnHintDelayTimer";
+        if let Some(timer) = self.base().try_get_node_as::<Timer>(name) {
+            return timer;
+        }
+        let mut timer = Timer::new_alloc();
+        timer.set_name(name);
+        timer.set_one_shot(true);
+        self.base_mut().add_child(&timer);
+        let gd = Gd::from_instance_id(self.base().instance_id());
+        timer
+            .signals()
+            .timeout()
+            .connect_obj(&gd, Self::on_respawn_hint_timeout);
+        timer
+    }
+
+    #[func]
+    fn on_respawn_hint_timeout(&mut self) {
+        // Ensure that the player has not already respawned.
+        if self.state == State::JumpToRespawn {
+            if let Some(hint) = self.respawn_hint(true) {
+                self.base_mut().add_child(&hint);
+            }
+        }
+    }
+
+    fn respawn_hint(&self, create: bool) -> Option<Gd<Node>> {
+        let name = "RespawnHint";
+        if let Some(hint) = self.base().try_get_node_as::<Node>(name) {
+            return Some(hint);
+        }
+        if !create {
+            return None;
+        }
+        let packed_scene = load::<PackedScene>("res://ui/respawn_hint.tscn");
+        let mut hint = packed_scene.instantiate_as::<Node>();
+        hint.set_name(name);
+        Some(hint)
     }
 
     fn disable_jumping(&self) {

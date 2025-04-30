@@ -26,4 +26,6 @@ text = "test_respawn"
 [node name="Label" type="Label" parent="."]
 offset_right = 40.0
 offset_bottom = 23.0
-text = "Verify that \"jump\" action respawns when the player is no more."
+text = "Verify that \"jump\" action respawns when the player is no more.
+
+Also verify that a hint tells the player how to respawn."
