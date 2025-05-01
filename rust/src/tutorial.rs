@@ -1,4 +1,4 @@
-use godot::classes::Label;
+use godot::classes::{InputEvent, Label};
 use godot::prelude::*;
 
 use crate::button_hint::ButtonHint;
@@ -46,7 +46,7 @@ enum NextStep {
 /// key for different lengths of time for different strength jumps.
 #[derive(GodotClass)]
 #[class(base=Node2D)]
-struct Tutorial {
+pub struct Tutorial {
     #[export]
     one_start_jump_ms: f32,
     #[export]
@@ -153,9 +153,19 @@ impl INode2D for Tutorial {
             }
         }
     }
+
+    fn input(&mut self, event: Gd<InputEvent>) {
+        if event.is_action_pressed("jump") {
+            self.signals().load_next_scene().emit();
+        }
+    }
 }
 
+#[godot_api]
 impl Tutorial {
+    #[signal]
+    pub fn load_next_scene();
+
     fn set_pressed(&mut self, pressed: bool) {
         self.pressed.store(pressed, Ordering::SeqCst);
         self.button_hint().bind_mut().set_pressed(pressed);

@@ -1,5 +1,6 @@
 use crate::level::Level;
 use crate::message_screen::MessageScreen;
+use crate::tutorial::Tutorial;
 use godot::classes::{AudioStreamPlayer, InputEvent};
 use godot::prelude::*;
 
@@ -41,17 +42,7 @@ impl INode for Main {
     }
 
     fn unhandled_input(&mut self, event: Gd<InputEvent>) {
-        if event.is_action_pressed("jump") {
-            if self.play_bonus_next {
-                self.play_bonus_next = false;
-                if let Some(bonus_level) = self.bonus_level.clone() {
-                    self.load_packed_scene(bonus_level);
-                    return;
-                }
-                godot_error!("Missing bonus level!");
-            }
-            self.load_next_scene();
-        } else if event.is_action_pressed("RELOAD") {
+        if event.is_action_pressed("RELOAD") {
             if let Some(packed_scene) = self.active_scene_packed.clone() {
                 self.load_packed_scene(packed_scene);
             }
@@ -100,8 +91,8 @@ impl Main {
             prior_scene.queue_free();
         }
         self.base_mut().add_child(&node);
+        let gd = Gd::from_instance_id(self.base().instance_id());
         if let Some(mut level) = node.clone().try_cast::<Level>().ok() {
-            let gd = Gd::from_instance_id(self.base().instance_id());
             level
                 .signals()
                 .complete_level()
@@ -110,12 +101,32 @@ impl Main {
                 .signals()
                 .find_bonus()
                 .connect_obj(&gd, Self::on_bonus_found);
+        } else if let Some(mut message_screen) = node.clone().try_cast::<MessageScreen>().ok() {
+            message_screen
+                .signals()
+                .jump_pressed()
+                .connect_obj(&gd, Self::load_next_scene);
+        } else if let Some(mut tutorial) = node.clone().try_cast::<Tutorial>().ok() {
+            tutorial
+                .signals()
+                .load_next_scene()
+                .connect_obj(&gd, Self::load_next_scene);
         }
         self.active_scene_packed = Some(packed_scene);
         self.active_scene = Some(node);
     }
 
+    #[func]
     fn load_next_scene(&mut self) {
+        if self.play_bonus_next {
+            self.play_bonus_next = false;
+            if let Some(bonus_level) = self.bonus_level.clone() {
+                self.load_packed_scene(bonus_level);
+                return;
+            }
+            godot_error!("Missing bonus level!");
+        }
+
         self.scene_index += 1;
         if self.scene_index as usize >= self.scenes.len() {
             self.scene_index = 0;
@@ -141,8 +152,12 @@ impl Main {
 
     fn show_message_screen(&self, scene_name: &str) {
         let packed_scene = load::<PackedScene>(scene_name);
-        // Note: This cast is not strictly necessary, but it matches the intent.
-        let message_screen = packed_scene.instantiate_as::<MessageScreen>();
+        let mut message_screen = packed_scene.instantiate_as::<MessageScreen>();
+        let gd = Gd::from_instance_id(self.base().instance_id());
+        message_screen
+            .signals()
+            .jump_pressed()
+            .connect_obj(&gd, Self::load_next_scene);
 
         // Attach to the active scene. This way it will be cleared when we
         // change scenes. Alternatively we could use a separate UI layer.

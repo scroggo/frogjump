@@ -33,12 +33,12 @@ impl ICanvasLayer for MessageScreen {
 
     fn input(&mut self, event: Gd<InputEvent>) {
         if event.is_action_pressed("jump") {
-            if self.ignore_jump {
-                // Consume input so `Main` does not receive it.
-                self.base()
-                    .get_viewport()
-                    .expect("Should have a viewport to handle an event!")
-                    .set_input_as_handled();
+            self.base()
+                .get_viewport()
+                .expect("Should have a viewport to handle an event!")
+                .set_input_as_handled();
+            if !self.ignore_jump {
+                self.signals().jump_pressed().emit();
             }
         }
     }
@@ -47,7 +47,7 @@ impl ICanvasLayer for MessageScreen {
 #[godot_api]
 impl MessageScreen {
     #[signal]
-    fn jump_pressed();
+    pub fn jump_pressed();
 
     fn jump_hint(&self) -> Option<Gd<Control>> {
         self.base().try_get_node_as::<Control>("JumpHint")
