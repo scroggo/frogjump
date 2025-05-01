@@ -33,10 +33,6 @@ impl ICanvasLayer for MessageScreen {
 
     fn input(&mut self, event: Gd<InputEvent>) {
         if event.is_action_pressed("jump") {
-            self.base()
-                .get_viewport()
-                .expect("Should have a viewport to handle an event!")
-                .set_input_as_handled();
             if !self.ignore_jump {
                 self.signals().jump_pressed().emit();
             }

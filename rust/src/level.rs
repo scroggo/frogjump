@@ -32,8 +32,6 @@ impl ITileMapLayer for Level {
 
     fn ready(&mut self) {
         let mut scene_tree = self.base_mut().get_tree().unwrap();
-        scene_tree.call_group("player", "consume_input", &[true.to_variant()]);
-
         let on_player_eaten = self.base().callable("on_player_eaten");
         scene_tree.call_group(
             "predators",
@@ -65,7 +63,6 @@ impl ITileMapLayer for Level {
             if self.state == State::JumpToRespawn {
                 self.respawn();
                 self.state = State::Playing;
-                self.base().get_viewport().unwrap().set_input_as_handled();
             }
         }
     }
@@ -137,7 +134,6 @@ impl Level {
             let scene = load::<PackedScene>("res://player.tscn");
             let mut player = scene.instantiate().unwrap().cast::<Player>();
             player.bind_mut().set_player_info(respawn_info);
-            player.bind_mut().consume_input(true);
 
             // When the player dies, we reparent the camera to the level. Restore it
             // on the new player.
@@ -198,6 +194,5 @@ impl Level {
     fn disable_jumping(&self) {
         let mut scene_tree = self.base().get_tree().unwrap();
         scene_tree.call_group("player", "disable_jumping", &[]);
-        scene_tree.call_group("player", "consume_input", &[false.to_variant()]);
     }
 }
