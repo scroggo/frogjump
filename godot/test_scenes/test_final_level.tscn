@@ -27,3 +27,5 @@ text = "test_final_level"
 offset_right = 40.0
 offset_bottom = 23.0
 text = "Behaves similar to \"test_next_level\" and \"test_bonus\", but with a different message."
+
+[node name="StealEnter" type="StealEnter" parent="."]

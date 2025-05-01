@@ -28,3 +28,5 @@ offset_right = 40.0
 offset_bottom = 23.0
 text = "Verify that when the player collects the last fly, they can no longer jump, and there is a delay
 before \"jump\" moves to the next scene."
+
+[node name="StealEnter" type="StealEnter" parent="."]
